@@ -1,0 +1,17 @@
+[
+{
+  "modid": "DisenchanterMod",
+  "name": "Disenchanter",
+  "description": "A small Mod adding a block to disenchant Items",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://minecraft.curseforge.com/projects/the-disenchanter-mod",
+  "updateUrl": "",
+  "authorList": ["Impelon"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "requiredMods": ["Forge"],
+  "dependencies": []
+}
+]
