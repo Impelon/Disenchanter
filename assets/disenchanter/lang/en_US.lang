@@ -1,0 +1,5 @@
+tile.blockDisenchantmentTable.name=Disenchantment Table
+container.disenchant=Disenchant
+msg.outdated.txt=Your version of Disenchanter is outdated. Click here to visit the website!
+msg.currentversion.txt=current version: 
+msg.latestversion.txt=latest version: 
