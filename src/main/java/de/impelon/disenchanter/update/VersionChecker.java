@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import net.minecraft.event.ClickEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChatStyle;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -25,7 +25,7 @@ public class VersionChecker implements Runnable {
 	public void run() {
 		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(new URL("https://cdn.rawgit.com/Impelon/Disenchanter/1.8.9/src/main/resources/mcmod.info").openStream(), "UTF-8"));
+			in = new BufferedReader(new InputStreamReader(new URL("https://cdn.rawgit.com/Impelon/Disenchanter/1.9.4/src/main/resources/mcmod.info").openStream(), "UTF-8"));
 			StringBuilder modinfo = new StringBuilder();
 			String ln;
 			while ((ln = in.readLine()) != null)
@@ -73,12 +73,12 @@ public class VersionChecker implements Runnable {
 				MinecraftForge.EVENT_BUS.unregister(this);
 				return;
 			}
-			ChatStyle linkStyle = new ChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getUrl()));
-			ChatComponentText warning = new ChatComponentText("§7[§6§lDisenchanter§7] §r" +
-					new ChatComponentTranslation("msg.outdated.txt").getFormattedText() + " §o(" +
-					new ChatComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " §o" +
-					new ChatComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + "§o)");
-			warning.setChatStyle(linkStyle);
+			Style linkStyle = new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getUrl()));
+			TextComponentString warning = new TextComponentString("§7[§6§lDisenchanter§7] §r" +
+					new TextComponentTranslation("msg.outdated.txt").getFormattedText() + " §o(" +
+					new TextComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " §o" +
+					new TextComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + "§o)");
+			warning.setStyle(linkStyle);
 			ev.player.addChatMessage(warning);
 			MinecraftForge.EVENT_BUS.unregister(this);
 		}
