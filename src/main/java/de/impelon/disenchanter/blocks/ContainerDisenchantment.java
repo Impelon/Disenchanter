@@ -17,7 +17,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -50,7 +50,7 @@ public class ContainerDisenchantment extends Container {
 
 			@Override
 			public boolean isItemValid(ItemStack stack) {
-				return stack.getItem().equals(Items.book);
+				return stack.getItem().equals(Items.BOOK);
 			}
 
 		});
@@ -96,7 +96,7 @@ public class ContainerDisenchantment extends Container {
 					int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
 					double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
 					double reduceableDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2).getDouble();
-					itemstack.attemptDamageItem((int) (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + itemstack.getMaxDamage() * (reduceableDmg / power)), random);
+					itemstack.attemptDamageItem((int) (10 + itemstack.getMaxDamage() * 0.025 + itemstack.getMaxDamage() * (0.2 / power)), random);
 					if (itemstack.getItemDamage() > itemstack.getMaxDamage()) {
 						inputSlots.setInventorySlotContents(0, (ItemStack) null);
 						return;
@@ -114,7 +114,7 @@ public class ContainerDisenchantment extends Container {
 							if (enchants.tagCount() > 1)
 								enchants.removeTag(0);
 							else
-								inputSlots.setInventorySlotContents(0,new ItemStack(Items.book));
+								inputSlots.setInventorySlotContents(0,new ItemStack(Items.BOOK));
 						}
 					}
 				}
@@ -164,8 +164,8 @@ public class ContainerDisenchantment extends Container {
 					int id = enchant.getInteger("id");
 					int lvl = enchant.getInteger("lvl");
 
-					ItemStack outputBookstack = new ItemStack(Items.enchanted_book);
-					Items.enchanted_book.addEnchantment(outputBookstack, new EnchantmentData(Enchantment.getEnchantmentById(id), lvl));
+					ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
+					Items.ENCHANTED_BOOK.addEnchantment(outputBookstack, new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
 
 					this.outputSlot.setInventorySlotContents(0, (ItemStack) outputBookstack);
 				}
@@ -184,9 +184,9 @@ public class ContainerDisenchantment extends Container {
 			ItemStack bookstack = this.inputSlots.removeStackFromSlot(1);
 
 			if (itemstack != null)
-				p.dropPlayerItemWithRandomChoice(itemstack, false);
+				p.dropItem(itemstack, false);
 			if (bookstack != null)
-				p.dropPlayerItemWithRandomChoice(bookstack, false);
+				p.dropItem(bookstack, false);
 		}
 	}
 
@@ -214,7 +214,7 @@ public class ContainerDisenchantment extends Container {
 				slot.onSlotChange(itemstack, itemstackPrev);
 			} else if (slotID != 0 && slotID != 1) {
 				ItemStack i = itemstack.splitStack(1);
-				if (i.getItem().equals(Items.book)) {
+				if (i.getItem().equals(Items.BOOK)) {
 					if (((Slot) this.inventorySlots.get(1)).getHasStack() || !this.mergeItemStack(i, 1, 2, false)) {
 						itemstack.stackSize++;
 						return null;

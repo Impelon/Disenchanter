@@ -8,9 +8,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.IInteractionObject;
 
@@ -30,11 +30,13 @@ public class TileEntityDisenchantmentTable extends TileEntity implements ITickab
 	private String customName;
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtData) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtData) {
 		super.writeToNBT(nbtData);
 
 		if (this.hasCustomName())
 			nbtData.setString("CustomName", this.customName);
+		
+		return nbtData;
 	}
 
 	@Override
@@ -52,7 +54,8 @@ public class TileEntityDisenchantmentTable extends TileEntity implements ITickab
 		EntityPlayer entityplayer = this.worldObj.getClosestPlayer(
 				(double) this.pos.getX() + 0.5D,
 				(double) this.pos.getY() + 0.5D,
-				(double) this.pos.getZ() + 0.5D, 3.0D);
+				(double) this.pos.getZ() + 0.5D, 3.0D,
+				false);
 
 		if (entityplayer != null) {
 			double distanceX = entityplayer.posX - (this.pos.getX() + 0.5F);
@@ -123,8 +126,8 @@ public class TileEntityDisenchantmentTable extends TileEntity implements ITickab
 		this.customName = customName;
 	}
 
-	public IChatComponent getDisplayName() {
-        return (IChatComponent)(this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName(), new Object[0]));
+	public ITextComponent getDisplayName() {
+        return (ITextComponent)(this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName(), new Object[0]));
     }
 
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
