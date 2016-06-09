@@ -2,6 +2,7 @@ package de.impelon.disenchanter.proxies;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -52,8 +53,8 @@ public class CommonProxy {
 					"   ",
 					"YEY",
 					"ETE",
-					Character.valueOf('T'), Blocks.enchanting_table,
-					Character.valueOf('E'), Items.emerald,
+					Character.valueOf('T'), Blocks.ENCHANTING_TABLE,
+					Character.valueOf('E'), Items.EMERALD,
 					Character.valueOf('Y'), "dyeYellow"
 			 ));
 	}
