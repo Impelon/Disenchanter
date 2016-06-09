@@ -1,4 +1,5 @@
 {   
+    "parent": "block/block",
     "textures": {
         "particle": "disenchanter:blocks/disenchantmentTable_bottom",
         "bottom": "disenchanter:blocks/disenchantmentTable_bottom",
