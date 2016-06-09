@@ -1,20 +1,23 @@
 package de.impelon.disenchanter.blocks;
 
 import org.lwjgl.opengl.GL11;
+
+import de.impelon.disenchanter.DisenchanterMain;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class GuiDisenchantment extends GuiContainer {
 	
-	private static final ResourceLocation guiResource = new ResourceLocation("disenchanter", "textures/gui/container/disenchanting_table.png");
+	private static final ResourceLocation guiResource = new ResourceLocation(DisenchanterMain.MODID, "textures/gui/container/disenchanting_table.png");
 	private String customName;
 
 	public GuiDisenchantment(InventoryPlayer p, World w,
 			int x, int y, int z, String customName) {
-		super(new ContainerDisenchantment(p, w, x, y, z));
+		super(new ContainerDisenchantment(p, w, new BlockPos(x, y, z)));
 		this.customName = customName;
 	}
 	

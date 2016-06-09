@@ -4,6 +4,7 @@ import java.util.Random;
 
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.proxies.CommonProxy;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -16,15 +17,14 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 public class ContainerDisenchantment extends Container {
 
 	private World worldObj;
-	private int posX;
-	private int posY;
-	private int posZ;
+	private BlockPos posBlock;
 	private Random random = new Random();
 	private IInventory outputSlot = new InventoryCraftResult();
 	private IInventory inputSlots = new InventoryBasic("Disenchant", true, 2) {
@@ -41,11 +41,9 @@ public class ContainerDisenchantment extends Container {
 		}
 	};
 
-	public ContainerDisenchantment(InventoryPlayer pInventory, World w, int x, int y, int z) {
+	public ContainerDisenchantment(InventoryPlayer pInventory, World w, BlockPos pos) {
 		this.worldObj = w;
-		this.posX = x;
-		this.posY = y;
-		this.posZ = z;
+		this.posBlock = pos;
 		this.addSlotToContainer(new Slot(this.inputSlots, 0, 26, 35));
 
 		this.addSlotToContainer(new Slot(this.inputSlots, 1, 75, 35) {
@@ -79,16 +77,16 @@ public class ContainerDisenchantment extends Container {
 					int power = 1;
 					for (int blockZ = -1; blockZ <= 1; ++blockZ) {
 						for (int blockX = -1; blockX <= 1; ++blockX) {
-							if ((blockZ != 0 || blockX != 0) && worldObj.isAirBlock(posX + blockX, posY, posZ + blockZ)
-									&& worldObj.isAirBlock(posX + blockX, posY + 1, posZ + blockZ)) {
-								power += ForgeHooks.getEnchantPower(worldObj, posX + blockX * 2, posY, posZ + blockZ * 2);
-								power += ForgeHooks.getEnchantPower(worldObj, posX + blockX * 2, posY + 1, posZ + blockZ * 2);
+							if ((blockZ != 0 || blockX != 0) && worldObj.isAirBlock(new BlockPos(posBlock.getX() + blockX, posBlock.getY(), posBlock.getZ() + blockZ))
+									&& worldObj.isAirBlock(new BlockPos(posBlock.getX() + blockX, posBlock.getY() + 1, posBlock.getZ() + blockZ))) {
+								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(posBlock.getX() + blockX * 2, posBlock.getY(), posBlock.getZ() + blockZ * 2));
+								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(posBlock.getX() + blockX * 2, posBlock.getY() + 1, posBlock.getZ() + blockZ * 2));
 
 								if (blockX != 0 && blockZ != 0) {
-									power += ForgeHooks.getEnchantPower(worldObj, posX + blockX * 2, posY, posZ + blockZ);
-									power += ForgeHooks.getEnchantPower(worldObj, posX + blockX * 2, posY + 1, posZ + blockZ);
-									power += ForgeHooks.getEnchantPower(worldObj, posX + blockX, posY, posZ + blockZ * 2);
-									power += ForgeHooks.getEnchantPower(worldObj, posX + blockX, posY + 1, posZ + blockZ * 2);
+									power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(posBlock.getX() + blockX * 2, posBlock.getY(), posBlock.getZ() + blockZ));
+									power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(posBlock.getX() + blockX * 2, posBlock.getY() + 1, posBlock.getZ() + blockZ));
+									power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(posBlock.getX() + blockX, posBlock.getY(), posBlock.getZ() + blockZ * 2));
+									power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(posBlock.getX() + blockX, posBlock.getY() + 1, posBlock.getZ() + blockZ * 2));
 								}
 							}
 						}
@@ -103,16 +101,16 @@ public class ContainerDisenchantment extends Container {
 						inputSlots.setInventorySlotContents(0, (ItemStack) null);
 						return;
 					}
-					if (itemstack != null && itemstack.stackTagCompound != null) {
+					if (itemstack != null && itemstack.getTagCompound() != null) {
 						NBTTagList enchants = null;
-						if (itemstack.stackTagCompound.getTag("ench") != null) {
-							enchants = (NBTTagList) itemstack.stackTagCompound.getTag("ench");
+						if (itemstack.getTagCompound().getTag("ench") != null) {
+							enchants = (NBTTagList) itemstack.getTagCompound().getTag("ench");
 							if (enchants.tagCount() > 1)
 								enchants.removeTag(0);
 							else
-								itemstack.stackTagCompound.removeTag("ench");
-						} else if (itemstack.stackTagCompound.getTag("StoredEnchantments") != null) {
-							enchants = (NBTTagList) itemstack.stackTagCompound.getTag("StoredEnchantments");
+								itemstack.getTagCompound().removeTag("ench");
+						} else if (itemstack.getTagCompound().getTag("StoredEnchantments") != null) {
+							enchants = (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
 							if (enchants.tagCount() > 1)
 								enchants.removeTag(0);
 							else
@@ -152,12 +150,12 @@ public class ContainerDisenchantment extends Container {
 			ItemStack bookstack = this.inputSlots.getStackInSlot(1);
 
 			if (itemstack != null && bookstack != null
-					&& itemstack.stackTagCompound != null) {
+					&& itemstack.getTagCompound() != null) {
 				NBTTagList enchants = null;
-				if (itemstack.stackTagCompound.getTag("ench") != null)
-					enchants = (NBTTagList) itemstack.stackTagCompound.getTag("ench");
-				else if (itemstack.stackTagCompound.getTag("StoredEnchantments") != null)
-					enchants = (NBTTagList) itemstack.stackTagCompound.getTag("StoredEnchantments");
+				if (itemstack.getTagCompound().getTag("ench") != null)
+					enchants = (NBTTagList) itemstack.getTagCompound().getTag("ench");
+				else if (itemstack.getTagCompound().getTag("StoredEnchantments") != null)
+					enchants = (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
 				else
 					return;
 
@@ -167,7 +165,7 @@ public class ContainerDisenchantment extends Container {
 					int lvl = enchant.getInteger("lvl");
 
 					ItemStack outputBookstack = new ItemStack(Items.enchanted_book);
-					Items.enchanted_book.addEnchantment(outputBookstack, new EnchantmentData(id, lvl));
+					Items.enchanted_book.addEnchantment(outputBookstack, new EnchantmentData(Enchantment.getEnchantmentById(id), lvl));
 
 					this.outputSlot.setInventorySlotContents(0, (ItemStack) outputBookstack);
 				}
@@ -182,8 +180,8 @@ public class ContainerDisenchantment extends Container {
 		super.onContainerClosed(p);
 
 		if (!this.worldObj.isRemote) {
-			ItemStack itemstack = this.inputSlots.getStackInSlotOnClosing(0);
-			ItemStack bookstack = this.inputSlots.getStackInSlotOnClosing(1);
+			ItemStack itemstack = this.inputSlots.removeStackFromSlot(0);
+			ItemStack bookstack = this.inputSlots.removeStackFromSlot(1);
 
 			if (itemstack != null)
 				p.dropPlayerItemWithRandomChoice(itemstack, false);
@@ -194,8 +192,8 @@ public class ContainerDisenchantment extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer p) {
-		return this.worldObj.getBlock(this.posX, this.posY, this.posZ) != CommonProxy.disenchantmentTable ? false
-				: p.getDistanceSq((double) this.posX + 0.5D, (double) this.posY + 0.5D, (double) this.posZ + 0.5D) <= 64.0D;
+		return !this.worldObj.getBlockState(this.posBlock).getBlock().equals(CommonProxy.disenchantmentTable) ? false
+				: p.getDistanceSq((double) this.posBlock.getX() + 0.5D, (double) this.posBlock.getY() + 0.5D, (double) this.posBlock.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override

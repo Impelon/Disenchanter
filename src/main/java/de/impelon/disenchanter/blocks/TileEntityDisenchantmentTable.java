@@ -2,11 +2,19 @@ package de.impelon.disenchanter.blocks;
 
 import java.util.Random;
 
+import de.impelon.disenchanter.DisenchanterMain;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
+import net.minecraft.world.IInteractionObject;
 
-public class TileEntityDisenchantmentTable extends TileEntity {
+public class TileEntityDisenchantmentTable extends TileEntity implements ITickable, IInteractionObject {
 
 	public int tickCount;
 	public float pageFlip;
@@ -21,6 +29,7 @@ public class TileEntityDisenchantmentTable extends TileEntity {
 	private static Random random = new Random();
 	private String customName;
 
+	@Override
 	public void writeToNBT(NBTTagCompound nbtData) {
 		super.writeToNBT(nbtData);
 
@@ -28,25 +37,26 @@ public class TileEntityDisenchantmentTable extends TileEntity {
 			nbtData.setString("CustomName", this.customName);
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound nbtData) {
 		super.readFromNBT(nbtData);
 
 		if (nbtData.hasKey("CustomName", 8))
 			this.customName = nbtData.getString("CustomName");
 	}
-
-	public void updateEntity() {
-		super.updateEntity();
+	
+	@Override
+	public void update() {
 		this.bookSpreadPrev = this.bookSpread;
 		this.bookRotationPrev = this.bookRotation;
 		EntityPlayer entityplayer = this.worldObj.getClosestPlayer(
-				(double) this.xCoord + 0.5D,
-				(double) this.yCoord + 0.5D,
-				(double) this.zCoord + 0.5D, 3.0D);
+				(double) this.pos.getX() + 0.5D,
+				(double) this.pos.getY() + 0.5D,
+				(double) this.pos.getZ() + 0.5D, 3.0D);
 
 		if (entityplayer != null) {
-			double distanceX = entityplayer.posX - (this.xCoord + 0.5F);
-			double distanceZ = entityplayer.posZ - (this.zCoord + 0.5F);
+			double distanceX = entityplayer.posX - (this.pos.getX() + 0.5F);
+			double distanceZ = entityplayer.posZ - (this.pos.getZ() + 0.5F);
 			this.bookRotationChange = (float) Math.atan2(distanceZ, distanceX);
 			this.bookSpread += 0.1F;
 
@@ -111,6 +121,19 @@ public class TileEntityDisenchantmentTable extends TileEntity {
 
 	public void setCustomName(String customName) {
 		this.customName = customName;
+	}
+
+	public IChatComponent getDisplayName() {
+        return (IChatComponent)(this.hasCustomName() ? new ChatComponentText(this.getName()) : new ChatComponentTranslation(this.getName(), new Object[0]));
+    }
+
+    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+        return new ContainerDisenchantment(playerInventory, this.worldObj, this.pos);
+    }
+
+	@Override
+	public String getGuiID() {
+		return DisenchanterMain.MODID + ":disenchanting_table";
 	}
 
 }

@@ -2,47 +2,45 @@ package de.impelon.disenchanter.blocks;
 
 import java.util.Random;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import de.impelon.disenchanter.DisenchanterMain;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockEnchantmentTable;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
 public class BlockDisenchantmentTable extends BlockContainer {
-	
-    @SideOnly(Side.CLIENT)
-    private IIcon top;
-    @SideOnly(Side.CLIENT)
-    private IIcon bottom;
-
+    
 	public BlockDisenchantmentTable() {
 		super(Material.rock);
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.75F, 1.0F);
 		this.setLightOpacity(0);
 		this.setCreativeTab(CreativeTabs.tabDecorations);
-		this.setBlockName("blockDisenchantmentTable");
+		this.setUnlocalizedName("disenchantmentTable");
 		this.setHardness(5.0F);
 		this.setResistance(2000.0F);
 	}
 
-	@Override
-	public boolean renderAsNormalBlock() {
-		return false;
-	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World w, int x, int y, int z, Random random) {
-		super.randomDisplayTick(w, x, y, z, random);
+	public void randomDisplayTick(World w, BlockPos pos, IBlockState state, Random random) {
+		super.randomDisplayTick(w, pos, state, random);
+		
+		int x = pos.getX();
+		int y = pos.getY();
+		int z = pos.getZ();
 
 		for (int blockX = x - 2; blockX <= x + 2; ++blockX) {
 			for (int blockZ = z - 2; blockZ <= z + 2; ++blockZ) {
@@ -51,57 +49,54 @@ public class BlockDisenchantmentTable extends BlockContainer {
 
 				if (random.nextInt(16) == 0) {
 					for (int blockY = y; blockY <= y + 1; ++blockY) {
-						if (w.getBlock(blockX, blockY, blockZ) == Blocks.bookshelf) {
-							if (!w.isAirBlock((blockX - x) / 2 + x, blockY, (blockZ - z) / 2 + z))
+						if (w.getBlockState(new BlockPos(blockX, blockY, blockZ)).getBlock().equals(Blocks.bookshelf)) {
+							if (!w.isAirBlock(new BlockPos((blockX - x) / 2 + x, blockY, (blockZ - z) / 2 + z)))
 								break;
-
-							w.spawnParticle("enchantmenttable",
+							
+							w.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE,
 									(double) blockX + 0.25D,
 									(double) blockY + 0.55D,
 									(double) blockZ + 0.25D,
 									(double) (x - blockX) + 0.5D,
 									(double) (y - blockY) + (random.nextFloat() / 2) + 0.15D,
-									(double) (z - blockZ) + 0.5D);
+									(double) (z - blockZ) + 0.5D,
+									new int[0]);
 						}
 					}
 				}
 			}
 		}
 	}
+	
+	@Override
+	public boolean isFullCube() {
+        return false;
+    }
 
 	@Override
 	public boolean isOpaqueCube() {
 		return false;
 	}
-
+	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		return side == 0 ? this.bottom : (side == 1 ? this.top : this.blockIcon);
+	public int getRenderType() {
+		return 3;
 	}
 
 	@Override
-	public boolean onBlockActivated(World w, int x, int y, int z, EntityPlayer p,
-			int metadata, float sideX, float sideY, float sideZ) {
+	public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer p,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (!w.isRemote)
-			p.openGui(DisenchanterMain.instance, 0, w, x, y, z);
+			p.openGui(DisenchanterMain.instance, 0, w, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
 
 	@Override
-	public void onBlockPlacedBy(World w, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
-		super.onBlockPlacedBy(w, x, y, z, entity, stack);
+	public void onBlockPlacedBy(World w, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
+		super.onBlockPlacedBy(w, pos, state, entity, stack);
 
 		if (stack.hasDisplayName())
-			((TileEntityDisenchantmentTable) w.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister i) {
-		this.blockIcon = i.registerIcon("Disenchanter:disenchantment_side");
-		this.top = i.registerIcon("Disenchanter:disenchantment_top");
-		this.bottom = i.registerIcon("Disenchanter:disenchantment_bottom");
+			((TileEntityDisenchantmentTable) w.getTileEntity(pos)).setCustomName(stack.getDisplayName());
 	}
 	
 	@Override
