@@ -1,4 +1,4 @@
-package de.impelon.disenchanter.update;
+package de.impelon.update;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,10 +9,10 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import de.impelon.disenchanter.DisenchanterMain;
 
 public class VersionChecker implements Runnable {
@@ -25,7 +25,7 @@ public class VersionChecker implements Runnable {
 	public void run() {
 		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(new URL("https://cdn.rawgit.com/Impelon/Disenchanter/1.7.10/src/main/resources/mcmod.info").openStream(), "UTF-8"));
+			in = new BufferedReader(new InputStreamReader(new URL("https://cdn.rawgit.com/Impelon/Disenchanter/1.8.9/src/main/resources/mcmod.info").openStream(), "UTF-8"));
 			StringBuilder modinfo = new StringBuilder();
 			String ln;
 			while ((ln = in.readLine()) != null)
@@ -70,17 +70,17 @@ public class VersionChecker implements Runnable {
 	public void onEvent(PlayerTickEvent ev) {
 		if (ev.player.worldObj.isRemote) {
 			if (isLatestVersion()) {
-				FMLCommonHandler.instance().bus().unregister(this);
+				MinecraftForge.EVENT_BUS.unregister(this);
 				return;
 			}
 			ChatStyle linkStyle = new ChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getUrl()));
-			ChatComponentText warning = new ChatComponentText("Â§7[Â§6Â§lDisenchanterÂ§7] Â§r" +
-					new ChatComponentTranslation("msg.outdated.txt").getFormattedText() + " Â§o(" +
-					new ChatComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " Â§o" +
-					new ChatComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + ")");
+			ChatComponentText warning = new ChatComponentText("§7[§6§lDisenchanter§7] §r" +
+					new ChatComponentTranslation("msg.outdated.txt").getFormattedText() + " §o(" +
+					new ChatComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " §o" +
+					new ChatComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + "§o)");
 			warning.setChatStyle(linkStyle);
 			ev.player.addChatMessage(warning);
-			FMLCommonHandler.instance().bus().unregister(this);
+			MinecraftForge.EVENT_BUS.unregister(this);
 		}
 	}
 
