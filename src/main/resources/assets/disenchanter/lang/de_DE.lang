@@ -1,4 +1,4 @@
-tile.blockDisenchantmentTable.name=Entzauberungstisch
+tile.disenchantmentTable.name=Entzauberungstisch
 container.disenchant=Entzaubern
 msg.outdated.txt=Deine Version von Disenchanter ist veraltet. Klicke hier um die Website zu besuchen!
 msg.currentversion.txt=Jetzige Version: 
