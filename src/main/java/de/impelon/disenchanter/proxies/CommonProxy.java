@@ -1,27 +1,30 @@
 package de.impelon.disenchanter.proxies;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import de.impelon.disenchanter.DisenchanterMain;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import de.impelon.disenchanter.blocks.BlockDisenchantmentTable;
 import de.impelon.disenchanter.blocks.GUIHandler;
 import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
+import de.impelon.disenchanter.DisenchanterMain;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraft.network.NetworkManager;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 
 public class CommonProxy {
 	
 	public static final Block disenchantmentTable = new BlockDisenchantmentTable();
-	
+		
 	public void preInit(FMLPreInitializationEvent ev) {
 		Configuration config = new Configuration(ev.getSuggestedConfigurationFile());
 		DisenchanterMain.config = config;
@@ -36,23 +39,23 @@ public class CommonProxy {
 		
 		GameRegistry.registerTileEntity(TileEntityDisenchantmentTable.class, "TileDisentchantmentTable");
 		
-		GameRegistry.registerBlock(disenchantmentTable, "BlockDisenchantmentTable");
+		GameRegistry.registerBlock(disenchantmentTable, disenchantmentTable.getUnlocalizedName().substring(5));
 	}
 	
-	public void load(FMLInitializationEvent ev) {
+	public void load(FMLInitializationEvent ev) {	
 		if (DisenchanterMain.config.get("general", "CheckVersion", true).getBoolean())
-			FMLCommonHandler.instance().bus().register(DisenchanterMain.versionChecker);
+			MinecraftForge.EVENT_BUS.register(DisenchanterMain.versionChecker);
 		
-		cpw.mods.fml.common.network.NetworkRegistry.INSTANCE.registerGuiHandler(DisenchanterMain.instance, new GUIHandler());
+		NetworkRegistry.INSTANCE.registerGuiHandler(DisenchanterMain.instance, new GUIHandler());
 			
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1),
+		 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1),
 					"   ",
 					"YEY",
 					"ETE",
 					Character.valueOf('T'), Blocks.enchanting_table,
 					Character.valueOf('E'), Items.emerald,
 					Character.valueOf('Y'), "dyeYellow"
-		));
+			 ));
 	}
 	
 	public void postInit(FMLPostInitializationEvent ev) {}
