@@ -5,8 +5,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import de.impelon.disenchanter.DisenchanterMain;
-import de.impelon.disenchanter.blocks.RenderDisenchantmentTable;
 import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
+import de.impelon.disenchanter.gui.RenderDisenchantmentTable;
 
 public class CombinedClientProxy extends CommonProxy {
 	
