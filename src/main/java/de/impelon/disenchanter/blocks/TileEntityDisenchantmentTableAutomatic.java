@@ -222,6 +222,8 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	public boolean isItemValidForSlot(int slotID, ItemStack stack) {
 		if (slotID == 1)
 			return stack.getItem().equals(Items.book);
+		else if (slotID == 0)
+			return stack.getEnchantmentTagList() != null;
 		return true;
 	}
 
@@ -237,6 +239,8 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack stack, int side) {
+		if (slotID == 1)
+			return false;
 		return true;
 	}
 

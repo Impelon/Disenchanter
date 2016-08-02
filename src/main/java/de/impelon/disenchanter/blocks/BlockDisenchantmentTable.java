@@ -13,6 +13,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -93,8 +95,6 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		return side == 0 ? this.bottom : (side == 1 ? this.top : this.blockIcon);
 	}
 	
-	
-	
 	@Override
     @SideOnly(Side.CLIENT)
 	public int colorMultiplier(IBlockAccess access, int x, int y, int z) {
@@ -109,6 +109,18 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		if (meta == 1)
 			return 0x888888;
 		return super.getRenderColor(meta);
+	}
+	
+	@Override
+	public boolean hasComparatorInputOverride() {
+		return true;
+	}
+	@Override
+	public int getComparatorInputOverride(World w, int x, int y, int z, int side) {
+		TileEntity te = w.getTileEntity(x, y, z);
+		if (te instanceof TileEntityDisenchantmentTableAutomatic) 
+			return Container.calcRedstoneFromInventory((IInventory)te);
+		return 0;
 	}
 
 	@Override
