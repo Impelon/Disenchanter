@@ -82,7 +82,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	@Override
 	public boolean isFullCube() {
         return false;
-    }
+    	}
 
 	@Override
 	public boolean isOpaqueCube() {
