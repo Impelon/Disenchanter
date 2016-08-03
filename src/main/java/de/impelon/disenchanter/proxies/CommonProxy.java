@@ -34,6 +34,7 @@ public class CommonProxy {
 		config.get("disenchanting", "FlatDamage", 10, "How much flat damage should be dealt to Items when disenchanting?");
 		config.get("disenchanting", "MaxDurabilityDamage", 0.025, "How much of the Item's maximal durability should be dealt as damage to Items when disenchanting?");
 		config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2, "How much of the Item's maximal durability should be dealt as reduceable damage to Items when disenchanting?");
+		config.get("disenchanting", "MachineDamageMultiplier", 2.5, "By how much should the dammage on the item be multiplied when using an automaic Disenchantment Table?");
 		config.get("disenchanting", "EnchantmentLossChance", 0.0, "What should the probability be of additional enchantments being lost from Items when disenchanting?");
 
 		config.save();
@@ -62,13 +63,14 @@ public class CommonProxy {
 		
 		if (DisenchanterMain.config.get("general", "EnableAutomaticRecipe", true).getBoolean())
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 1),
-					"LLL",
+					"IMI",
 					"BCB",
-					"LTL",
+					"ITI",
 					Character.valueOf('T'), new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 0),
-					Character.valueOf('L'), "logWood",
+					Character.valueOf('I'), "ingotIron",
 					Character.valueOf('C'), Blocks.chest,
-					Character.valueOf('B'), "dyeBlack"
+					Character.valueOf('B'), "dyeBlack",
+					Character.valueOf('M'), Items.comparator
 			));
 	}
 	
