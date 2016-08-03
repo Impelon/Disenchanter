@@ -26,7 +26,7 @@ public class TileEntityDisenchantmentTable extends TileEntity implements ITickab
 	public float bookRotation;
 	public float bookRotationPrev;
 	public float bookRotationChange;
-	private static Random random = new Random();
+	protected static Random random = new Random();
 	private String customName;
 
 	@Override

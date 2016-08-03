@@ -1,5 +1,6 @@
 package de.impelon.disenchanter.blocks;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -8,19 +9,28 @@ import de.impelon.disenchanter.DisenchanterMain;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockEnchantmentTable;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockDisenchantmentTable extends BlockContainer {
+	
+	public static final PropertyBool AUTOMATIC = PropertyBool.create("automatic");
     
 	public BlockDisenchantmentTable() {
 		super(Material.rock);
@@ -30,6 +40,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		this.setUnlocalizedName("disenchantmentTable");
 		this.setHardness(5.0F);
 		this.setResistance(2000.0F);
+		this.setDefaultState(this.blockState.getBaseState().withProperty(AUTOMATIC, false));
 	}
 
 
@@ -82,6 +93,61 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	public int getRenderType() {
 		return 3;
 	}
+	
+	@Override
+	protected BlockState createBlockState() {
+	    return new BlockState(this, new IProperty[] { AUTOMATIC });
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta(int metadata) {
+	    return getDefaultState().withProperty(AUTOMATIC, metadata == 0 ? false : true);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+	    return state.getValue(AUTOMATIC) ? 1 : 0;
+	}
+	
+	@Override
+	public int damageDropped(IBlockState state) {
+	    return getMetaFromState(state);
+	}
+	
+	@Override
+	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+		subItems.add(new ItemStack(itemIn, 1, 0));
+		subItems.add(new ItemStack(itemIn, 1, 1));
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int colorMultiplier(IBlockAccess access, BlockPos pos, int pass) {
+		if (access.getBlockState(pos).getValue(AUTOMATIC) == true)
+			return 0x888888;
+		return super.colorMultiplier(access, pos, pass);
+	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+	public int getRenderColor(IBlockState state) {
+		if (state.getValue(AUTOMATIC) == true)
+			return 0x888888;
+		return super.getRenderColor(state);
+	}
+	
+	@Override
+	public boolean hasComparatorInputOverride() {
+		return true;
+	}
+	
+	@Override
+	public int getComparatorInputOverride(World w, BlockPos pos) {
+		TileEntity te = w.getTileEntity(pos);
+		if (te instanceof TileEntityDisenchantmentTableAutomatic) 
+			return Container.calcRedstone(te);
+		return 0;
+	}
 
 	@Override
 	public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer p,
@@ -98,9 +164,11 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		if (stack.hasDisplayName())
 			((TileEntityDisenchantmentTable) w.getTileEntity(pos)).setCustomName(stack.getDisplayName());
 	}
-	
+		
 	@Override
 	public TileEntity createNewTileEntity(World w, int metadata) {
+		if (metadata == 1)
+			return new TileEntityDisenchantmentTableAutomatic();
 		return new TileEntityDisenchantmentTable();
 	}
 
