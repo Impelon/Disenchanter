@@ -10,8 +10,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import de.impelon.disenchanter.blocks.BlockDisenchantmentTable;
-import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTableRenderer;
 import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
+import de.impelon.disenchanter.gui.TileEntityDisenchantmentTableRenderer;
 import de.impelon.disenchanter.DisenchanterMain;
 
 public class CombinedClientProxy extends CommonProxy {
@@ -28,6 +28,8 @@ public class CombinedClientProxy extends CommonProxy {
 		
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(
 				Item.getItemFromBlock(disenchantmentTable), 0, new ModelResourceLocation(DisenchanterMain.MODID + ":" + disenchantmentTable.getUnlocalizedName().substring(5), "inventory"));
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(
+				Item.getItemFromBlock(disenchantmentTable), 1, new ModelResourceLocation(DisenchanterMain.MODID + ":" + disenchantmentTable.getUnlocalizedName().substring(5), "inventory"));
 		
 	}
 	
