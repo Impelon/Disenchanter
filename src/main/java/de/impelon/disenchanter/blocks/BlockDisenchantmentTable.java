@@ -1,5 +1,6 @@
 package de.impelon.disenchanter.blocks;
 
+import java.util.List;
 import java.util.Random;
 
 import cpw.mods.fml.relauncher.Side;
@@ -12,9 +13,12 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockDisenchantmentTable extends BlockContainer {
@@ -38,7 +42,12 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	public boolean renderAsNormalBlock() {
 		return false;
 	}
-
+	
+	@Override
+	public int damageDropped (int metadata) {
+		return metadata;
+	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World w, int x, int y, int z, Random random) {
@@ -73,11 +82,45 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	public boolean isOpaqueCube() {
 		return false;
 	}
+	
+	@SideOnly(Side.CLIENT)
+	public void getSubBlocks(int unknown, CreativeTabs tab, List subItems) {
+		subItems.add(new ItemStack(this, 1, 0));
+		subItems.add(new ItemStack(this, 1, 1));
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
 		return side == 0 ? this.bottom : (side == 1 ? this.top : this.blockIcon);
+	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+	public int colorMultiplier(IBlockAccess access, int x, int y, int z) {
+		if (access.getBlockMetadata(x, y, z) == 1)
+			return 0x888888;
+		return super.colorMultiplier(access, x, y, z);
+	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+	public int getRenderColor(int meta) {
+		if (meta == 1)
+			return 0x888888;
+		return super.getRenderColor(meta);
+	}
+	
+	@Override
+	public boolean hasComparatorInputOverride() {
+		return true;
+	}
+	@Override
+	public int getComparatorInputOverride(World w, int x, int y, int z, int side) {
+		TileEntity te = w.getTileEntity(x, y, z);
+		if (te instanceof TileEntityDisenchantmentTableAutomatic) 
+			return Container.calcRedstoneFromInventory((IInventory)te);
+		return 0;
 	}
 
 	@Override
@@ -95,7 +138,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		if (stack.hasDisplayName())
 			((TileEntityDisenchantmentTable) w.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
 	}
-	
+		
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister i) {
@@ -106,6 +149,8 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	
 	@Override
 	public TileEntity createNewTileEntity(World w, int metadata) {
+		if (metadata == 1)
+			return new TileEntityDisenchantmentTableAutomatic();
 		return new TileEntityDisenchantmentTable();
 	}
 

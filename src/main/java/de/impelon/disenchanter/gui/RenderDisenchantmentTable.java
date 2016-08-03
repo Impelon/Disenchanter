@@ -1,4 +1,4 @@
-package de.impelon.disenchanter.blocks;
+package de.impelon.disenchanter.gui;
 
 import net.minecraft.client.model.ModelBook;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
 
 @SideOnly(Side.CLIENT)
 public class RenderDisenchantmentTable extends TileEntitySpecialRenderer {

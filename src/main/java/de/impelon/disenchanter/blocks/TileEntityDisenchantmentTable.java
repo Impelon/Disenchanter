@@ -18,9 +18,10 @@ public class TileEntityDisenchantmentTable extends TileEntity {
 	public float bookRotation;
 	public float bookRotationPrev;
 	public float bookRotationChange;
-	private static Random random = new Random();
+	protected static Random random = new Random();
 	private String customName;
-
+	
+	@Override
 	public void writeToNBT(NBTTagCompound nbtData) {
 		super.writeToNBT(nbtData);
 
@@ -28,6 +29,7 @@ public class TileEntityDisenchantmentTable extends TileEntity {
 			nbtData.setString("CustomName", this.customName);
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound nbtData) {
 		super.readFromNBT(nbtData);
 
@@ -35,6 +37,7 @@ public class TileEntityDisenchantmentTable extends TileEntity {
 			this.customName = nbtData.getString("CustomName");
 	}
 
+	@Override
 	public void updateEntity() {
 		super.updateEntity();
 		this.bookSpreadPrev = this.bookSpread;
@@ -87,7 +90,7 @@ public class TileEntityDisenchantmentTable extends TileEntity {
 		else if (this.bookSpread > 1.0F)
 			this.bookSpread = 1.0F;
 
-		++this.tickCount;
+		this.tickCount++;
 		this.pageFlipPrev = this.pageFlip;
 		float f = (this.pagesFlipping - this.pageFlip) * 0.4F;
 		float f3 = 0.2F;
@@ -112,5 +115,4 @@ public class TileEntityDisenchantmentTable extends TileEntity {
 	public void setCustomName(String customName) {
 		this.customName = customName;
 	}
-
 }
