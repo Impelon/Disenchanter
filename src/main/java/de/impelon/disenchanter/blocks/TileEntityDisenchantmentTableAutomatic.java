@@ -82,8 +82,9 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 				int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
 				double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
 				double reduceableDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2).getDouble();
+				double machineDmgMultiplier = DisenchanterMain.config.get("disenchanting", "MachineDamageMultiplier", 2.5).getDouble();
 				double enchantmentLoss = DisenchanterMain.config.get("disenchanting", "EnchantmentLossChance", 0.0).getDouble();
-				itemstack.attemptDamageItem((int) (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + itemstack.getMaxDamage() * (reduceableDmg / power)), random);
+				itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + itemstack.getMaxDamage() * (reduceableDmg / power))), random);
 				if (itemstack.getItemDamage() > itemstack.getMaxDamage()) {
 					this.setInventorySlotContents(0, (ItemStack) null);
 					return;
