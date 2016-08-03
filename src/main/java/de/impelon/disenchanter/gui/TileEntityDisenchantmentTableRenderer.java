@@ -1,4 +1,4 @@
-package de.impelon.disenchanter.blocks;
+package de.impelon.disenchanter.gui;
 
 import net.minecraft.client.model.ModelBook;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
