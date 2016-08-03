@@ -9,13 +9,13 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.proxies.CommonProxy;
-import de.impelon.update.VersionChecker;
+import de.impelon.disenchanter.update.VersionChecker;
 
-@Mod(modid="disenchanter", name="Disenchanter", version="1.2")
+@Mod(modid="disenchanter", name="Disenchanter", version="1.3")
 public class DisenchanterMain {
 	
 	public static final String MODID = "disenchanter";
-	public static final String VERSION = "1.2";
+	public static final String VERSION = "1.3";
 	public static final VersionChecker versionChecker = new VersionChecker();
 	public static Configuration config;
 	
