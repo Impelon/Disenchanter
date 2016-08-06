@@ -25,7 +25,7 @@ public class VersionChecker implements Runnable {
 	public void run() {
 		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(new URL("https://cdn.rawgit.com/Impelon/Disenchanter/1.7.10/src/main/resources/mcmod.info").openStream(), "UTF-8"));
+			in = new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/Impelon/Disenchanter/1.7.10/src/main/resources/mcmod.info").openStream(), "UTF-8"));
 			StringBuilder modinfo = new StringBuilder();
 			String ln;
 			while ((ln = in.readLine()) != null)
