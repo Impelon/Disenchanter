@@ -25,7 +25,7 @@ public class VersionChecker implements Runnable {
 	public void run() {
 		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(new URL("https://cdn.rawgit.com/Impelon/Disenchanter/1.8.9/src/main/resources/mcmod.info").openStream(), "UTF-8"));
+			in = new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/Impelon/Disenchanter/1.8.9/src/main/resources/mcmod.info").openStream(), "UTF-8"));
 			StringBuilder modinfo = new StringBuilder();
 			String ln;
 			while ((ln = in.readLine()) != null)
@@ -74,10 +74,10 @@ public class VersionChecker implements Runnable {
 				return;
 			}
 			ChatStyle linkStyle = new ChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getUrl()));
-			ChatComponentText warning = new ChatComponentText("§7[§6§lDisenchanter§7] §r" +
-					new ChatComponentTranslation("msg.outdated.txt").getFormattedText() + " §o(" +
-					new ChatComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " §o" +
-					new ChatComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + "§o)");
+			ChatComponentText warning = new ChatComponentText("Â§7[Â§6Â§lDisenchanterÂ§7] Â§r" +
+					new ChatComponentTranslation("msg.outdated.txt").getFormattedText() + " Â§o(" +
+					new ChatComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " Â§o" +
+					new ChatComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + "Â§o)");
 			warning.setChatStyle(linkStyle);
 			ev.player.addChatMessage(warning);
 			MinecraftForge.EVENT_BUS.unregister(this);
