@@ -156,14 +156,6 @@ public class BlockDisenchantmentTable extends BlockContainer {
 			p.openGui(DisenchanterMain.instance, 0, w, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
-	
-	@Override
-	public void breakBlock(World w, BlockPos pos, IBlockState state) {
-		TileEntity te = w.getTileEntity(pos);
-		if (te instanceof TileEntityDisenchantmentTableAutomatic)
-			InventoryHelper.dropInventoryItems(w, pos, (IInventory) te);
-		super.breakBlock(w, pos, state);
-	}
 
 	@Override
 	public void onBlockPlacedBy(World w, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
@@ -171,6 +163,14 @@ public class BlockDisenchantmentTable extends BlockContainer {
 
 		if (stack.hasDisplayName())
 			((TileEntityDisenchantmentTable) w.getTileEntity(pos)).setCustomName(stack.getDisplayName());
+	}
+	
+	@Override
+	public void breakBlock(World w, BlockPos pos, IBlockState state) {
+		TileEntity te = w.getTileEntity(pos);
+		if (te instanceof TileEntityDisenchantmentTableAutomatic)
+			InventoryHelper.dropInventoryItems(w, pos, (IInventory) te);
+		super.breakBlock(w, pos, state);
 	}
 		
 	@Override
