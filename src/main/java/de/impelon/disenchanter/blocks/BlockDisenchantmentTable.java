@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -17,6 +18,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -32,7 +35,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import de.impelon.disenchanter.DisenchanterMain;
 
-public class BlockDisenchantmentTable extends BlockContainer implements IBlockColor {
+public class BlockDisenchantmentTable extends BlockContainer {
     
     protected static final AxisAlignedBB AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.75D, 1.0D);
 	public static final PropertyBool AUTOMATIC = PropertyBool.create("automatic");
@@ -130,14 +133,6 @@ public class BlockDisenchantmentTable extends BlockContainer implements IBlockCo
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public int colorMultiplier(IBlockState state, IBlockAccess access, BlockPos pos, int tintIndex) {
-		if (state.getValue(AUTOMATIC) == true)
-			return 0x888888;
-		return 0xffffff;
-	}
-	
-	@Override
 	public boolean hasComparatorInputOverride(IBlockState state) {
 		return true;
 	}
@@ -169,8 +164,9 @@ public class BlockDisenchantmentTable extends BlockContainer implements IBlockCo
 	@Override
 	public void breakBlock(World w, BlockPos pos, IBlockState state) {
 		TileEntity te = w.getTileEntity(pos);
-		if (te instanceof TileEntityDisenchantmentTableAutomatic)
+		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
 			InventoryHelper.dropInventoryItems(w, pos, (IInventory) te);
+		}
 		super.breakBlock(w, pos, state);
 	}
 	

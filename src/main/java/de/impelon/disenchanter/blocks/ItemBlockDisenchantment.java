@@ -14,7 +14,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockDisenchantment extends ItemBlock implements IItemColor {
+public class ItemBlockDisenchantment extends ItemBlock {
 
 	public ItemBlockDisenchantment() {
 		super(CommonProxy.disenchantmentTable);
@@ -35,12 +35,5 @@ public class ItemBlockDisenchantment extends ItemBlock implements IItemColor {
 			l.add(new TextComponentTranslation("msg.automatic.txt")
 				.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
 	}
-		
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemstack(ItemStack stack, int tintIndex) {
-		if (stack.getItemDamage() == 1)
-			return 0x888888;
-		return 0xffffff;
-	}
+	
 }
