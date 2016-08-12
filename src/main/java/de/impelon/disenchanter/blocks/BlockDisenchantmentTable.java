@@ -138,6 +138,42 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		if (stack.hasDisplayName())
 			((TileEntityDisenchantmentTable) w.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
 	}
+	
+	@Override
+	public void breakBlock(World w, int x, int y, int z, Block b, int meta) {
+		TileEntity te = w.getTileEntity(x, y, z);
+		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
+			TileEntityDisenchantmentTableAutomatic ta = (TileEntityDisenchantmentTableAutomatic) te;
+			
+			for (int i1 = 0; i1 < ta.getSizeInventory(); ++i1) {
+				ItemStack itemstack = ta.getStackInSlot(i1);
+
+                		if (itemstack != null) {
+	                		float f = (float) (Math.random() * 0.8F + 0.1F);
+		                    	float f1 = (float) (Math.random() * 0.8F + 0.1F);
+		                    	EntityItem entityitem;
+		
+		                    	for (float f2 = (float) (Math.random() * 0.8F + 0.1F); itemstack.stackSize > 0; w.spawnEntityInWorld(entityitem)) {
+		                        	int j1 = (int) (Math.random() * 21 + 10);
+		
+		                        	if (j1 > itemstack.stackSize)
+		                            		j1 = itemstack.stackSize;
+		
+		                        	itemstack.stackSize -= j1;
+		                		entityitem = new EntityItem(w, (double)((float)x + f), (double)((float)y + f1), (double)((float)z + f2), new ItemStack(itemstack.getItem(), j1, itemstack.getItemDamage()));
+		                        	float f3 = 0.05F;
+		                        	entityitem.motionX = (double)((float)Math.random() * f3);
+		                        	entityitem.motionY = (double)((float)Math.random() * f3 + 0.2F);
+		                        	entityitem.motionZ = (double)((float)Math.random() * f3);
+		
+		                        	if (itemstack.hasTagCompound())
+		                            		entityitem.getEntityItem().setTagCompound((NBTTagCompound)itemstack.getTagCompound().copy());
+		                    	}
+	                	}
+	            	}
+		}
+		super.breakBlock(w, x, y, z, b, meta);
+	}
 		
 	@Override
 	@SideOnly(Side.CLIENT)
