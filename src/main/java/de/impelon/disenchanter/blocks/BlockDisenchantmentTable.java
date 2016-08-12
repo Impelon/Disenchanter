@@ -167,6 +167,14 @@ public class BlockDisenchantmentTable extends BlockContainer implements IBlockCo
 	}
 	
 	@Override
+	public void breakBlock(World w, BlockPos pos, IBlockState state) {
+		TileEntity te = w.getTileEntity(pos);
+		if (te instanceof TileEntityDisenchantmentTableAutomatic)
+			InventoryHelper.dropInventoryItems(w, pos, (IInventory) te);
+		super.breakBlock(w, pos, state);
+	}
+	
+	@Override
 	public TileEntity createNewTileEntity(World w, int metadata) {
 		if (metadata == 1)
 			return new TileEntityDisenchantmentTableAutomatic();
