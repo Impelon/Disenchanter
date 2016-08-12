@@ -19,6 +19,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -82,7 +84,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	@Override
 	public boolean isFullCube() {
         return false;
-    	}
+    }
 
 	@Override
 	public boolean isOpaqueCube() {
@@ -168,8 +170,9 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	@Override
 	public void breakBlock(World w, BlockPos pos, IBlockState state) {
 		TileEntity te = w.getTileEntity(pos);
-		if (te instanceof TileEntityDisenchantmentTableAutomatic)
+		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
 			InventoryHelper.dropInventoryItems(w, pos, (IInventory) te);
+		}
 		super.breakBlock(w, pos, state);
 	}
 		
