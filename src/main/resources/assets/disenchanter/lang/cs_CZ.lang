@@ -1,0 +1,6 @@
+﻿tile.blockDisenchantmentTable.name=Odčarovávací stůl
+container.disenchant=Odčarování
+msg.automatic.txt=automaticky
+msg.outdated.txt=Vaše verze Disenchanter je zastaralá. Klikněte zde pro návštěvu webu!
+msg.currentversion.txt=současná verze: 
+msg.latestversion.txt=poslední verze: 
