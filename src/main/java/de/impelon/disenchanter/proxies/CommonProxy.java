@@ -36,6 +36,7 @@ public class CommonProxy {
 		config.load();
 		
 		config.get("general", "CheckVersion", true, "Should Disenchanter check for new versions on startup?");
+		config.get("general", "EnableAutomaticRecipe", true, "Should the recipe for the automatic Disenchantment Table be avalible?");
 		config.get("disenchanting", "FlatDamage", 10, "How much flat damage should be dealt to Items when disenchanting?");
 		config.get("disenchanting", "MaxDurabilityDamage", 0.025, "How much of the Item's maximal durability should be dealt as damage to Items when disenchanting?");
 		config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2, "How much of the Item's maximal durability should be dealt as reduceable damage to Items when disenchanting?");
