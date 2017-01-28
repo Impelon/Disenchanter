@@ -26,8 +26,8 @@ public class CombinedClientProxy extends CommonProxy {
 	@Override
 	public void preInit(FMLPreInitializationEvent ev) {
 		super.preInit(ev);
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), 0, new ModelResourceLocation(DisenchanterMain.MODID + ":" + disenchantmentTable.getUnlocalizedName().substring(5), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), 1, new ModelResourceLocation(DisenchanterMain.MODID + ":" + disenchantmentTable.getUnlocalizedName().substring(5), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), 0, new ModelResourceLocation(disenchantmentTable.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), 1, new ModelResourceLocation(disenchantmentTable.getRegistryName(), "inventory"));
 	}
 	
 	@Override

@@ -1,4 +1,4 @@
-package de.impelon.update;
+package de.impelon.disenchanter.update;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class VersionChecker implements Runnable {
 	
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
 	public void onEvent(PlayerTickEvent ev) {
-		if (ev.player.worldObj.isRemote) {
+		if (ev.player.world.isRemote) {
 			if (isLatestVersion()) {
 				MinecraftForge.EVENT_BUS.unregister(this);
 				return;
@@ -79,7 +79,7 @@ public class VersionChecker implements Runnable {
 					new TextComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " §o" +
 					new TextComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + "§o)");
 			warning.setStyle(linkStyle);
-			ev.player.addChatMessage(warning);
+			ev.player.sendStatusMessage(warning, false);
 			MinecraftForge.EVENT_BUS.unregister(this);
 		}
 	}

@@ -39,8 +39,8 @@ public class TileEntityDisenchantmentTableRenderer extends TileEntitySpecialRend
 		this.bindTexture(bookResource);
 		float f4 = tileentity.pageFlipPrev + (tileentity.pageFlip - tileentity.pageFlipPrev) * partialTicks + 0.25F;
 		float f5 = f4 + 0.5F;
-		f4 = (f4 - (float) MathHelper.truncateDoubleToInt(f4)) * 1.6F - 0.3F;
-		f5 = (f5 - (float) MathHelper.truncateDoubleToInt(f5)) * 1.6F - 0.3F;
+		f4 = (f4 - (float) MathHelper.fastFloor(f4)) * 1.6F - 0.3F;
+		f5 = (f5 - (float) MathHelper.fastFloor(f5)) * 1.6F - 0.3F;
 
 		if (f4 < 0.0F)
 			f4 = 0.0F;

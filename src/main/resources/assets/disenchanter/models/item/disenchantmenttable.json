@@ -1,5 +1,5 @@
 {
-    "parent": "disenchanter:block/disenchantmentTable",
+    "parent": "disenchanter:block/disenchantmenttable",
     "display": {
         "thirdperson": {
             "rotation": [ 10, -45, 170 ],

@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "normal": { "model": "disenchanter:disenchantmenttable" },
+        "automatic=true": { "model": "disenchanter:disenchantmenttable" },
+        "automatic=false": { "model": "disenchanter:disenchantmenttable" }
+    }
+}
