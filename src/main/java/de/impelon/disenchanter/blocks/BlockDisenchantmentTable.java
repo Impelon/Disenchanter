@@ -27,6 +27,7 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -127,7 +128,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	}
 	
 	@Override
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+	public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		subItems.add(new ItemStack(itemIn, 1, 0));
 		subItems.add(new ItemStack(itemIn, 1, 1));
 	}
@@ -147,7 +148,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 
 	@Override
 	public boolean onBlockActivated(World w, BlockPos pos, IBlockState state, EntityPlayer p, EnumHand hand, 
-			@Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (!w.isRemote)
 			p.openGui(DisenchanterMain.instance, 0, w, pos.getX(), pos.getY(), pos.getZ());
 		return true;

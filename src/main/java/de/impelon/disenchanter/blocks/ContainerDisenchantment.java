@@ -72,18 +72,18 @@ public class ContainerDisenchantment extends Container {
 			}
 
 			@Override
-			public void onPickupFromSlot(EntityPlayer p, ItemStack stack) {
+			public ItemStack onTake(EntityPlayer p, ItemStack stack) {
 				if (tileentity != null)
-					return;
+					return stack;
 				
 				ItemStack itemstack = slots.getStackInSlot(0);
 				ItemStack bookstack = slots.getStackInSlot(1);
 
-				if (itemstack != null && bookstack != null) {
-					if (bookstack.stackSize > 1)
-						bookstack.stackSize -= 1;
+				if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY) {
+					if (bookstack.getCount() > 1)
+						bookstack.setCount(bookstack.getCount() - 1);
 					else
-						bookstack = (ItemStack) null;
+						bookstack = ItemStack.EMPTY;
 					slots.setInventorySlotContents(1, bookstack);
 
 					int power = 1;
@@ -111,10 +111,10 @@ public class ContainerDisenchantment extends Container {
 					double enchantmentLoss = DisenchanterMain.config.get("disenchanting", "EnchantmentLossChance", 0.0).getDouble();
 					itemstack.attemptDamageItem((int) (10 + itemstack.getMaxDamage() * 0.025 + itemstack.getMaxDamage() * (0.2 / power)), random);
 					if (itemstack.getItemDamage() > itemstack.getMaxDamage()) {
-						slots.setInventorySlotContents(0, (ItemStack) null);
-						return;
+						slots.setInventorySlotContents(0, ItemStack.EMPTY);
+						return itemstack;
 					}
-					if (itemstack != null && itemstack.getTagCompound() != null) {
+					if (itemstack != ItemStack.EMPTY && itemstack.getTagCompound() != null) {
 						NBTTagList enchants = null;
 						if (itemstack.getTagCompound().getTag("ench") != null) {
 							enchants = (NBTTagList) itemstack.getTagCompound().getTag("ench");
@@ -136,6 +136,7 @@ public class ContainerDisenchantment extends Container {
 						}
 					}
 				}
+				return stack;
 			}
 
 		});
@@ -167,7 +168,7 @@ public class ContainerDisenchantment extends Container {
 			ItemStack itemstack = this.slots.getStackInSlot(0);
 			ItemStack bookstack = this.slots.getStackInSlot(1);
 
-			if (itemstack != null && bookstack != null
+			if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY
 					&& itemstack.getTagCompound() != null) {
 				NBTTagList enchants = null;
 				if (itemstack.getTagCompound().getTag("ench") != null)
@@ -175,8 +176,8 @@ public class ContainerDisenchantment extends Container {
 				else if (itemstack.getTagCompound().getTag("StoredEnchantments") != null)
 					enchants = (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
 				else {
-					if (this.slots.getStackInSlot(2) != null)
-						this.slots.setInventorySlotContents(2, (ItemStack) null);
+					if (this.slots.getStackInSlot(2) != ItemStack.EMPTY)
+						this.slots.setInventorySlotContents(2, ItemStack.EMPTY);
 					return;
 				}
 
@@ -188,14 +189,14 @@ public class ContainerDisenchantment extends Container {
 					ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
 					Items.ENCHANTED_BOOK.addEnchantment(outputBookstack, new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
 
-					if (!(this.slots.getStackInSlot(2) != null && 
+					if (!(this.slots.getStackInSlot(2) != ItemStack.EMPTY && 
 							this.slots.getStackInSlot(2).getItem() == Items.ENCHANTED_BOOK && 
 							this.slots.getStackInSlot(2).getTagCompound().getTag("StoredEnchantments").equals(outputBookstack.getTagCompound().getTag("StoredEnchantments"))))
 					this.slots.setInventorySlotContents(2, (ItemStack) outputBookstack);
 				}
 			} else {
-				if (this.slots.getStackInSlot(2) != null)
-					this.slots.setInventorySlotContents(2, (ItemStack) null);
+				if (this.slots.getStackInSlot(2) != ItemStack.EMPTY)
+					this.slots.setInventorySlotContents(2, ItemStack.EMPTY);
 			}
 		}
 	}
@@ -209,9 +210,9 @@ public class ContainerDisenchantment extends Container {
 				ItemStack itemstack = this.slots.removeStackFromSlot(0);
 				ItemStack bookstack = this.slots.removeStackFromSlot(1);
 	
-				if (itemstack != null)
+				if (itemstack != ItemStack.EMPTY)
 					p.dropItem(itemstack, false);
-				if (bookstack != null)
+				if (bookstack != ItemStack.EMPTY)
 					p.dropItem(bookstack, false);
 			}
 		}
@@ -225,10 +226,10 @@ public class ContainerDisenchantment extends Container {
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer p, int slotID) {
-		if (p.worldObj.isRemote)
-			return null;
-		ItemStack itemstackPrev = null;
-		ItemStack itemstack = null;
+		if (p.world.isRemote)
+			return ItemStack.EMPTY;
+		ItemStack itemstackPrev = ItemStack.EMPTY;
+		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = (Slot) this.inventorySlots.get(slotID);
 
 		if (slot != null && slot.getHasStack()) {
@@ -237,34 +238,34 @@ public class ContainerDisenchantment extends Container {
 
 			if (slotID == 2) {
 				if (!this.mergeItemStack(itemstack, 3, 39, true))
-					return null;
+					return ItemStack.EMPTY;
 				slot.onSlotChange(itemstack, itemstackPrev);
 			} else if (slotID != 0 && slotID != 1) {
 				ItemStack i = itemstack.splitStack(1);
 				if (i.getItem().equals(Items.BOOK)) {
 					if (((Slot) this.inventorySlots.get(1)).getHasStack() || !this.mergeItemStack(i, 1, 2, false)) {
-						itemstack.stackSize++;
-						return null;
+						itemstack.setCount(itemstack.getCount()+1);
+						return ItemStack.EMPTY;
 					}
 				} else {
 					if (((Slot) this.inventorySlots.get(0)).getHasStack() || !this.mergeItemStack(i, 0, 1, false)) {
-						itemstack.stackSize++;
-						return null;
+						itemstack.setCount(itemstack.getCount()+1);
+						return ItemStack.EMPTY;
 					}
 				}
 			} else if (!this.mergeItemStack(itemstack, 3, 39, true)) {
-				return null;
+				return ItemStack.EMPTY;
 			}
 			
-			if (itemstack.stackSize <= 0)
-				slot.putStack((ItemStack) null);
+			if (itemstack.getCount() <= 0)
+				slot.putStack(ItemStack.EMPTY);
 			else
 				slot.onSlotChanged();
 
-			if (itemstack.stackSize == itemstackPrev.stackSize)
-				return null;
+			if (itemstack.getCount() == itemstackPrev.getCount())
+				return ItemStack.EMPTY;
 
-			slot.onPickupFromSlot(p, itemstack);
+			slot.onTake(p, itemstack);
 		}
 
 		return itemstack;

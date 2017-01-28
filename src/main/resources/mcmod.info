@@ -4,7 +4,7 @@
   "name": "Disenchanter",
   "description": "A small Mod adding a block to disenchant Items",
   "version": "1.4",
-  "mcversion": "1.9.4",
+  "mcversion": "1.11",
   "url": "http://minecraft.curseforge.com/projects/the-disenchanter-mod",
   "updateUrl": "",
   "authorList": ["Impelon"],

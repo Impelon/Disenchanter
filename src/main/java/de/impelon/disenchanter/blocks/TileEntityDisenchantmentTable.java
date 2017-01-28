@@ -51,7 +51,7 @@ public class TileEntityDisenchantmentTable extends TileEntity implements ITickab
 	public void update() {
 		this.bookSpreadPrev = this.bookSpread;
 		this.bookRotationPrev = this.bookRotation;
-		EntityPlayer entityplayer = this.worldObj.getClosestPlayer(
+		EntityPlayer entityplayer = this.world.getClosestPlayer(
 				(double) this.pos.getX() + 0.5D,
 				(double) this.pos.getY() + 0.5D,
 				(double) this.pos.getZ() + 0.5D, 3.0D,
@@ -131,7 +131,7 @@ public class TileEntityDisenchantmentTable extends TileEntity implements ITickab
     }
 
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
-        return new ContainerDisenchantment(playerInventory, this.worldObj, this.pos);
+        return new ContainerDisenchantment(playerInventory, this.world, this.pos);
     }
 
 	@Override

@@ -1,10 +1,10 @@
 {   
     "parent": "block/block",
     "textures": {
-        "particle": "disenchanter:blocks/disenchantmentTable_bottom",
-        "bottom": "disenchanter:blocks/disenchantmentTable_bottom",
-        "top": "disenchanter:blocks/disenchantmentTable_top",
-        "side": "disenchanter:blocks/disenchantmentTable_side"
+        "particle": "disenchanter:blocks/disenchantmenttable_bottom",
+        "bottom": "disenchanter:blocks/disenchantmenttable_bottom",
+        "top": "disenchanter:blocks/disenchantmenttable_top",
+        "side": "disenchanter:blocks/disenchantmenttable_side"
     },
     "elements": [
         {   "from": [ 0, 0, 0 ],

@@ -11,12 +11,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.ForgeHooks;
 
 public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchantmentTable implements ISidedInventory {
 
-	private ItemStack[] disenchantmentTableContent = new ItemStack[this.getSizeInventory()];
+	private NonNullList<ItemStack> disenchantmentTableContent = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
 	private int[] accessible = new int[this.getSizeInventory()];
 	
 	public TileEntityDisenchantmentTableAutomatic() {
@@ -25,12 +26,12 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	}
 	
 	public void disenchant() {
-		if (this.getStackInSlot(2) != null)
+		if (this.getStackInSlot(2) != ItemStack.EMPTY)
 			return;
 		ItemStack itemstack = this.getStackInSlot(0);
 		ItemStack bookstack = this.getStackInSlot(1);
 
-		if (itemstack != null && bookstack != null) {
+		if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY) {
 			if (itemstack.getTagCompound() != null) {
 				NBTTagList enchants = null;
 				if (itemstack.getTagCompound().getTag("ench") != null)
@@ -38,7 +39,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 				else if (itemstack.getTagCompound().getTag("StoredEnchantments") != null)
 					enchants = (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
 				else {
-					this.setInventorySlotContents(2, (ItemStack) null);
+					this.setInventorySlotContents(2, ItemStack.EMPTY);
 					return;
 				}
 				
@@ -52,29 +53,29 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 
 					this.setInventorySlotContents(2, (ItemStack) outputBookstack);
 				} else {
-					this.setInventorySlotContents(2, (ItemStack) null);
+					this.setInventorySlotContents(2, ItemStack.EMPTY);
 					return;
 				}
 
-				if (bookstack.stackSize > 1)
-					bookstack.stackSize -= 1;
+				if (bookstack.getCount() > 1)
+					bookstack.setCount(bookstack.getCount() - 1);
 				else
-					bookstack = (ItemStack) null;
+					bookstack = ItemStack.EMPTY;
 				this.setInventorySlotContents(1, bookstack);
 				
 				int power = 1;
 				for (int blockZ = -1; blockZ <= 1; ++blockZ) {
 					for (int blockX = -1; blockX <= 1; ++blockX) {
-						if ((blockZ != 0 || blockX != 0) && worldObj.isAirBlock(new BlockPos(pos.getX() + blockX, pos.getY(), pos.getZ() + blockZ))
-								&& worldObj.isAirBlock(new BlockPos(pos.getX() + blockX, pos.getY() + 1, pos.getZ() + blockZ))) {
-							power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX * 2, pos.getY(), pos.getZ() + blockZ * 2));
-							power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX * 2, pos.getY() + 1, pos.getZ() + blockZ * 2));
+						if ((blockZ != 0 || blockX != 0) && world.isAirBlock(new BlockPos(pos.getX() + blockX, pos.getY(), pos.getZ() + blockZ))
+								&& world.isAirBlock(new BlockPos(pos.getX() + blockX, pos.getY() + 1, pos.getZ() + blockZ))) {
+							power += ForgeHooks.getEnchantPower(world, new BlockPos(pos.getX() + blockX * 2, pos.getY(), pos.getZ() + blockZ * 2));
+							power += ForgeHooks.getEnchantPower(world, new BlockPos(pos.getX() + blockX * 2, pos.getY() + 1, pos.getZ() + blockZ * 2));
 
 							if (blockX != 0 && blockZ != 0) {
-								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX * 2, pos.getY(), pos.getZ() + blockZ));
-								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX * 2, pos.getY() + 1, pos.getZ() + blockZ));
-								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX, pos.getY(), pos.getZ() + blockZ * 2));
-								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX, pos.getY() + 1, pos.getZ() + blockZ * 2));
+								power += ForgeHooks.getEnchantPower(world, new BlockPos(pos.getX() + blockX * 2, pos.getY(), pos.getZ() + blockZ));
+								power += ForgeHooks.getEnchantPower(world, new BlockPos(pos.getX() + blockX * 2, pos.getY() + 1, pos.getZ() + blockZ));
+								power += ForgeHooks.getEnchantPower(world, new BlockPos(pos.getX() + blockX, pos.getY(), pos.getZ() + blockZ * 2));
+								power += ForgeHooks.getEnchantPower(world, new BlockPos(pos.getX() + blockX, pos.getY() + 1, pos.getZ() + blockZ * 2));
 							}
 						}
 					}
@@ -89,10 +90,10 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 				double enchantmentLoss = DisenchanterMain.config.get("disenchanting", "EnchantmentLossChance", 0.0).getDouble();
 				itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + itemstack.getMaxDamage() * (reduceableDmg / power))), random);
 				if (itemstack.getItemDamage() > itemstack.getMaxDamage()) {
-					this.setInventorySlotContents(0, (ItemStack) null);
+					this.setInventorySlotContents(0, ItemStack.EMPTY);
 					return;
 				}
-				if (itemstack != null && itemstack.getTagCompound() != null) {
+				if (itemstack != ItemStack.EMPTY && itemstack.getTagCompound() != null) {
 					enchants = null;
 					if (itemstack.getTagCompound().getTag("ench") != null) {
 						enchants = (NBTTagList) itemstack.getTagCompound().getTag("ench");
@@ -121,14 +122,14 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	public void readFromNBT(NBTTagCompound nbtData) {
 		super.readFromNBT(nbtData);
 		NBTTagList nbttaglist = nbtData.getTagList("Items", 10);
-        this.disenchantmentTableContent = new ItemStack[this.getSizeInventory()];
+        this.disenchantmentTableContent = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
 
         for (int n = 0; n < nbttaglist.tagCount(); n++) {
             NBTTagCompound nbtTagCompound = nbttaglist.getCompoundTagAt(n);
             byte b = nbtTagCompound.getByte("Slot");
 
-            if (b >= 0 && b < this.disenchantmentTableContent.length)
-            	this.disenchantmentTableContent[b] = ItemStack.loadItemStackFromNBT(nbtTagCompound);
+            if (b >= 0 && b < this.disenchantmentTableContent.size())
+            	this.disenchantmentTableContent.set(b, new ItemStack(nbtTagCompound));
         }
 	}
 	
@@ -138,11 +139,11 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 		
 		NBTTagList nbttaglist = new NBTTagList();
 
-        for (int n = 0; n < this.disenchantmentTableContent.length; n++) {
-            if (this.disenchantmentTableContent[n] != null) {
+        for (int n = 0; n < this.disenchantmentTableContent.size(); n++) {
+            if (this.disenchantmentTableContent.get(n) != ItemStack.EMPTY) {
                 NBTTagCompound nbtTagCompound = new NBTTagCompound();
                 nbtTagCompound.setByte("Slot", (byte) n);
-                this.disenchantmentTableContent[n].writeToNBT(nbtTagCompound);
+                this.disenchantmentTableContent.get(n).writeToNBT(nbtTagCompound);
                 nbttaglist.appendTag(nbtTagCompound);
             }
         }
@@ -166,17 +167,17 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 
 	@Override
 	public ItemStack getStackInSlot(int slotID) {
-		return this.disenchantmentTableContent[slotID];
+		return this.disenchantmentTableContent.get(slotID);
 	}
 
 	@Override
 	public ItemStack decrStackSize(int slotID, int count) {
-		if (this.disenchantmentTableContent[slotID] != null) {
-			ItemStack stack = this.disenchantmentTableContent[slotID];
-			if (this.disenchantmentTableContent[slotID].stackSize < count)
+		if (this.disenchantmentTableContent.get(slotID) != ItemStack.EMPTY) {
+			ItemStack stack = this.disenchantmentTableContent.get(slotID);
+			if (this.disenchantmentTableContent.get(slotID).getCount() < count)
 				return removeStackFromSlot(slotID);
-			else if (this.disenchantmentTableContent[slotID].stackSize == count)
-				this.disenchantmentTableContent[slotID] = null;
+			else if (this.disenchantmentTableContent.get(slotID).getCount() == count)
+				this.disenchantmentTableContent.set(slotID, ItemStack.EMPTY);
 			return stack.splitStack(count);
 		}
 		return null;
@@ -184,17 +185,17 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	
 	@Override
 	public ItemStack removeStackFromSlot(int slotID) {
-		ItemStack stack = this.disenchantmentTableContent[slotID];
-		this.disenchantmentTableContent[slotID] = null;
+		ItemStack stack = this.disenchantmentTableContent.get(slotID);
+		this.disenchantmentTableContent.set(slotID, ItemStack.EMPTY);
 		return stack;
 	}
 
 	@Override
 	public void setInventorySlotContents(int slotID, ItemStack stack) {
-		this.disenchantmentTableContent[slotID] = stack;
+		this.disenchantmentTableContent.set(slotID, stack);
 
-	     if (stack != null && stack.stackSize > getInventoryStackLimit())
-	    	 stack.stackSize = this.getInventoryStackLimit();
+	     if (stack != ItemStack.EMPTY && stack.getCount() > getInventoryStackLimit())
+	    	 stack.setCount(this.getInventoryStackLimit());
 	}
 
 	@Override
@@ -203,8 +204,8 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer p) {
-		return !this.worldObj.getBlockState(this.pos).getBlock().equals(CommonProxy.disenchantmentTable) ? false
+	public boolean isUsableByPlayer(EntityPlayer p) {
+		return !this.world.getBlockState(this.pos).getBlock().equals(CommonProxy.disenchantmentTable) ? false
 				: p.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
@@ -255,8 +256,14 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 
 	@Override
 	public void clear() {
-		for (int n = 0; n < this.disenchantmentTableContent.length; n++)
+		for (int n = 0; n < this.disenchantmentTableContent.size(); n++)
 	        this.setInventorySlotContents(n, null);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
