@@ -10,11 +10,12 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import de.impelon.disenchanter.proxies.CommonProxy;
 import de.impelon.disenchanter.update.VersionChecker;
 
-@Mod(modid = "DisenchanterMod", name = "Disenchanter", version = "1.4")
+@Mod(modid = "DisenchanterMod", name = "Disenchanter", version = "1.5")
 public class DisenchanterMain {
 
 	public static final String MODID = "DisenchanterMod";
-	public static final String VERSION = "1.4";
+	public static final String VERSION = "1.5";
+	public static final String PREFIX = "§7[§6§lDisenchanter§7] §r";
 	public static final VersionChecker versionChecker = new VersionChecker();
 	public static Configuration config;
 
