@@ -1,4 +1,4 @@
-tile.blockDisenchantmentTable.name=Odčarovávací stůl
+﻿tile.blockDisenchantmentTable.name=Odčarovávací stůl
 container.disenchant=Odčarování
 msg.automatic.txt=automaticky
 msg.outdated.txt=Vaše verze Disenchanter je zastaralá. Klikněte zde pro návštěvu webu!
