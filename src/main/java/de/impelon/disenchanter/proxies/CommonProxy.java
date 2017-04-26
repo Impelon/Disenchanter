@@ -10,6 +10,7 @@ import de.impelon.disenchanter.blocks.BlockDisenchantmentTable;
 import de.impelon.disenchanter.blocks.ItemBlockDisenchantment;
 import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
 import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTableAutomatic;
+import de.impelon.disenchanter.blocks.UpgradeTableRecipe;
 import de.impelon.disenchanter.gui.GUIHandler;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -58,7 +59,7 @@ public class CommonProxy {
 		
 		cpw.mods.fml.common.network.NetworkRegistry.INSTANCE.registerGuiHandler(DisenchanterMain.instance, new GUIHandler());
 		
-		ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), OreDictionary.WILDCARD_VALUE);
+		ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, OreDictionary.WILDCARD_VALUE);
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 0),
 					"   ",
@@ -70,7 +71,7 @@ public class CommonProxy {
 		));
 		
 		if (DisenchanterMain.config.get("general", "EnableAutomaticRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, table.getItemDamage() + 3 % 8),
+			GameRegistry.addRecipe(new UpgradeTableRecipe(1, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 1),
 					"IMI",
 					"BCB",
 					"ITI",
@@ -81,37 +82,37 @@ public class CommonProxy {
 					Character.valueOf('M'), Items.comparator
 		));
 		
+		if (DisenchanterMain.config.get("general", "EnableBulkDisenchantingRecipe", true).getBoolean())
+			GameRegistry.addRecipe(new UpgradeTableRecipe(2, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 2),
+					"QGQ",
+					"GDG",
+					"QTQ",
+					Character.valueOf('T'), table,
+					Character.valueOf('D'), "gemDiamond",
+					Character.valueOf('Q'), "gemQuartz",
+					Character.valueOf('G'), "ingotGold"
+		));
+		
 		if (DisenchanterMain.config.get("general", "EnableVoidingRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 1),
+			GameRegistry.addRecipe(new UpgradeTableRecipe(4, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 4),
 					"POP",
 					"EHE",
 					"PTP",
-					Character.valueOf('T'), new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 0),
+					Character.valueOf('T'), table,
 					Character.valueOf('E'), Items.ender_pearl,
 					Character.valueOf('H'), Blocks.hopper,
 					Character.valueOf('P'), "dyePurple",
 					Character.valueOf('O'), Blocks.obsidian
 		));
 		
-		if (DisenchanterMain.config.get("general", "EnableBulkDisenchantingRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 1),
-					"QGQ",
-					"GDG",
-					"QTQ",
-					Character.valueOf('T'), new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 0),
-					Character.valueOf('D'), "gemDiamond",
-					Character.valueOf('Q'), "gemQuartz",
-					Character.valueOf('G'), "ingotGold"
-		));
-		
 		if (DisenchanterMain.config.get("general", "EnableClearRecipe", true).getBoolean())
-			GameRegistry.addShapedRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 0),
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 0),
 					"PPP",
 					"PTP",
 					"PPP",
 					Character.valueOf('T'), table,
 					Character.valueOf('P'), Items.paper
-		);
+		));
 	}
 	
 	public void postInit(FMLPostInitializationEvent ev) {}
