@@ -116,7 +116,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	}
 	
 	public boolean isVoiding(int meta) {
-		return (meta / 4) == 1;
+		return (meta / 4) % 2 == 1;
 	}
 	
 	@Override
