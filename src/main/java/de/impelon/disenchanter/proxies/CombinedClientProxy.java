@@ -19,18 +19,17 @@ public class CombinedClientProxy extends CommonProxy {
 	@Override
 	public void preInit(FMLPreInitializationEvent ev) {
 		super.preInit(ev);
+		
+		for (byte meta = 0; meta < 8; meta++)
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), meta, 
+					new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), 
+							disenchantmentTable.getStateFromMeta(meta).toString().split("[\\[\\]]")[1]));
 	}
 	
 	@Override
 	public void load(FMLInitializationEvent ev) {
 		super.load(ev);
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDisenchantmentTable.class, new TileEntityDisenchantmentTableRenderer());
-		
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(
-				Item.getItemFromBlock(disenchantmentTable), 0, new ModelResourceLocation(DisenchanterMain.MODID + ":" + disenchantmentTable.getUnlocalizedName().substring(5), "inventory"));
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(
-				Item.getItemFromBlock(disenchantmentTable), 1, new ModelResourceLocation(DisenchanterMain.MODID + ":" + disenchantmentTable.getUnlocalizedName().substring(5), "inventory"));
-		
 	}
 	
 	@Override
