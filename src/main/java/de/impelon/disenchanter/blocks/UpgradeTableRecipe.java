@@ -5,11 +5,16 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class UpgradeTableRecipe extends ShapedOreRecipe {
 	
 	private final int addedmeta;
+	
+	static {
+	    RecipeSorter.register(DisenchanterMain.MODID + ":upgradeTable", UpgradeTableRecipe.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
+	}
 
 	public UpgradeTableRecipe(int addedmeta, ItemStack result, Object... recipe) {
 		super(result, recipe);
