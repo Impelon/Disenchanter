@@ -61,7 +61,7 @@ public class CommonProxy {
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(DisenchanterMain.instance, new GUIHandler());
 			
-ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, OreDictionary.WILDCARD_VALUE);
+		ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, OreDictionary.WILDCARD_VALUE);
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 0),
 					"   ",
@@ -73,7 +73,7 @@ ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, O
 		));
 		
 		if (DisenchanterMain.config.get("general", "EnableAutomaticRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new UpgradeTableRecipe(1, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 1),
+			GameRegistry.addRecipe(new UpgradeTableRecipe(disenchantmentTable.AUTOMATIC, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 1),
 					"IMI",
 					"BCB",
 					"ITI",
@@ -85,7 +85,7 @@ ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, O
 		));
 		
 		if (DisenchanterMain.config.get("general", "EnableBulkDisenchantingRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new UpgradeTableRecipe(2, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 2),
+			GameRegistry.addRecipe(new UpgradeTableRecipe(disenchantmentTable.BULKDISENCHANTING, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 2),
 					"QGQ",
 					"GDG",
 					"QTQ",
@@ -96,7 +96,7 @@ ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, O
 		));
 		
 		if (DisenchanterMain.config.get("general", "EnableVoidingRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new UpgradeTableRecipe(4, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 4),
+			GameRegistry.addRecipe(new UpgradeTableRecipe(disenchantmentTable.VOIDING, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 4),
 					"POP",
 					"EHE",
 					"PTP",
