@@ -27,93 +27,51 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	public void disenchant() {
 		if (this.getStackInSlot(2) != null)
 			return;
+
 		ItemStack itemstack = this.getStackInSlot(0);
 		ItemStack bookstack = this.getStackInSlot(1);
+		ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
+		BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
 
-		if (itemstack != null && bookstack != null) {
-			if (itemstack.getTagCompound() != null) {
-				NBTTagList enchants = null;
-				if (itemstack.getTagCompound().getTag("ench") != null)
-					enchants = (NBTTagList) itemstack.getTagCompound().getTag("ench");
-				else if (itemstack.getTagCompound().getTag("StoredEnchantments") != null)
-					enchants = (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
-				else {
-					this.setInventorySlotContents(2, (ItemStack) null);
-					return;
-				}
+		if (itemstack != null && bookstack != null && itemstack.getTagCompound() != null) {
+			if (itemstack.getTagCompound().getTag("InfiTool") != null)
+				if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
+					return; //TODO:: ADD SPECIFIC BEHAVIOUR
 				
-				if (enchants.tagCount() > 0) {
-					NBTTagCompound enchant = enchants.getCompoundTagAt(0);
-					int id = enchant.getInteger("id");
-					int lvl = enchant.getInteger("lvl");
+			float power = table.getEnchantingPower(this.worldObj, this.pos);
+			int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
+			double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
+			double reduceableDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2).getDouble();
+			double machineDmgMultiplier = DisenchanterMain.config.get("disenchanting", "MachineDamageMultiplier", 2.5).getDouble();
 
-					ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
-					Items.ENCHANTED_BOOK.addEnchantment(outputBookstack, new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
-
-					this.setInventorySlotContents(2, (ItemStack) outputBookstack);
-				} else {
-					this.setInventorySlotContents(2, (ItemStack) null);
-					return;
-				}
-
-				if (bookstack.stackSize > 1)
-					bookstack.stackSize -= 1;
-				else
-					bookstack = (ItemStack) null;
-				this.setInventorySlotContents(1, bookstack);
+			while (table.getEnchantmentList(itemstack) != null) {
+				table.transferEnchantment(itemstack, outputBookstack, 0, this.random);
 				
-				int power = 1;
-				for (int blockZ = -1; blockZ <= 1; ++blockZ) {
-					for (int blockX = -1; blockX <= 1; ++blockX) {
-						if ((blockZ != 0 || blockX != 0) && worldObj.isAirBlock(new BlockPos(pos.getX() + blockX, pos.getY(), pos.getZ() + blockZ))
-								&& worldObj.isAirBlock(new BlockPos(pos.getX() + blockX, pos.getY() + 1, pos.getZ() + blockZ))) {
-							power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX * 2, pos.getY(), pos.getZ() + blockZ * 2));
-							power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX * 2, pos.getY() + 1, pos.getZ() + blockZ * 2));
-
-							if (blockX != 0 && blockZ != 0) {
-								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX * 2, pos.getY(), pos.getZ() + blockZ));
-								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX * 2, pos.getY() + 1, pos.getZ() + blockZ));
-								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX, pos.getY(), pos.getZ() + blockZ * 2));
-								power += ForgeHooks.getEnchantPower(worldObj, new BlockPos(pos.getX() + blockX, pos.getY() + 1, pos.getZ() + blockZ * 2));
-							}
-						}
-					}
-				}
-				
-				if (power > 15)
-					power = 15;
-				int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
-				double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
-				double reduceableDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2).getDouble();
-				double machineDmgMultiplier = DisenchanterMain.config.get("disenchanting", "MachineDamageMultiplier", 2.5).getDouble();
-				double enchantmentLoss = DisenchanterMain.config.get("disenchanting", "EnchantmentLossChance", 0.0).getDouble();
-				itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + itemstack.getMaxDamage() * (reduceableDmg / power))), random);
+				itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + 
+						itemstack.getMaxDamage() * (reduceableDmg / power))), this.random);
 				if (itemstack.getItemDamage() > itemstack.getMaxDamage()) {
 					this.setInventorySlotContents(0, (ItemStack) null);
-					return;
+					break;
 				}
-				if (itemstack != null && itemstack.getTagCompound() != null) {
-					enchants = null;
-					if (itemstack.getTagCompound().getTag("ench") != null) {
-						enchants = (NBTTagList) itemstack.getTagCompound().getTag("ench");
-						byte loops = 1;
-						if (random.nextFloat() <= enchantmentLoss)
-							loops = (byte) (1 + random.nextInt(5));
-						for (byte n = 0; n < loops; n++) {
-							if (enchants.tagCount() > 1)
-								enchants.removeTag(0);
-							else if (itemstack.getTagCompound().getTag("ench") != null)
-								itemstack.getTagCompound().removeTag("ench");
-						}
-					} else if (itemstack.getTagCompound().getTag("StoredEnchantments") != null) {
-						enchants = (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
-						if (enchants.tagCount() > 1)
-							enchants.removeTag(0);
-						else
-							this.setInventorySlotContents(0, new ItemStack(Items.BOOK));
-					}
-				}
+				
+				if (!(worldObj.getBlockState(this.pos).getValue(table.BULKDISENCHANTING)))
+					break;
 			}
+			
+			if (table.getEnchantmentList(itemstack) == null) {
+				if (itemstack.getItem() == Items.ENCHANTED_BOOK)
+					this.setInventorySlotContents(0, new ItemStack(Items.BOOK));
+				if (worldObj.getBlockState(this.pos).getValue(table.VOIDING))
+					this.setInventorySlotContents(0, (ItemStack) null);
+			}
+			
+			if (bookstack.stackSize > 1)
+				bookstack.stackSize -= 1;
+			else
+				bookstack = (ItemStack) null;
+			this.setInventorySlotContents(1, bookstack);
+			if (outputBookstack.getTagCompound() != null && outputBookstack.getTagCompound().getTag("StoredEnchantments") != null)
+				this.setInventorySlotContents(2, outputBookstack);
 		}
 	}
 	
@@ -155,7 +113,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	@Override
 	public void update() {
 		super.update();
-		if (this.tickCount % 100 == 0)
+		if (!this.worldObj.isRemote && this.tickCount % DisenchanterMain.config.get("disenchanting", "AutomaticDisenchantmentCycleTicks", 100).getInt() == 0)
 			this.disenchant();
 	}
 	
