@@ -1,4 +1,4 @@
-package de.impelon.update;
+package de.impelon.disenchanter.update;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,10 +74,10 @@ public class VersionChecker implements Runnable {
 				return;
 			}
 			Style linkStyle = new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getUrl()));
-			TextComponentString warning = new TextComponentString("§7[§6§lDisenchanter§7] §r" +
-					new TextComponentTranslation("msg.outdated.txt").getFormattedText() + " §o(" +
-					new TextComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " §o" +
-					new TextComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + "§o)");
+			TextComponentString warning = new TextComponentString(DisenchanterMain.PREFIX +
+					new TextComponentTranslation("msg.outdated.txt").getFormattedText() + " �o(" +
+					new TextComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " �o" +
+					new TextComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + "�o)");
 			warning.setStyle(linkStyle);
 			ev.player.addChatMessage(warning);
 			MinecraftForge.EVENT_BUS.unregister(this);
