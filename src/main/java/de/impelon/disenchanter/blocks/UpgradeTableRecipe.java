@@ -1,6 +1,7 @@
 package de.impelon.disenchanter.blocks;
 
 import de.impelon.disenchanter.DisenchanterMain;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,15 +11,15 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class UpgradeTableRecipe extends ShapedOreRecipe {
 	
-	private final int addedmeta;
+	private final PropertyBool addedProperty;
 	
 	static {
 	    RecipeSorter.register(DisenchanterMain.MODID + ":upgradeTable", UpgradeTableRecipe.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
 	}
 
-	public UpgradeTableRecipe(int addedmeta, ItemStack result, Object... recipe) {
+	public UpgradeTableRecipe(PropertyBool addedProperty, ItemStack result, Object... recipe) {
 		super(result, recipe);
-		this.addedmeta = addedmeta;
+		this.addedProperty = addedProperty;
 	}
 	
 	@Override
@@ -26,7 +27,7 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
 			ItemStack st = grid.getStackInSlot(slot);
 			if (st != null && st.getItem() == Item.getItemFromBlock(DisenchanterMain.proxy.disenchantmentTable))
-				if (((st.getItemDamage() / this.addedmeta)) % 2 == 1)
+				if (DisenchanterMain.proxy.disenchantmentTable.getStateFromMeta(st.getItemDamage()).getValue(this.addedProperty))
 					return false;
 		}
 		return super.matches(grid, world);
@@ -42,7 +43,8 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 		}
 
 		ItemStack res = super.getCraftingResult(grid);
-		res.setItemDamage(table.getItemDamage() + this.addedmeta);
+		res.setItemDamage(table.getItemDamage() + DisenchanterMain.proxy.disenchantmentTable.
+				getMetaFromState(DisenchanterMain.proxy.disenchantmentTable.getDefaultState().withProperty(this.addedProperty, true)));
 		return res;
 	}
 
