@@ -1,7 +1,8 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "model": "disenchanter:disenchantmenttable"
+        "model": "disenchanter:disenchantmenttable",
+	    "transform": "forge:default-block"
     },
     "variants": {
         "automatic=false,bulkdisenchanting=false,voiding=false": [{
