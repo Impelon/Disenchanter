@@ -1,5 +1,4 @@
 {   
-    "parent": "block/block",
     "textures": {
         "particle": "disenchanter:blocks/disenchantmenttable_bottom",
         "bottom": "disenchanter:blocks/disenchantmenttable_bottom",
@@ -10,12 +9,12 @@
         {   "from": [ 0, 0, 0 ],
             "to": [ 16, 12, 16 ],
             "faces": {
-                "down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#bottom", "tintindex": 0, "cullface": "down" },
-                "up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#top", "tintindex": 0 },
-                "north": { "uv": [ 0, 4, 16, 16 ], "texture": "#side", "tintindex": 0, "cullface": "north" },
-                "south": { "uv": [ 0, 4, 16, 16 ], "texture": "#side", "tintindex": 0, "cullface": "south" },
-                "west":  { "uv": [ 0, 4, 16, 16 ], "texture": "#side", "tintindex": 0, "cullface": "west" },
-                "east":  { "uv": [ 0, 4, 16, 16 ], "texture": "#side", "tintindex": 0, "cullface": "east" }
+                "down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#bottom", "cullface": "down" },
+                "up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#top" },
+                "north": { "uv": [ 0, 4, 16, 16 ], "texture": "#side", "cullface": "north" },
+                "south": { "uv": [ 0, 4, 16, 16 ], "texture": "#side", "cullface": "south" },
+                "west":  { "uv": [ 0, 4, 16, 16 ], "texture": "#side", "cullface": "west" },
+                "east":  { "uv": [ 0, 4, 16, 16 ], "texture": "#side", "cullface": "east" }
             }
         }
     ]
