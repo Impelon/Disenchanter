@@ -1,7 +1,38 @@
 {
+    "forge_marker": 1,
+    "defaults": {
+        "model": "disenchanter:disenchantmenttable",
+	    "transform": "forge:default-block"
+    },
     "variants": {
-        "normal": { "model": "disenchanter:disenchantmenttable" },
-        "automatic=true": { "model": "disenchanter:disenchantmenttable" },
-        "automatic=false": { "model": "disenchanter:disenchantmenttable" }
+        "automatic=false,bulkdisenchanting=false,voiding=false": [{
+            "textures": {  }
+        }],
+        "automatic=true,bulkdisenchanting=false,voiding=false": [{
+            "textures": { "side": "disenchanter:blocks/disenchantmenttable_side_automatic" }
+        }],
+        "automatic=false,bulkdisenchanting=true,voiding=false": [{
+            "textures": { "top": "disenchanter:blocks/disenchantmenttable_top_bulk" }
+        }],
+        "automatic=true,bulkdisenchanting=true,voiding=false": [{
+            "textures": { "side": "disenchanter:blocks/disenchantmenttable_side_automatic", 
+            "top": "disenchanter:blocks/disenchantmenttable_top_bulk" }
+        }],
+        "automatic=false,bulkdisenchanting=false,voiding=true": [{
+            "textures": { "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding" }
+        }],
+        "automatic=true,bulkdisenchanting=false,voiding=true": [{
+            "textures": { "side": "disenchanter:blocks/disenchantmenttable_side_automatic", 
+            "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding" }
+        }],
+        "automatic=false,bulkdisenchanting=true,voiding=true": [{
+            "textures": { "top": "disenchanter:blocks/disenchantmenttable_top_bulk", 
+            "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding" }
+        }],
+        "automatic=true,bulkdisenchanting=true,voiding=true": [{
+            "textures": { "side": "disenchanter:blocks/disenchantmenttable_side_automatic", 
+            "top": "disenchanter:blocks/disenchantmenttable_top_bulk", 
+            "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding" }
+        }]
     }
 }

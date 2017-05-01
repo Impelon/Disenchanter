@@ -1,6 +1,8 @@
-tile.disenchantmentTable.name=Entzauberungstisch
+tile.disenchanter:disenchantmenttable.name=Entzauberungstisch
 container.disenchant=Entzaubern
 msg.automatic.txt=automatisch
-msg.outdated.txt=Deine Version von Disenchanter ist veraltet. Klicke hier um die Website zu besuchen!
+msg.bulk.txt=Massenentzauberung
+msg.voiding.txt=löschend
+msg.outdated.txt=Deine Version von Disenchanter ist veraltet. Klicke hier, um die Website zu besuchen!
 msg.currentversion.txt=Jetzige Version: 
 msg.latestversion.txt=Neuste Version: 

@@ -8,6 +8,7 @@ import java.net.URL;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -25,7 +26,7 @@ public class VersionChecker implements Runnable {
 	public void run() {
 		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/Impelon/Disenchanter/1.9.4/src/main/resources/mcmod.info").openStream(), "UTF-8"));
+			in = new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/Impelon/Disenchanter/1.11.2/src/main/resources/mcmod.info").openStream(), "UTF-8"));
 			StringBuilder modinfo = new StringBuilder();
 			String ln;
 			while ((ln = in.readLine()) != null)
@@ -74,10 +75,10 @@ public class VersionChecker implements Runnable {
 				return;
 			}
 			Style linkStyle = new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getUrl()));
-			TextComponentString warning = new TextComponentString("§7[§6§lDisenchanter§7] §r" +
-					new TextComponentTranslation("msg.outdated.txt").getFormattedText() + " §o(" +
-					new TextComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " §o" +
-					new TextComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + "§o)");
+			TextComponentString warning = new TextComponentString(DisenchanterMain.PREFIX +
+					new TextComponentTranslation("msg.outdated.txt").getFormattedText() + " " + TextFormatting.ITALIC + "(" +
+					new TextComponentTranslation("msg.currentversion.txt").getFormattedText() + DisenchanterMain.VERSION + " " + TextFormatting.ITALIC +
+					new TextComponentTranslation("msg.latestversion.txt").getFormattedText() + getLatestVersion() + TextFormatting.ITALIC + ")");
 			warning.setStyle(linkStyle);
 			ev.player.sendStatusMessage(warning, false);
 			MinecraftForge.EVENT_BUS.unregister(this);
