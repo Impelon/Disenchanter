@@ -14,14 +14,19 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -31,6 +36,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import de.impelon.disenchanter.DisenchanterMain;
@@ -38,16 +44,19 @@ import de.impelon.disenchanter.DisenchanterMain;
 public class BlockDisenchantmentTable extends BlockContainer {
     
     protected static final AxisAlignedBB AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.75D, 1.0D);
-	public static final PropertyBool AUTOMATIC = PropertyBool.create("automatic");
+    public static final PropertyBool AUTOMATIC = PropertyBool.create("automatic");
+	public static final PropertyBool BULKDISENCHANTING = PropertyBool.create("bulkdisenchanting");
+	public static final PropertyBool VOIDING = PropertyBool.create("voiding");
 	
 	public BlockDisenchantmentTable() {
 		super(Material.ROCK);
 		this.setLightOpacity(0);
 		this.setCreativeTab(CreativeTabs.DECORATIONS);
-		this.setUnlocalizedName("disenchantmentTable");
+		this.setRegistryName(DisenchanterMain.MODID, "disenchantmentTable");
+		this.setUnlocalizedName(this.getRegistryName().toString().toLowerCase());
 		this.setHardness(5.0F);
 		this.setResistance(2000.0F);
-		this.setDefaultState(this.blockState.getBaseState().withProperty(AUTOMATIC, false));
+		this.setDefaultState(this.blockState.getBaseState().withProperty(AUTOMATIC, false).withProperty(BULKDISENCHANTING, false).withProperty(VOIDING, false));
 	}
 
 
@@ -108,17 +117,25 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		
 	@Override
 	protected BlockStateContainer createBlockState() {
-	    return new BlockStateContainer(this, new IProperty[] { AUTOMATIC });
+	    return new BlockStateContainer(this, new IProperty[] { AUTOMATIC, BULKDISENCHANTING, VOIDING });
 	}
 	
 	@Override
 	public IBlockState getStateFromMeta(int metadata) {
-	    return getDefaultState().withProperty(AUTOMATIC, metadata == 0 ? false : true);
+		IBlockState state = getDefaultState();
+		state = state.withProperty(AUTOMATIC, metadata % 2 == 1 ? true : false);
+		state = state.withProperty(BULKDISENCHANTING, (metadata / 2) % 2 == 1 ? true : false);
+		state = state.withProperty(VOIDING, (metadata / 4) % 2 == 1 ? true : false);
+	    return state;
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-	    return state.getValue(AUTOMATIC) ? 1 : 0;
+		int metadata = 0;
+		metadata += state.getValue(AUTOMATIC) ? 1 : 0;
+		metadata += state.getValue(BULKDISENCHANTING) ? 2 : 0;
+		metadata += state.getValue(VOIDING) ? 4 : 0;
+	    return metadata;
 	}
 	
 	@Override
@@ -128,8 +145,8 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	
 	@Override
 	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
-		subItems.add(new ItemStack(itemIn, 1, 0));
-		subItems.add(new ItemStack(itemIn, 1, 1));
+		for (byte meta = 0; meta < 8; meta++)
+			subItems.add(new ItemStack(itemIn, 1, meta));
 	}
 	
 	@Override
@@ -172,9 +189,75 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	
 	@Override
 	public TileEntity createNewTileEntity(World w, int metadata) {
-		if (metadata == 1)
+		if (this.getStateFromMeta(metadata).getValue(AUTOMATIC))
 			return new TileEntityDisenchantmentTableAutomatic();
 		return new TileEntityDisenchantmentTable();
+	}
+	
+	public float getEnchantingPower(World w, BlockPos pos) {
+		int power = 1;
+		for (int blockZ = -1; blockZ <= 1; ++blockZ) {
+			for (int blockX = -1; blockX <= 1; ++blockX) {
+				if ((blockZ != 0 || blockX != 0) && w.isAirBlock(new BlockPos(pos.getX() + blockX, pos.getY(), pos.getZ() + blockZ))
+						&& w.isAirBlock(new BlockPos(pos.getX() + blockX, pos.getY() + 1, pos.getZ() + blockZ))) {
+					power += ForgeHooks.getEnchantPower(w, new BlockPos(pos.getX() + blockX * 2, pos.getY(), pos.getZ() + blockZ * 2));
+					power += ForgeHooks.getEnchantPower(w, new BlockPos(pos.getX() + blockX * 2, pos.getY() + 1, pos.getZ() + blockZ * 2));
+
+					if (blockX != 0 && blockZ != 0) {
+						power += ForgeHooks.getEnchantPower(w, new BlockPos(pos.getX() + blockX * 2, pos.getY(), pos.getZ() + blockZ));
+						power += ForgeHooks.getEnchantPower(w, new BlockPos(pos.getX() + blockX * 2, pos.getY() + 1, pos.getZ() + blockZ));
+						power += ForgeHooks.getEnchantPower(w, new BlockPos(pos.getX() + blockX, pos.getY(), pos.getZ() + blockZ * 2));
+						power += ForgeHooks.getEnchantPower(w, new BlockPos(pos.getX() + blockX, pos.getY() + 1, pos.getZ() + blockZ * 2));
+					}
+				}
+			}
+		}
+		
+		if (power > 15)
+			power = 15;
+		return power;
+	}
+	
+	public void transferEnchantment(ItemStack input, ItemStack output, int index, Random random) {
+		if (input != null && output != null && input.getTagCompound() != null) {
+			double enchantmentLoss = DisenchanterMain.config.get("disenchanting", "EnchantmentLossChance", 0.0).getDouble();
+			
+			NBTTagList enchants = this.getEnchantmentList(input);
+			if (enchants == null)
+				return;
+			
+			if (enchants.tagCount() > 0) {
+				index = Math.min(Math.abs(index), enchants.tagCount() - 1);
+				
+				NBTTagCompound enchant = enchants.getCompoundTagAt(index);
+				int id = enchant.getInteger("id");
+				int lvl = enchant.getInteger("lvl");
+				
+				if (random.nextFloat() > enchantmentLoss)
+					Items.ENCHANTED_BOOK.addEnchantment(output, new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
+				
+				enchants.removeTag(index);
+			}
+			if (enchants.tagCount() <= 0)
+				if (this.isEnchantmentStorage(input))
+					input.getTagCompound().removeTag("StoredEnchantments");
+				else
+					input.getTagCompound().removeTag("ench");
+		}
+	}
+	
+	public NBTTagList getEnchantmentList(ItemStack itemstack) {
+		if (itemstack.getTagCompound() == null)
+			return null;
+		if (itemstack.getTagCompound().getTag("ench") != null)
+			return (NBTTagList) itemstack.getTagCompound().getTag("ench");
+		if (itemstack.getTagCompound().getTag("StoredEnchantments") != null)
+			return (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
+		return null;
+	}
+	
+	public boolean isEnchantmentStorage(ItemStack itemstack) {
+		return itemstack.getTagCompound().getTag("StoredEnchantments") != null;
 	}
 
 }

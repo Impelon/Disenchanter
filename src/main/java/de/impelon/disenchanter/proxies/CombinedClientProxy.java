@@ -3,6 +3,7 @@ package de.impelon.disenchanter.proxies;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
@@ -26,33 +27,24 @@ public class CombinedClientProxy extends CommonProxy {
 	@Override
 	public void preInit(FMLPreInitializationEvent ev) {
 		super.preInit(ev);
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), 0, new ModelResourceLocation(DisenchanterMain.MODID + ":" + disenchantmentTable.getUnlocalizedName().substring(5), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), 1, new ModelResourceLocation(DisenchanterMain.MODID + ":" + disenchantmentTable.getUnlocalizedName().substring(5), "inventory"));
+		
+		ModelLoader.setCustomStateMapper(disenchantmentTable, new DefaultStateMapper() {
+			@Override
+			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+		        return new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), state.toString().split("[\\[\\]]")[1]);
+		    }
+		});
+		
+		for (byte meta = 0; meta < 8; meta++)
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), meta, 
+					new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), 
+							disenchantmentTable.getStateFromMeta(meta).toString().split("[\\[\\]]")[1]));
 	}
 	
 	@Override
 	public void load(FMLInitializationEvent ev) {
 		super.load(ev);
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDisenchantmentTable.class, new TileEntityDisenchantmentTableRenderer());	
-		
-		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new IBlockColor() {
-			
-			@Override
-			public int colorMultiplier(IBlockState state, IBlockAccess access, BlockPos pos, int tintIndex) {
-				if (state.getValue(BlockDisenchantmentTable.AUTOMATIC) == true)
-					return 0x888888;
-				return 0xffffff;
-			}
-		}, disenchantmentTable);
-		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
-			
-			@Override
-			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
-				if (stack.getItemDamage() == 1)
-					return 0x888888;
-				return 0xffffff;
-			}
-		}, itemDisenchantment);
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDisenchantmentTable.class, new TileEntityDisenchantmentTableRenderer());
 	}
 	
 	@Override
