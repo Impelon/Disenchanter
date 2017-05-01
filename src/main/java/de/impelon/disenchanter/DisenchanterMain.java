@@ -15,7 +15,8 @@ public class DisenchanterMain {
 
 	public static final String MODID = "DisenchanterMod";
 	public static final String VERSION = "1.5";
-	public static final String PREFIX = "§7[§6§lDisenchanter§7] §r";
+	public static final String PREFIX = EnumChatFormatting.GRAY + "[" + EnumChatFormatting.GOLD + EnumChatFormatting.BOLD + 
+			"Disenchanter" + EnumChatFormatting.GRAY + "] " + EnumChatFormatting.RESET;
 	public static final VersionChecker versionChecker = new VersionChecker();
 	public static Configuration config;
 
