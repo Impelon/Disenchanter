@@ -3,6 +3,7 @@ package de.impelon.disenchanter.proxies;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
@@ -26,6 +27,13 @@ public class CombinedClientProxy extends CommonProxy {
 	@Override
 	public void preInit(FMLPreInitializationEvent ev) {
 		super.preInit(ev);
+		
+		ModelLoader.setCustomStateMapper(disenchantmentTable, new DefaultStateMapper() {
+			@Override
+			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+		        return new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), state.toString().split("[\\[\\]]")[1]);
+		    }
+		});
 		
 		for (byte meta = 0; meta < 8; meta++)
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), meta, 
