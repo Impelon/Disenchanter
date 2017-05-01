@@ -1,5 +1,6 @@
 package de.impelon.disenchanter;
 
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -16,7 +17,8 @@ public class DisenchanterMain {
 	
 	public static final String MODID = "disenchanter";
 	public static final String VERSION = "1.5";
-	public static final String PREFIX = "§7[§6§lDisenchanter§7] §r";
+	public static final String PREFIX = TextFormatting.GRAY + "[" + TextFormatting.GOLD + TextFormatting.BOLD + 
+			"Disenchanter" + TextFormatting.GRAY + "] " + TextFormatting.RESET;
 	public static final VersionChecker versionChecker = new VersionChecker();
 	public static Configuration config;
 	
