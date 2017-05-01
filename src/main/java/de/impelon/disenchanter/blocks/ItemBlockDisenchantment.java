@@ -2,6 +2,7 @@ package de.impelon.disenchanter.blocks;
 
 import java.util.List;
 
+import de.impelon.disenchanter.DisenchanterMain;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -29,17 +30,17 @@ public class ItemBlockDisenchantment extends ItemBlock {
 	public void addInformation(ItemStack stack, EntityPlayer p, List l, boolean b) {
 		super.addInformation(stack, p, l, b);
 		
-		if (stack.getItemDamage() == 1)
+		BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
+		
+		if (table.getStateFromMeta(stack.getItemDamage()).getValue(table.AUTOMATIC))
 			l.add(new ChatComponentTranslation("msg.automatic.txt")
 				.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)).getFormattedText());
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack stack, int pass) {
-		if (stack.getItemDamage() == 1)
-			return 0x888888;
-		return super.getColorFromItemStack(stack, pass);
+		if (table.getStateFromMeta(stack.getItemDamage()).getValue(table.BULKDISENCHANTING))
+			l.add(new ChatComponentTranslation("msg.bulk.txt")
+					.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)).getFormattedText());
+		if (table.getStateFromMeta(stack.getItemDamage()).getValue(table.VOIDING))
+			l.add(new ChatComponentTranslation("msg.voiding.txt")
+					.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)).getFormattedText());
 	}
 
 }
