@@ -2,6 +2,7 @@ package de.impelon.disenchanter.blocks;
 
 import java.util.List;
 
+import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.proxies.CommonProxy;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -31,9 +32,19 @@ public class ItemBlockDisenchantment extends ItemBlock {
 	public void addInformation(ItemStack stack, EntityPlayer p, List l, boolean b) {
 		super.addInformation(stack, p, l, b);
 		
-		if (stack.getItemDamage() == 1)
+		super.addInformation(stack, p, l, b);
+		
+		BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
+		
+		if (table.getStateFromMeta(stack.getItemDamage()).getValue(table.AUTOMATIC))
 			l.add(new TextComponentTranslation("msg.automatic.txt")
 				.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
+		if (table.getStateFromMeta(stack.getItemDamage()).getValue(table.BULKDISENCHANTING))
+			l.add(new TextComponentTranslation("msg.bulk.txt")
+					.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
+		if (table.getStateFromMeta(stack.getItemDamage()).getValue(table.VOIDING))
+			l.add(new TextComponentTranslation("msg.voiding.txt")
+					.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
 	}
 	
 }
