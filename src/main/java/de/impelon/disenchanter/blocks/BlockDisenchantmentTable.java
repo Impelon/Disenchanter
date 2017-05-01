@@ -11,25 +11,29 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class BlockDisenchantmentTable extends BlockContainer {
 	
     @SideOnly(Side.CLIENT)
-    private IIcon top;
+    private IIcon[] top = new IIcon[2];
     @SideOnly(Side.CLIENT)
-    private IIcon bottom;
+    private IIcon[] bottom = new IIcon[2];
+    @SideOnly(Side.CLIENT)
+    private IIcon[] side = new IIcon[2];
 
 	public BlockDisenchantmentTable() {
 		super(Material.rock);
@@ -40,30 +44,20 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		this.setHardness(5.0F);
 		this.setResistance(2000.0F);
 	}
-
-	@Override
-	public boolean renderAsNormalBlock() {
-		return false;
-	}
-	
-	@Override
-	public int damageDropped (int metadata) {
-		return metadata;
-	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World w, int x, int y, int z, Random random) {
 		super.randomDisplayTick(w, x, y, z, random);
 
-		for (int blockX = x - 2; blockX <= x + 2; ++blockX) {
+		for (int blockX = x - 2; blockX <= x + 2; ++blockX)
 			for (int blockZ = z - 2; blockZ <= z + 2; ++blockZ) {
 				if (blockX > x - 2 && blockX < x + 2 && blockZ == z - 1) 
 					blockZ = z + 2;
 
-				if (random.nextInt(16) == 0) {
-					for (int blockY = y; blockY <= y + 1; ++blockY) {
-						if (w.getBlock(blockX, blockY, blockZ) == Blocks.bookshelf) {
+				if (random.nextInt(16) == 0)
+					for (int blockY = y; blockY <= y + 1; ++blockY)
+						if (ForgeHooks.getEnchantPower(w, blockX, blockY, blockZ) > 0) {
 							if (!w.isAirBlock((blockX - x) / 2 + x, blockY, (blockZ - z) / 2 + z))
 								break;
 
@@ -75,49 +69,66 @@ public class BlockDisenchantmentTable extends BlockContainer {
 									(double) (y - blockY) + (random.nextFloat() / 2) + 0.15D,
 									(double) (z - blockZ) + 0.5D);
 						}
-					}
-				}
 			}
-		}
-	}
-
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int unknown, CreativeTabs tab, List subItems) {
-		subItems.add(new ItemStack(this, 1, 0));
-		subItems.add(new ItemStack(this, 1, 1));
+		for (byte n = 0; n < 8; n++)
+			subItems.add(new ItemStack(this, 1, n));
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
-		return side == 0 ? this.bottom : (side == 1 ? this.top : this.blockIcon);
+		return side == 0 ? this.bottom[(meta / 4) % 2] : (side == 1 ? this.top[(meta / 2) % 2] : this.side[meta % 2]);
 	}
 	
 	@Override
-    @SideOnly(Side.CLIENT)
-	public int colorMultiplier(IBlockAccess access, int x, int y, int z) {
-		if (access.getBlockMetadata(x, y, z) == 1)
-			return 0x888888;
-		return super.colorMultiplier(access, x, y, z);
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister i) {
+		this.side[0] 	= i.registerIcon("Disenchanter:disenchantmenttable_side");
+		this.side[1] 	= i.registerIcon("Disenchanter:disenchantmenttable_side_automatic");
+		this.top[0] 	= i.registerIcon("Disenchanter:disenchantmenttable_top");
+		this.top[1] 	= i.registerIcon("Disenchanter:disenchantmenttable_top_bulk");
+		this.bottom[0] 	= i.registerIcon("Disenchanter:disenchantmenttable_bottom");
+		this.bottom[1] 	= i.registerIcon("Disenchanter:disenchantmenttable_bottom_voiding");
+		
+		this.blockIcon 	= this.side[0];
+	}
+
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
 	}
 	
 	@Override
-    @SideOnly(Side.CLIENT)
-	public int getRenderColor(int meta) {
-		if (meta == 1)
-			return 0x888888;
-		return super.getRenderColor(meta);
+	public boolean isOpaqueCube() {
+		return false;
+	}
+	
+	public boolean isAutomatic(int meta) {
+		return meta % 2 == 1;
+	}
+	
+	public boolean isBulkDisenchanting(int meta) {
+		return (meta / 2) % 2 == 1;
+	}
+	
+	public boolean isVoiding(int meta) {
+		return (meta / 4) % 2 == 1;
+	}
+	
+	@Override
+	public int damageDropped (int metadata) {
+		return metadata;
 	}
 	
 	@Override
 	public boolean hasComparatorInputOverride() {
 		return true;
 	}
+	
 	@Override
 	public int getComparatorInputOverride(World w, int x, int y, int z, int side) {
 		TileEntity te = w.getTileEntity(x, y, z);
@@ -148,49 +159,108 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
 			TileEntityDisenchantmentTableAutomatic ta = (TileEntityDisenchantmentTableAutomatic) te;
 			
-			for (int i1 = 0; i1 < ta.getSizeInventory(); ++i1) {
-                ItemStack itemstack = ta.getStackInSlot(i1);
+			for (int i = 0; i < ta.getSizeInventory(); ++i) {
+                ItemStack itemstack = ta.getStackInSlot(i);
 
                 if (itemstack != null) {
-                    float f = (float) (Math.random() * 0.8F + 0.1F);
-                    float f1 = (float) (Math.random() * 0.8F + 0.1F);
+                    float offsetX = (float) (Math.random() * 0.8F + 0.1F);
+                    float offsetY = (float) (Math.random() * 0.8F + 0.1F);
+                    float offsetZ = (float) (Math.random() * 0.8F + 0.1F);
                     EntityItem entityitem;
 
-                    for (float f2 = (float) (Math.random() * 0.8F + 0.1F); itemstack.stackSize > 0; w.spawnEntityInWorld(entityitem)) {
-                        int j1 = (int) (Math.random() * 21 + 10);
+                    while (itemstack.stackSize > 0) {
+                        int size = (int) (Math.random() * 21 + 10);
 
-                        if (j1 > itemstack.stackSize)
-                            j1 = itemstack.stackSize;
+                        if (size > itemstack.stackSize)
+                            size = itemstack.stackSize;
 
-                        itemstack.stackSize -= j1;
-                        entityitem = new EntityItem(w, (double)((float)x + f), (double)((float)y + f1), (double)((float)z + f2), new ItemStack(itemstack.getItem(), j1, itemstack.getItemDamage()));
-                        float f3 = 0.05F;
-                        entityitem.motionX = (double)((float)Math.random() * f3);
-                        entityitem.motionY = (double)((float)Math.random() * f3 + 0.2F);
-                        entityitem.motionZ = (double)((float)Math.random() * f3);
+                        itemstack.stackSize -= size;
+                        entityitem = new EntityItem(w, x + offsetX, y + offsetY, z + offsetZ, new ItemStack(itemstack.getItem(), size, itemstack.getItemDamage()));
+                        entityitem.motionX = Math.random() * 0.05F;
+                        entityitem.motionY = Math.random() * 0.05F + 0.2F;
+                        entityitem.motionZ = Math.random() * 0.05F;
 
                         if (itemstack.hasTagCompound())
-                            entityitem.getEntityItem().setTagCompound((NBTTagCompound)itemstack.getTagCompound().copy());
+                            entityitem.getEntityItem().setTagCompound((NBTTagCompound) itemstack.getTagCompound().copy());
+                        w.spawnEntityInWorld(entityitem);
                     }
                 }
             }
 		}
 		super.breakBlock(w, x, y, z, b, meta);
 	}
-		
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister i) {
-		this.blockIcon = i.registerIcon("Disenchanter:disenchantment_side");
-		this.top = i.registerIcon("Disenchanter:disenchantment_top");
-		this.bottom = i.registerIcon("Disenchanter:disenchantment_bottom");
-	}
 	
 	@Override
 	public TileEntity createNewTileEntity(World w, int metadata) {
-		if (metadata == 1)
+		if (isAutomatic(metadata))
 			return new TileEntityDisenchantmentTableAutomatic();
 		return new TileEntityDisenchantmentTable();
+	}
+	
+	public float getEnchantingPower(World w, int x, int y, int z) {
+		float power = 1;
+		for (int blockZ = -1; blockZ <= 1; ++blockZ) {
+			for (int blockX = -1; blockX <= 1; ++blockX) {
+				if ((blockZ != 0 || blockX != 0) && w.isAirBlock(x + blockX, y, z + blockZ)
+						&& w.isAirBlock(x + blockX, y + 1, z + blockZ)) {
+					power += ForgeHooks.getEnchantPower(w, x + blockX * 2, y, z + blockZ * 2);
+					power += ForgeHooks.getEnchantPower(w, x + blockX * 2, y + 1, z + blockZ * 2);
+
+					if (blockX != 0 && blockZ != 0) {
+						power += ForgeHooks.getEnchantPower(w, x + blockX * 2, y, z + blockZ);
+						power += ForgeHooks.getEnchantPower(w, x + blockX * 2, y + 1, z + blockZ);
+						power += ForgeHooks.getEnchantPower(w, x + blockX, y, z + blockZ * 2);
+						power += ForgeHooks.getEnchantPower(w, x + blockX, y + 1, z + blockZ * 2);
+					}
+				}
+			}
+		}
+		
+		if (power > 15)
+			power = 15;
+		return power;
+	}
+	
+	public void transferEnchantment(ItemStack input, ItemStack output, int index, Random random) {
+		if (input != null && output != null && input.stackTagCompound != null) {
+			double enchantmentLoss = DisenchanterMain.config.get("disenchanting", "EnchantmentLossChance", 0.0).getDouble();
+			
+			NBTTagList enchants = this.getEnchantmentList(input);
+			if (enchants == null)
+				return;
+			
+			if (enchants.tagCount() > 0) {
+				index = Math.min(Math.abs(index), enchants.tagCount() - 1);
+				
+				NBTTagCompound enchant = enchants.getCompoundTagAt(index);
+				int id = enchant.getInteger("id");
+				int lvl = enchant.getInteger("lvl");
+				
+				if (random.nextFloat() > enchantmentLoss)
+					Items.enchanted_book.addEnchantment(output, new EnchantmentData(id, lvl));
+				
+				enchants.removeTag(index);
+			}
+			if (enchants.tagCount() <= 0)
+				if (this.isEnchantmentStorage(input))
+					input.stackTagCompound.removeTag("StoredEnchantments");
+				else
+					input.stackTagCompound.removeTag("ench");
+		}
+	}
+	
+	public NBTTagList getEnchantmentList(ItemStack itemstack) {
+		if (itemstack.stackTagCompound == null)
+			return null;
+		if (itemstack.stackTagCompound.getTag("ench") != null)
+			return (NBTTagList) itemstack.stackTagCompound.getTag("ench");
+		if (itemstack.stackTagCompound.getTag("StoredEnchantments") != null)
+			return (NBTTagList) itemstack.stackTagCompound.getTag("StoredEnchantments");
+		return null;
+	}
+	
+	public boolean isEnchantmentStorage(ItemStack itemstack) {
+		return itemstack.stackTagCompound.getTag("StoredEnchantments") != null;
 	}
 
 }

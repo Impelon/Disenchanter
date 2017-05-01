@@ -1,6 +1,8 @@
 tile.blockDisenchantmentTable.name=Warlock's Carrel
 container.disenchant=Spell Lootin'
 msg.automatic.txt=jinxed
+msg.bulk.txt=booty'n
+msg.voiding.txt=maelstrom
 msg.outdated.txt=Yaaarr, yer' model o' Spell Looter is gone overboard. Crack yis drift bottle to plunder ye web-ship!
 msg.currentversion.txt=Yer' model: 
 msg.latestversion.txt=shiny, golden, new model: 

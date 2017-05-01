@@ -9,6 +9,7 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -74,10 +75,10 @@ public class VersionChecker implements Runnable {
 				return;
 			}
 			ChatStyle linkStyle = new ChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getUrl()));
-			ChatComponentText warning = new ChatComponentText("§7[§6§lDisenchanter§7] §r" +
-					new ChatComponentTranslation("msg.outdated.txt").getFormattedText() + " §o(" +
-					new ChatComponentTranslation("msg.currentversion.txt").getUnformattedText() + DisenchanterMain.VERSION + " §o" +
-					new ChatComponentTranslation("msg.latestversion.txt").getUnformattedText() + getLatestVersion() + ")");
+			ChatComponentText warning = new ChatComponentText(DisenchanterMain.PREFIX +
+					new ChatComponentTranslation("msg.outdated.txt").getFormattedText() + " " + EnumChatFormatting.ITALIC + "(" +
+					new ChatComponentTranslation("msg.currentversion.txt").getFormattedText() + DisenchanterMain.VERSION + " " + EnumChatFormatting.ITALIC +
+					new ChatComponentTranslation("msg.latestversion.txt").getFormattedText() + getLatestVersion() + EnumChatFormatting.ITALIC + ")");
 			warning.setChatStyle(linkStyle);
 			ev.player.addChatMessage(warning);
 			FMLCommonHandler.instance().bus().unregister(this);
