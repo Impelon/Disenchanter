@@ -151,6 +151,9 @@ public class ContainerDisenchantment extends Container {
 				itemstack = itemstack.copy();
 				if (itemstack.getTagCompound().getTag("InfiTool") != null)
 					if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
+						return;
+				if (itemstack.getTagCompound().getTag("TinkerData") != null)
+					if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
 						return; //TODO:: ADD SPECIFIC BEHAVIOUR
 
 				if (table.getEnchantmentList(itemstack) == null) {

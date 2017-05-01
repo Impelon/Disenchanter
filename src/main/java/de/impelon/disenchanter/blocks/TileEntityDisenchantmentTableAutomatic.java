@@ -36,7 +36,10 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 		if (itemstack != null && bookstack != null && itemstack.getTagCompound() != null) {
 			if (itemstack.getTagCompound().getTag("InfiTool") != null)
 				if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
-					return; //TODO:: ADD SPECIFIC BEHAVIOUR
+					return;
+			if (itemstack.getTagCompound().getTag("TinkerData") != null)
+				if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
+					return;
 				
 			float power = table.getEnchantingPower(this.worldObj, this.pos);
 			int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
