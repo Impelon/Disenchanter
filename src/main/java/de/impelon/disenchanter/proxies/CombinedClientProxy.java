@@ -20,6 +20,13 @@ public class CombinedClientProxy extends CommonProxy {
 	public void preInit(FMLPreInitializationEvent ev) {
 		super.preInit(ev);
 		
+		ModelLoader.setCustomStateMapper(disenchantmentTable, new DefaultStateMapper() {
+			@Override
+			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+		        return new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), state.toString().split("[\\[\\]]")[1]);
+		    }
+		});
+		
 		for (byte meta = 0; meta < 8; meta++)
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), meta, 
 					new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), 
