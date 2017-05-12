@@ -22,18 +22,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraft.util.IIcon;
 
 public class BlockDisenchantmentTable extends BlockContainer {
 	
     @SideOnly(Side.CLIENT)
-    private IIcon[] top = new IIcon[2];
+    private IIcon[] top;
     @SideOnly(Side.CLIENT)
-    private IIcon[] bottom = new IIcon[2];
+    private IIcon[] bottom;
     @SideOnly(Side.CLIENT)
-    private IIcon[] side = new IIcon[2];
+    private IIcon[] side;
 
 	public BlockDisenchantmentTable() {
 		super(Material.rock);
@@ -87,6 +87,10 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister i) {
+		this.top = new IIcon[2];
+		this.side = new IIcon[2];
+		this.bottom = new IIcon[2];
+		
 		this.side[0] 	= i.registerIcon("Disenchanter:disenchantmenttable_side");
 		this.side[1] 	= i.registerIcon("Disenchanter:disenchantmenttable_side_automatic");
 		this.top[0] 	= i.registerIcon("Disenchanter:disenchantmenttable_top");
