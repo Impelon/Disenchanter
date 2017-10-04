@@ -7,6 +7,7 @@ import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -35,14 +36,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 		ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
 		BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
 
-		if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY && itemstack.getTagCompound() != null) {
-			if (itemstack.getTagCompound().getTag("InfiTool") != null)
-				if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
-					return;
-			if (itemstack.getTagCompound().getTag("TinkerData") != null)
-				if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
-					return;
-				
+		if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY && table.getEnchantmentList(itemstack) != null) {
 			float power = table.getEnchantingPower(this.world, this.pos);
 			int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
 			double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
@@ -53,7 +47,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 				table.transferEnchantment(itemstack, outputBookstack, 0, this.random);
 				
 				itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + 
-						itemstack.getMaxDamage() * (reduceableDmg / power))), this.random);
+						itemstack.getMaxDamage() * (reduceableDmg / power))), this.random, null);
 				if (itemstack.getItemDamage() > itemstack.getMaxDamage()) {
 					this.setInventorySlotContents(0, ItemStack.EMPTY);
 					break;
@@ -75,7 +69,8 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 			else
 				bookstack = ItemStack.EMPTY;
 			this.setInventorySlotContents(1, bookstack);
-			if (outputBookstack.getTagCompound() != null && outputBookstack.getTagCompound().getTag("StoredEnchantments") != null)
+			if ((outputBookstack.getTagCompound() != null) && (outputBookstack.getTagCompound().getTag("StoredEnchantments") != null ||
+					outputBookstack.getTagCompound().getTag("ench") != null))
 				this.setInventorySlotContents(2, outputBookstack);
 		}
 	}
@@ -83,35 +78,15 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	@Override
 	public void readFromNBT(NBTTagCompound nbtData) {
 		super.readFromNBT(nbtData);
-		NBTTagList nbttaglist = nbtData.getTagList("Items", 10);
-        this.disenchantmentTableContent = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
-
-        for (int n = 0; n < nbttaglist.tagCount(); n++) {
-            NBTTagCompound nbtTagCompound = nbttaglist.getCompoundTagAt(n);
-            byte b = nbtTagCompound.getByte("Slot");
-
-            if (b >= 0 && b < this.disenchantmentTableContent.size())
-            	this.disenchantmentTableContent.set(b, new ItemStack(nbtTagCompound));
-        }
+		
+		ItemStackHelper.loadAllItems(nbtData, this.disenchantmentTableContent); 
 	}
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtData) {
 		super.writeToNBT(nbtData);
 		
-		NBTTagList nbttaglist = new NBTTagList();
-
-		for (byte n = 0; n < this.disenchantmentTableContent.size(); n++) {
-			if (this.disenchantmentTableContent.get(n) != ItemStack.EMPTY) {
-                NBTTagCompound nbtTagCompound = new NBTTagCompound();
-                nbtTagCompound.setByte("Slot", n);
-                this.disenchantmentTableContent.get(n).writeToNBT(nbtTagCompound);
-                nbttaglist.appendTag(nbtTagCompound);
-            }
-        }
-
-        nbtData.setTag("Items", nbttaglist);
-        
+		ItemStackHelper.saveAllItems(nbtData, this.disenchantmentTableContent);
         return nbtData;
 	}
 	
@@ -134,22 +109,12 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 
 	@Override
 	public ItemStack decrStackSize(int slotID, int count) {
-		if (this.disenchantmentTableContent.get(slotID) != ItemStack.EMPTY) {
-			ItemStack stack = this.disenchantmentTableContent.get(slotID);
-			if (this.disenchantmentTableContent.get(slotID).getCount() < count)
-				return removeStackFromSlot(slotID);
-			else if (this.disenchantmentTableContent.get(slotID).getCount() == count)
-				this.disenchantmentTableContent.set(slotID, ItemStack.EMPTY);
-			return stack.splitStack(count);
-		}
-		return null;
+		return ItemStackHelper.getAndSplit(this.disenchantmentTableContent, slotID, count);
 	}
 	
 	@Override
 	public ItemStack removeStackFromSlot(int slotID) {
-		ItemStack stack = this.disenchantmentTableContent.get(slotID);
-		this.disenchantmentTableContent.set(slotID, ItemStack.EMPTY);
-		return stack;
+		return ItemStackHelper.getAndRemove(this.disenchantmentTableContent, slotID);
 	}
 
 	@Override

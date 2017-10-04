@@ -40,6 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import de.impelon.disenchanter.DisenchanterMain;
 
 public class BlockDisenchantmentTable extends BlockContainer {
@@ -143,11 +144,11 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	public int damageDropped(IBlockState state) {
 	    return getMetaFromState(state);
 	}
-	
+
 	@Override
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		for (byte meta = 0; meta < 8; meta++)
-			subItems.add(new ItemStack(itemIn, 1, meta));
+			subItems.add(new ItemStack(this, 1, meta));
 	}
 	
 	@Override
@@ -235,7 +236,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 				int lvl = enchant.getInteger("lvl");
 				
 				if (random.nextFloat() > enchantmentLoss)
-					Items.ENCHANTED_BOOK.addEnchantment(output, new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
+					output.addEnchantment(Enchantment.getEnchantmentByID(id), lvl);
 				
 				enchants.removeTag(index);
 			}
@@ -250,10 +251,19 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	public NBTTagList getEnchantmentList(ItemStack itemstack) {
 		if (itemstack.getTagCompound() == null)
 			return null;
+		
+		if (itemstack.getTagCompound().getTag("InfiTool") != null)
+			if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
+				return null;
+		if (itemstack.getTagCompound().getTag("TinkerData") != null)
+			if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
+				return null;
+		
 		if (itemstack.getTagCompound().getTag("ench") != null)
 			return (NBTTagList) itemstack.getTagCompound().getTag("ench");
 		if (itemstack.getTagCompound().getTag("StoredEnchantments") != null)
 			return (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
+		
 		return null;
 	}
 	
