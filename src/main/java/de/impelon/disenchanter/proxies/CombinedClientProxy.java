@@ -36,7 +36,7 @@ public class CombinedClientProxy extends CommonProxy {
 		});
 		
 		for (byte meta = 0; meta < 8; meta++)
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), meta, 
+			ModelLoader.setCustomModelResourceLocation(itemDisenchantmentTable, meta, 
 					new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), 
 							disenchantmentTable.getStateFromMeta(meta).toString().split("[\\[\\]]")[1]));
 	}

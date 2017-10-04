@@ -7,6 +7,7 @@ import de.impelon.disenchanter.proxies.CommonProxy;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
@@ -23,7 +24,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 public class ContainerDisenchantment extends Container {
-
+	
+	private EntityPlayerMP player = null;
 	private World world;
 	private BlockPos posBlock;
 	private TileEntityDisenchantmentTableAutomatic tileentity;
@@ -40,9 +42,18 @@ public class ContainerDisenchantment extends Container {
 			super.markDirty();
 			ContainerDisenchantment.this.onCraftMatrixChanged(this);
 		}
+		
+		@Override
+		public ItemStack removeStackFromSlot(int index) {
+			if (index == this.getSizeInventory() - 1)
+				return ItemStack.EMPTY;
+			return super.removeStackFromSlot(index);
+		}
 	};
 
-	public ContainerDisenchantment(InventoryPlayer pInventory, World w, BlockPos pos) {
+	public ContainerDisenchantment(final InventoryPlayer pInventory, World w, BlockPos pos) {
+		if (pInventory.player instanceof EntityPlayerMP)
+			this.player = (EntityPlayerMP) pInventory.player;
 		this.world = w;
 		this.posBlock = pos;
 		this.tileentity = null;
@@ -70,11 +81,14 @@ public class ContainerDisenchantment extends Container {
 			public boolean isItemValid(ItemStack stack) {
 				return false;
 			}
-
+			
 			@Override
 			public ItemStack onTake(EntityPlayer p, ItemStack stack) {
 				if (tileentity != null)
 					return stack;
+				if (player == null)
+					if (pInventory.player instanceof EntityPlayerMP)
+						player = (EntityPlayerMP) pInventory.player;
 				
 				ItemStack itemstack = slots.getStackInSlot(0);
 				ItemStack bookstack = slots.getStackInSlot(1);
@@ -98,7 +112,7 @@ public class ContainerDisenchantment extends Container {
 						table.transferEnchantment(itemstack, outputBookstack, 0, random);
 					
 						itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + 
-								itemstack.getMaxDamage() * (reduceableDmg / power))), random);
+								itemstack.getMaxDamage() * (reduceableDmg / power))), random, player);
 						if (itemstack.getItemDamage() > itemstack.getMaxDamage()) {
 							slots.setInventorySlotContents(0, ItemStack.EMPTY);
 							break;
@@ -148,20 +162,9 @@ public class ContainerDisenchantment extends Container {
 			ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
 			BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
 
-			if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY && itemstack.getTagCompound() != null) {
+			if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY && table.getEnchantmentList(itemstack) != null) {
 				itemstack = itemstack.copy();
-				if (itemstack.getTagCompound().getTag("InfiTool") != null)
-					if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
-						return;
-				if (itemstack.getTagCompound().getTag("TinkerData") != null)
-					if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
-						return; //TODO:: ADD SPECIFIC BEHAVIOUR
-
-				if (table.getEnchantmentList(itemstack) == null) {
-					if (this.slots.getStackInSlot(2) != ItemStack.EMPTY)
-						this.slots.setInventorySlotContents(2, ItemStack.EMPTY);
-					return;
-				}
+				
 				float power = table.getEnchantingPower(this.world, this.posBlock);
 				int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
 				double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
@@ -172,7 +175,7 @@ public class ContainerDisenchantment extends Container {
 					table.transferEnchantment(itemstack, outputBookstack, 0, this.random);
 					
 					itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + 
-							itemstack.getMaxDamage() * (reduceableDmg / power))), this.random);
+							itemstack.getMaxDamage() * (reduceableDmg / power))), this.random, this.player);
 					
 					if (itemstack.getItemDamage() > itemstack.getMaxDamage() || 
 							!(world.getBlockState(posBlock).getValue(table.BULKDISENCHANTING)))
@@ -190,17 +193,9 @@ public class ContainerDisenchantment extends Container {
 	public void onContainerClosed(EntityPlayer p) {
 		super.onContainerClosed(p);
 		
-		if (this.tileentity == null) {
-			if (!this.world.isRemote) {
-				ItemStack itemstack = this.slots.removeStackFromSlot(0);
-				ItemStack bookstack = this.slots.removeStackFromSlot(1);
-	
-				if (itemstack != ItemStack.EMPTY)
-					p.dropItem(itemstack, false);
-				if (bookstack != ItemStack.EMPTY)
-					p.dropItem(bookstack, false);
-			}
-		}
+		if (this.tileentity == null)
+			if (!this.world.isRemote)
+				this.clearContainer(p, p.world, this.slots);
 	}
 
 	@Override

@@ -2,25 +2,37 @@ package de.impelon.disenchanter.proxies;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import de.impelon.disenchanter.blocks.BlockDisenchantmentTable;
 import de.impelon.disenchanter.blocks.ItemBlockDisenchantment;
 import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
 import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTableAutomatic;
-import de.impelon.disenchanter.blocks.UpgradeTableRecipe;
+import de.impelon.disenchanter.crafting.UpgradeTableRecipe;
 import de.impelon.disenchanter.gui.GUIHandler;
 import de.impelon.disenchanter.DisenchanterMain;
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -52,9 +64,6 @@ public class CommonProxy {
 		
 		GameRegistry.registerTileEntity(TileEntityDisenchantmentTable.class, "TileDisentchantmentTable");
 		GameRegistry.registerTileEntity(TileEntityDisenchantmentTableAutomatic.class, "TileDisentchantmentTableAutomatic");
-		
-		GameRegistry.register(disenchantmentTable);
-		GameRegistry.register(itemDisenchantmentTable, disenchantmentTable.getRegistryName());
 	}
 	
 	public void load(FMLInitializationEvent ev) {	
@@ -62,20 +71,45 @@ public class CommonProxy {
 			MinecraftForge.EVENT_BUS.register(DisenchanterMain.versionChecker);
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(DisenchanterMain.instance, new GUIHandler());
-			
+	}
+	
+	public void postInit(FMLPostInitializationEvent ev) {}
+	
+	public void registerBlocks(RegistryEvent.Register<Block> ev) {
+		ev.getRegistry().register(disenchantmentTable);
+	}
+	
+	public void registerItems(RegistryEvent.Register<Item> ev) {
+		ev.getRegistry().register(itemDisenchantmentTable.setRegistryName(disenchantmentTable.getRegistryName()));
+	}
+	
+	public void registerPotions(RegistryEvent.Register<Potion> ev) {}
+	
+	public void registerBiomes(RegistryEvent.Register<Biome> ev) {}
+	
+	public void registerSoundEvents(RegistryEvent.Register<SoundEvent> ev) {}
+	
+	public void registerPotionTypes(RegistryEvent.Register<PotionType> ev) {}
+	
+	public void registerEnchantments(RegistryEvent.Register<Enchantment> ev) {}
+	
+	public void registerRecipes(RegistryEvent.Register<IRecipe> ev) {
+		
 		ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, OreDictionary.WILDCARD_VALUE);
 		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 0),
+		//TODO: Switch to JSON for ShapedOreRecipe first, UpgradeTableRecipe later
+		
+		ev.getRegistry().register(new ShapedOreRecipe(null, new ItemStack(itemDisenchantmentTable, 1, 0),
 					"   ",
 					"YEY",
 					"ETE",
 					Character.valueOf('T'), Blocks.ENCHANTING_TABLE,
 					Character.valueOf('E'), "gemEmerald",
 					Character.valueOf('Y'), "dyeYellow"
-		));
+		).setRegistryName(itemDisenchantmentTable.getRegistryName()));
 		
 		if (DisenchanterMain.config.get("general", "EnableAutomaticRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new UpgradeTableRecipe(disenchantmentTable.AUTOMATIC, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 1),
+			ev.getRegistry().register(new UpgradeTableRecipe(disenchantmentTable.AUTOMATIC, new ItemStack(itemDisenchantmentTable, 1, 1),
 					"IMI",
 					"BCB",
 					"ITI",
@@ -84,10 +118,10 @@ public class CommonProxy {
 					Character.valueOf('C'), Blocks.CHEST,
 					Character.valueOf('B'), "dyeBlack",
 					Character.valueOf('M'), Items.COMPARATOR
-		));
+			).setRegistryName(DisenchanterMain.MODID, "upgradetable_automatic"));
 		
 		if (DisenchanterMain.config.get("general", "EnableBulkDisenchantingRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new UpgradeTableRecipe(disenchantmentTable.BULKDISENCHANTING, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 2),
+			ev.getRegistry().register(new UpgradeTableRecipe(disenchantmentTable.BULKDISENCHANTING, new ItemStack(itemDisenchantmentTable, 1, 2),
 					"QGQ",
 					"GDG",
 					"QTQ",
@@ -95,10 +129,10 @@ public class CommonProxy {
 					Character.valueOf('D'), "gemDiamond",
 					Character.valueOf('Q'), "gemQuartz",
 					Character.valueOf('G'), "ingotGold"
-		));
+			).setRegistryName(DisenchanterMain.MODID, "upgradetable_bulkdisenchanting"));
 		
 		if (DisenchanterMain.config.get("general", "EnableVoidingRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new UpgradeTableRecipe(disenchantmentTable.VOIDING, new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 4),
+			ev.getRegistry().register(new UpgradeTableRecipe(disenchantmentTable.VOIDING, new ItemStack(itemDisenchantmentTable, 1, 4),
 					"POP",
 					"EHE",
 					"PTP",
@@ -107,18 +141,20 @@ public class CommonProxy {
 					Character.valueOf('H'), Blocks.HOPPER,
 					Character.valueOf('P'), "dyePurple",
 					Character.valueOf('O'), Blocks.OBSIDIAN
-		));
+			).setRegistryName(DisenchanterMain.MODID, "upgradetable_voiding"));
 		
 		if (DisenchanterMain.config.get("general", "EnableClearRecipe", true).getBoolean())
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, 0),
+			ev.getRegistry().register(new ShapedOreRecipe(null, new ItemStack(itemDisenchantmentTable, 1, 0),
 					"PPP",
 					"PTP",
 					"PPP",
 					Character.valueOf('T'), table,
 					Character.valueOf('P'), Items.PAPER
-		));
+			).setRegistryName(DisenchanterMain.MODID, "clearupgrades"));
 	}
 	
-	public void postInit(FMLPostInitializationEvent ev) {}
+	public void registerVillagerProfessions(RegistryEvent.Register<VillagerProfession> ev) {}
+	
+	public void registerEntityEntries(RegistryEvent.Register<EntityEntry> ev) {}
 	
 }

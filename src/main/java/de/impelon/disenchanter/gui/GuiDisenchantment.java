@@ -1,10 +1,9 @@
 package de.impelon.disenchanter.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.blocks.ContainerDisenchantment;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -23,17 +22,24 @@ public class GuiDisenchantment extends GuiContainer {
 	}
 	
 	@Override
+	public void drawScreen(int x, int y, float partialTicks) {
+        this.drawDefaultBackground();
+        super.drawScreen(x, y, partialTicks);
+        this.renderHoveredToolTip(x, y);
+    }
+	
+	@Override
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
-		this.fontRendererObj.drawString(this.customName == null ? 
+		this.fontRenderer.drawString(this.customName == null ? 
 				I18n.format("container.disenchant", new Object[0]) : this.customName, 8, 5, 4210752);
-		this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+		this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 	}
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f,
 			int x, int y) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture(guiResource);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.getTextureManager().bindTexture(guiResource);
         this.drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
 	}
 	
