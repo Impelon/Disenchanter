@@ -10,6 +10,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -24,6 +25,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -236,7 +238,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 				int lvl = enchant.getInteger("lvl");
 				
 				if (random.nextFloat() > enchantmentLoss)
-					output.addEnchantment(Enchantment.getEnchantmentByID(id), lvl);
+					ItemEnchantedBook.addEnchantment(output, new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
 				
 				enchants.removeTag(index);
 			}
