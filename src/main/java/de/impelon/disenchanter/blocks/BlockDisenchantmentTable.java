@@ -81,7 +81,13 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
-		return side == 0 ? this.bottom[(meta / 4) % 2] : (side == 1 ? this.top[(meta / 2) % 2] : this.side[meta % 2]);
+		switch (side) {
+		case 0:
+			return this.bottom[(meta / 4) % 2];
+		case 1:
+			return this.top[(meta / 2) % 2];
+		}
+		return this.side[meta % 2];
 	}
 	
 	@Override
@@ -327,7 +333,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	}
 	
 	public boolean isEnchantmentStorage(ItemStack itemstack) {
-		return itemstack.stackTagCompound.getTag("StoredEnchantments") != null;
+		return itemstack.getTagCompound().getTag("StoredEnchantments") != null;
 	}
 
 }
