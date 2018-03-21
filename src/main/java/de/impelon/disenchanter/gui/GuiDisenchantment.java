@@ -28,8 +28,7 @@ public class GuiDisenchantment extends GuiContainer {
 	}
 	
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f,
-			int x, int y) {
+	protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(guiResource);
         this.drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
