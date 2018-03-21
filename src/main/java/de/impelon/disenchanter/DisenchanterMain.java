@@ -1,5 +1,6 @@
 package de.impelon.disenchanter;
 
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -10,17 +11,18 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import de.impelon.disenchanter.proxies.CommonProxy;
 import de.impelon.disenchanter.update.VersionChecker;
 
-@Mod(modid = "DisenchanterMod", name = "Disenchanter", version = "1.5")
+@Mod(modid = DisenchanterMain.MODID, name = DisenchanterMain.NAME, version = DisenchanterMain.VERSION)
 public class DisenchanterMain {
 
+	public static final String NAME = "Disenchanter";
 	public static final String MODID = "DisenchanterMod";
-	public static final String VERSION = "1.5";
+	public static final String VERSION = "1.6";
 	public static final String PREFIX = EnumChatFormatting.GRAY + "[" + EnumChatFormatting.GOLD + EnumChatFormatting.BOLD + 
-			"Disenchanter" + EnumChatFormatting.GRAY + "] " + EnumChatFormatting.RESET;
+			NAME + EnumChatFormatting.GRAY + "] " + EnumChatFormatting.RESET;
 	public static final VersionChecker versionChecker = new VersionChecker();
 	public static Configuration config;
 
-	@Mod.Instance(value = "DisenchanterMod")
+	@Mod.Instance(value = MODID)
 	public static DisenchanterMain instance;
 
 	@SidedProxy(clientSide = "de.impelon.disenchanter.proxies.CombinedClientProxy", serverSide = "de.impelon.disenchanter.proxies.ServerProxy")
