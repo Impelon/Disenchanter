@@ -12,20 +12,21 @@ import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.proxies.CommonProxy;
 import de.impelon.disenchanter.update.VersionChecker;
 
-@Mod(modid="disenchanter", name="Disenchanter", version="1.5")
+@Mod(modid = DisenchanterMain.MODID, name = DisenchanterMain.NAME, version = DisenchanterMain.VERSION)
 public class DisenchanterMain {
 	
+	public static final String NAME = "Disenchanter";
 	public static final String MODID = "disenchanter";
-	public static final String VERSION = "1.5";
+	public static final String VERSION = "1.6";
 	public static final String PREFIX = TextFormatting.GRAY + "[" + TextFormatting.GOLD + TextFormatting.BOLD + 
-			"Disenchanter" + TextFormatting.GRAY + "] " + TextFormatting.RESET;
+			NAME + TextFormatting.GRAY + "] " + TextFormatting.RESET;
 	public static final VersionChecker versionChecker = new VersionChecker();
 	public static Configuration config;
 	
-	@Mod.Instance(value="disenchanter")
+	@Mod.Instance(value = MODID)
 	public static DisenchanterMain instance;
 	
-	@SidedProxy(clientSide="de.impelon.disenchanter.proxies.CombinedClientProxy", serverSide="de.impelon.disenchanter.proxies.ServerProxy")
+	@SidedProxy(clientSide = "de.impelon.disenchanter.proxies.CombinedClientProxy", serverSide = "de.impelon.disenchanter.proxies.ServerProxy")
 	public static CommonProxy proxy;
 	
 	@EventHandler
