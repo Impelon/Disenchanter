@@ -1,0 +1,10 @@
+{
+    "block.disenchantment_table.use": {
+        "category": "block",
+        "sounds": [
+            "block/disenchantment_table/disenchant1",
+            "block/disenchantment_table/disenchant2",
+            "block/disenchantment_table/disenchant3"
+        ]
+    }
+}
