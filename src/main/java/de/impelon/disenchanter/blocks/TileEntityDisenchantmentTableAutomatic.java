@@ -26,60 +26,6 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 			this.accessible[n] = n;
 	}
 	
-	public void disenchant() {
-		if (this.getStackInSlot(2) != ItemStack.EMPTY)
-			return;
-
-		ItemStack itemstack = this.getStackInSlot(0);
-		ItemStack bookstack = this.getStackInSlot(1);
-		ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
-		BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
-
-		if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY && itemstack.getTagCompound() != null) {
-			if (itemstack.getTagCompound().getTag("InfiTool") != null)
-				if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
-					return;
-			if (itemstack.getTagCompound().getTag("TinkerData") != null)
-				if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
-					return;
-				
-			float power = table.getEnchantingPower(this.world, this.pos);
-			int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
-			double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
-			double reduceableDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2).getDouble();
-			double machineDmgMultiplier = DisenchanterMain.config.get("disenchanting", "MachineDamageMultiplier", 2.5).getDouble();
-
-			while (table.getEnchantmentList(itemstack) != null) {
-				table.transferEnchantment(itemstack, outputBookstack, 0, this.random);
-				
-				itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + 
-						itemstack.getMaxDamage() * (reduceableDmg / power))), this.random);
-				if (itemstack.getItemDamage() > itemstack.getMaxDamage()) {
-					this.setInventorySlotContents(0, ItemStack.EMPTY);
-					break;
-				}
-				
-				if (!(world.getBlockState(this.pos).getValue(table.BULKDISENCHANTING)))
-					break;
-			}
-			
-			if (table.getEnchantmentList(itemstack) == null) {
-				if (itemstack.getItem() == Items.ENCHANTED_BOOK)
-					this.setInventorySlotContents(0, new ItemStack(Items.BOOK));
-				if (world.getBlockState(this.pos).getValue(table.VOIDING))
-					this.setInventorySlotContents(0, ItemStack.EMPTY);
-			}
-			
-			if (bookstack.getCount() > 1)
-				bookstack.setCount(bookstack.getCount() - 1);
-			else
-				bookstack = ItemStack.EMPTY;
-			this.setInventorySlotContents(1, bookstack);
-			if (outputBookstack.getTagCompound() != null && outputBookstack.getTagCompound().getTag("StoredEnchantments") != null)
-				this.setInventorySlotContents(2, outputBookstack);
-		}
-	}
-	
 	@Override
 	public void readFromNBT(NBTTagCompound nbtData) {
 		super.readFromNBT(nbtData);
@@ -118,8 +64,11 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	@Override
 	public void update() {
 		super.update();
-		if (!this.world.isRemote && this.tickCount % DisenchanterMain.config.get("disenchanting", "AutomaticDisenchantmentCycleTicks", 100).getInt() == 0)
-			this.disenchant();
+		if (!this.world.isRemote && this.tickCount % DisenchanterMain.config.get("disenchanting", "AutomaticDisenchantmentCycleTicks", 100).getInt() == 0) {
+			BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
+		
+			table.disenchant(this, true, this.world, this.pos, random);
+		}
 	}
 	
 	@Override
