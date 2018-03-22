@@ -41,6 +41,9 @@ public class CommonProxy {
 	
 	public static final BlockDisenchantmentTable disenchantmentTable = new BlockDisenchantmentTable();
 	public static final ItemBlockDisenchantment itemDisenchantmentTable = new ItemBlockDisenchantment();
+	
+	private static final ResourceLocation disenchantmentTableUseLocation = new ResourceLocation(DisenchanterMain.MODID, "block.disenchantment_table.use");
+	public static final SoundEvent disenchantmentTableUse = new SoundEvent(disenchantmentTableUseLocation).setRegistryName(disenchantmentTableUseLocation);
 		
 	public void preInit(FMLPreInitializationEvent ev) {
 		Configuration config = new Configuration(ev.getSuggestedConfigurationFile());
@@ -87,7 +90,9 @@ public class CommonProxy {
 	
 	public void registerBiomes(RegistryEvent.Register<Biome> ev) {}
 	
-	public void registerSoundEvents(RegistryEvent.Register<SoundEvent> ev) {}
+	public void registerSoundEvents(RegistryEvent.Register<SoundEvent> ev) {
+		ev.getRegistry().register(disenchantmentTableUse);
+	}
 	
 	public void registerPotionTypes(RegistryEvent.Register<PotionType> ev) {}
 	
