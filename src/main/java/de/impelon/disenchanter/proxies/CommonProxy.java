@@ -21,6 +21,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -29,6 +31,7 @@ public class CommonProxy {
 	
 	public static final BlockDisenchantmentTable disenchantmentTable = new BlockDisenchantmentTable();
 	public static final ItemBlockDisenchantment itemDisenchantmentTable = new ItemBlockDisenchantment();
+	public static SoundEvent disenchantmentTableUse;
 		
 	public void preInit(FMLPreInitializationEvent ev) {
 		Configuration config = new Configuration(ev.getSuggestedConfigurationFile());
@@ -55,6 +58,9 @@ public class CommonProxy {
 		
 		GameRegistry.register(disenchantmentTable);
 		GameRegistry.register(itemDisenchantmentTable, disenchantmentTable.getRegistryName());
+		
+		ResourceLocation soundLocation = new ResourceLocation(DisenchanterMain.MODID, "block.disenchantment_table.use");
+		disenchantmentTableUse = GameRegistry.register(new SoundEvent(soundLocation).setRegistryName(soundLocation));
 	}
 	
 	public void load(FMLInitializationEvent ev) {	

@@ -31,14 +31,27 @@ public class CombinedClientProxy extends CommonProxy {
 		ModelLoader.setCustomStateMapper(disenchantmentTable, new DefaultStateMapper() {
 			@Override
 			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-		        return new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), state.toString().split("[\\[\\]]")[1]);
+				StringBuilder variant = new StringBuilder();
+				variant.append(BlockDisenchantmentTable.AUTOMATIC.getName() + "=" + state.getValue(BlockDisenchantmentTable.AUTOMATIC).toString());
+				variant.append(',');
+				variant.append(BlockDisenchantmentTable.BULKDISENCHANTING.getName() + "=" + state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING).toString());
+				variant.append(',');
+				variant.append(BlockDisenchantmentTable.VOIDING.getName() + "=" + state.getValue(BlockDisenchantmentTable.VOIDING).toString());
+				return new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), variant.toString());
 		    }
 		});
 		
-		for (byte meta = 0; meta < 8; meta++)
+		for (byte meta = 0; meta < 8; meta++) {
+			IBlockState state = disenchantmentTable.getStateFromMeta(meta);
+			StringBuilder variant = new StringBuilder();
+			variant.append(BlockDisenchantmentTable.AUTOMATIC.getName() + "=" + state.getValue(BlockDisenchantmentTable.AUTOMATIC).toString());
+			variant.append(',');
+			variant.append(BlockDisenchantmentTable.BULKDISENCHANTING.getName() + "=" + state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING).toString());
+			variant.append(',');
+			variant.append(BlockDisenchantmentTable.VOIDING.getName() + "=" + state.getValue(BlockDisenchantmentTable.VOIDING).toString());
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(disenchantmentTable), meta, 
-					new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), 
-							disenchantmentTable.getStateFromMeta(meta).toString().split("[\\[\\]]")[1]));
+					new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), variant.toString()));
+		}
 	}
 	
 	@Override
