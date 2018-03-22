@@ -76,45 +76,8 @@ public class ContainerDisenchantment extends Container {
 				if (tileentity != null)
 					return;
 				
-				ItemStack itemstack = slots.getStackInSlot(0);
-				ItemStack bookstack = slots.getStackInSlot(1);
-				ItemStack outputBookstack = new ItemStack(Items.enchanted_book);
 				BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
-				 
-				if (itemstack != null && bookstack != null && itemstack.getTagCompound() != null) {
-					if (bookstack.stackSize > 1)
-						bookstack.stackSize -= 1;
-					else
-						bookstack = (ItemStack) null;
-					slots.setInventorySlotContents(1, bookstack);
-
-					float power = table.getEnchantingPower(worldObj, posBlock);
-					int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
-					double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
-					double reduceableDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2).getDouble();
-					double machineDmgMultiplier = DisenchanterMain.config.get("disenchanting", "MachineDamageMultiplier", 2.5).getDouble();
-					
-					while (table.getEnchantmentList(itemstack) != null) {
-						table.transferEnchantment(itemstack, outputBookstack, 0, random);
-						
-						itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + 
-								itemstack.getMaxDamage() * (reduceableDmg / power))), random);
-						if (itemstack.getItemDamage() > itemstack.getMaxDamage()) {
-							slots.setInventorySlotContents(0, (ItemStack) null);
-							break;
-						}
-						
-						if (!(worldObj.getBlockState(posBlock).getValue(table.BULKDISENCHANTING)))
-							break;
-					}
-					
-					if (table.getEnchantmentList(itemstack) == null) {
-						if (itemstack.getItem() == Items.enchanted_book)
-							slots.setInventorySlotContents(0, new ItemStack(Items.book));
-						if (worldObj.getBlockState(posBlock).getValue(table.VOIDING))
-							slots.setInventorySlotContents(0, (ItemStack) null);
-					}
-				}
+				table.disenchant(slots, false, worldObj, posBlock, random);
 			}
 
 		});
@@ -141,44 +104,16 @@ public class ContainerDisenchantment extends Container {
 	}
 
 	public void updateOutput() {
-		if (!this.worldObj.isRemote) {
+		if (!this.worldObj.isRemote && this.tileentity == null) {
 			ItemStack itemstack = this.slots.getStackInSlot(0);
 			ItemStack bookstack = this.slots.getStackInSlot(1);
 			ItemStack outputBookstack = new ItemStack(Items.enchanted_book);
 			BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
+			
 
-			if (itemstack != null && bookstack != null && itemstack.getTagCompound() != null) {
-				itemstack = itemstack.copy();
-				if (itemstack.getTagCompound().getTag("InfiTool") != null)
-					if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
-						return;
-
-				if (table.getEnchantmentList(itemstack) == null) {
-					if (this.slots.getStackInSlot(2) != null)
-						this.slots.setInventorySlotContents(2, (ItemStack) null);
-					return;
-				}
-				
-				float power = table.getEnchantingPower(this.worldObj, this.posBlock);
-				int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
-				double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
-				double reduceableDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2).getDouble();
-				double machineDmgMultiplier = DisenchanterMain.config.get("disenchanting", "MachineDamageMultiplier", 2.5).getDouble();
-
-				while (table.getEnchantmentList(itemstack) != null) {
-					table.transferEnchantment(itemstack, outputBookstack, 0, this.random);
-					
-					itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + 
-							itemstack.getMaxDamage() * (reduceableDmg / power))), this.random);
-					
-					if (itemstack.getItemDamage() > itemstack.getMaxDamage() || 
-							!(worldObj.getBlockState(posBlock).getValue(table.BULKDISENCHANTING)))
-						break;
-				}
-				
-				if (!(this.slots.getStackInSlot(2) != null && 
-						this.slots.getStackInSlot(2).getItem() == outputBookstack.getItem() && 
-						this.slots.getStackInSlot(2).getTagCompound().getTag("StoredEnchantments").equals(outputBookstack.getTagCompound().getTag("StoredEnchantments"))))
+			if (itemstack != null && bookstack != null && table.getEnchantmentList(itemstack) != null) {
+				table.disenchant(itemstack.copy(), outputBookstack, this.tileentity != null, this.worldObj, this.posBlock, this.random);
+				if (!(ItemStack.areItemStacksEqual(this.slots.getStackInSlot(2), outputBookstack)))
 					this.slots.setInventorySlotContents(2, (ItemStack) outputBookstack);
 			} else
 				if (this.slots.getStackInSlot(2) != null)
