@@ -35,6 +35,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -222,8 +223,63 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		return power;
 	}
 	
+	protected void disenchant(IInventory inventory, boolean isAutomatic, World world, BlockPos position, Random random) {
+		if (inventory.getSizeInventory() < 3 || (isAutomatic && inventory.getStackInSlot(2) != ItemStack.EMPTY))
+			return;
+
+		ItemStack itemstack = inventory.getStackInSlot(0);
+		ItemStack bookstack = inventory.getStackInSlot(1);
+		ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
+		
+		if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY && this.getEnchantmentList(itemstack) != null) {
+			if (bookstack.getCount() > 1)
+				bookstack.setCount(bookstack.getCount() - 1);
+			else
+				bookstack = ItemStack.EMPTY;
+			inventory.setInventorySlotContents(1, bookstack);
+				
+			this.disenchant(itemstack, outputBookstack, isAutomatic, world, position, random);
+			
+			if (itemstack.getItemDamage() > itemstack.getMaxDamage())
+				itemstack = ItemStack.EMPTY;
+			
+			if (itemstack != ItemStack.EMPTY && this.getEnchantmentList(itemstack) == null) {
+				if (itemstack.getItem() == Items.ENCHANTED_BOOK)
+					itemstack = new ItemStack(Items.BOOK);
+				if (world.getBlockState(position).getValue(this.VOIDING))
+					itemstack = ItemStack.EMPTY;
+			}
+			inventory.setInventorySlotContents(0, itemstack);
+			
+			if (isAutomatic && outputBookstack.getTagCompound() != null && outputBookstack.getTagCompound().getTag("StoredEnchantments") != null)
+				inventory.setInventorySlotContents(2, outputBookstack);
+			
+			if (!world.isRemote)
+				world.playSound(null, position, DisenchanterMain.proxy.disenchantmentTableUse, SoundCategory.BLOCKS, isAutomatic ? 0.5F : 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
+		}
+	}
+	
+	protected void disenchant(ItemStack itemstack, ItemStack outputBookstack, boolean isAutomatic, World world, BlockPos position, Random random) {
+		float power = this.getEnchantingPower(world, position);
+		int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
+		double durabiltyDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamage", 0.025).getDouble();
+		double reduceableDmg = DisenchanterMain.config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2).getDouble();
+		double machineDmgMultiplier = isAutomatic ? DisenchanterMain.config.get("disenchanting", "MachineDamageMultiplier", 2.5).getDouble() : 1.0;
+
+		while (this.getEnchantmentList(itemstack) != null) {
+			this.transferEnchantment(itemstack, outputBookstack, 0, random);
+			
+			itemstack.attemptDamageItem((int) (machineDmgMultiplier * (flatDmg + itemstack.getMaxDamage() * durabiltyDmg + 
+					itemstack.getMaxDamage() * (reduceableDmg / power))), random, null);
+			
+			if (itemstack.getItemDamage() > itemstack.getMaxDamage() || 
+					!(world.getBlockState(position).getValue(this.BULKDISENCHANTING)))
+				break;
+		}
+	}
+	
 	public void transferEnchantment(ItemStack input, ItemStack output, int index, Random random) {
-		if (input != null && output != null && input.getTagCompound() != null) {
+		if (input != ItemStack.EMPTY && output != ItemStack.EMPTY && input.getTagCompound() != null) {
 			double enchantmentLoss = DisenchanterMain.config.get("disenchanting", "EnchantmentLossChance", 0.0).getDouble();
 			
 			NBTTagList enchants = this.getEnchantmentList(input);
@@ -241,6 +297,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 					ItemEnchantedBook.addEnchantment(output, new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
 				
 				enchants.removeTag(index);
+				input.setRepairCost(input.getRepairCost() / 2);
 			}
 			if (enchants.tagCount() <= 0)
 				if (this.isEnchantmentStorage(input))
@@ -251,7 +308,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	}
 	
 	public NBTTagList getEnchantmentList(ItemStack itemstack) {
-		if (itemstack.getTagCompound() == null)
+		if (itemstack == ItemStack.EMPTY || itemstack.getTagCompound() == null)
 			return null;
 		
 		if (itemstack.getTagCompound().getTag("InfiTool") != null)
@@ -265,7 +322,6 @@ public class BlockDisenchantmentTable extends BlockContainer {
 			return (NBTTagList) itemstack.getTagCompound().getTag("ench");
 		if (itemstack.getTagCompound().getTag("StoredEnchantments") != null)
 			return (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
-		
 		return null;
 	}
 	
