@@ -1,0 +1,8 @@
+tile.disenchanter:disenchantmenttable.name=驱魔台
+container.disenchant=附魔提取
+msg.automatic.txt=自动
+msg.bulk.txt=批量
+msg.voiding.txt=作废
+msg.outdated.txt=您的驱魔台版本已过时, 点击这里访问官方网站!
+msg.currentversion.txt=当前版本:
+msg.latestversion.txt=最新版本:
