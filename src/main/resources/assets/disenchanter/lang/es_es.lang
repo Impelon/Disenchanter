@@ -1,0 +1,8 @@
+tile.disenchanter:disenchantmenttable.name=Mesa de Desencantamiento
+container.disenchant=Desencantar
+msg.automatic.txt=automatico
+msg.bulk.txt=desencantado completo
+msg.voiding.txt=desecantado total
+msg.outdated.txt=Tu versión del Desecantado esta desactualizado. ¡Haz Clic aquí para ir a la página oficial!
+msg.currentversion.txt=versión actual: 
+msg.latestversion.txt=ultima versión: 
