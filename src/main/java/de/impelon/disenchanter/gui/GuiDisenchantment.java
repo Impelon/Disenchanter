@@ -43,4 +43,16 @@ public class GuiDisenchantment extends GuiContainer {
         this.drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
 	}
 	
+	// Quick fix for the duplication bug when using the drop keybind in the GUI
+	// Credits for the solution go to Thornack
+	// Original post over at https://www.minecraftforge.net/forum/topic/40068-how-would-you-disable-item-drop-when-in-gui/
+	
+	@Override
+	protected void keyTyped(char key, int event){
+		if (event == 1 || event == this.mc.gameSettings.keyBindInventory.getKeyCode()){
+			this.mc.player.closeScreen();
+		}
+		this.checkHotbarKeys(key);
+	}
+	
 }
