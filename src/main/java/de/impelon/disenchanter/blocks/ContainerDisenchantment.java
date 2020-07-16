@@ -70,6 +70,8 @@ public class ContainerDisenchantment extends Container {
 			
 			@Override
 			public boolean isItemValid(ItemStack stack) {
+				if (stack.getItem().equals(Items.BOOK))
+					return false;
 				String[] itemBlacklist = DisenchanterMain.config.get("disenchanting", "ItemBlacklist", new String[]{"minecraft:dirt"}).getStringList();
 				for (String i : itemBlacklist) {
 					if (i == null || i.equals(""))
