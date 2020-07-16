@@ -35,6 +35,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -350,7 +351,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 				}
 			}
 		}
-		if (tags.isEmpty())
+		if (tags.tagCount() == 0)
 			return null;
 		return tags;
 	}
