@@ -319,7 +319,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 			if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
 				return null;
 		
-		NBTTagList origTags;
+		NBTTagList origTags = null;
 		
 		if (itemstack.getTagCompound().getTag("ench") != null)
 			origTags = (NBTTagList) itemstack.getTagCompound().getTag("ench");
