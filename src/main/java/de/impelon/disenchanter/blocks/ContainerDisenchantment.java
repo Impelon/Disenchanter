@@ -15,10 +15,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -64,7 +66,26 @@ public class ContainerDisenchantment extends Container {
 			this.slots = this.tileentity;
 		}
 		
-		this.addSlotToContainer(new Slot(this.slots, 0, 26, 35));
+		this.addSlotToContainer(new Slot(this.slots, 0, 26, 35) {
+			
+			@Override
+			public boolean isItemValid(ItemStack stack) {
+				String[] itemBlacklist = DisenchanterMain.config.get("disenchanting", "ItemBlacklist", new String[]{"minecraft:dirt"}).getStringList();
+				for (String i : itemBlacklist) {
+					if (i == null || i.equals(""))
+						continue;
+					
+					if (Item.REGISTRY.containsKey(new ResourceLocation(i))) {
+						Item item = Item.REGISTRY.getObject(new ResourceLocation(i));
+						if (item == null)
+							continue;
+						if (item.equals(stack.getItem()))
+							return false;
+					}
+				}
+				return true;
+			}
+		});
 
 		this.addSlotToContainer(new Slot(this.slots, 1, 75, 35) {
 
