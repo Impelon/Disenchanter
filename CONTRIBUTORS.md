@@ -1,8 +1,6 @@
 **By adding your GitHub-username to the following list
 you agree that any contributions you have made to this project
-are licensed under the same [license](LICENSE) as the project.**
-Specifically you agree to the terms of the
-[BSD 2-Clause "Simplified" License](https://choosealicense.com/licenses/bsd-2-clause/).
+are licensed under the same [license (BSD 2-Clause "Simplified")](LICENSE) as the project.**
 
 Thereby you implicitly (and hereby explicitly) agree that
 your contribution can be used with or without modification
