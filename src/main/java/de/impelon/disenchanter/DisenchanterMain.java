@@ -36,7 +36,7 @@ public class DisenchanterMain {
 	
 	public static final String NAME = "Disenchanter";
 	public static final String MODID = "disenchanter";
-	public static final String VERSION = "1.5";
+	public static final String VERSION = "1.6";
 	public static final String PREFIX = TextFormatting.GRAY + "[" + TextFormatting.GOLD + TextFormatting.BOLD + 
 			NAME + TextFormatting.GRAY + "] " + TextFormatting.RESET;
 	public static final VersionChecker versionChecker = new VersionChecker();
