@@ -21,3 +21,4 @@ Impelon (Ovi T.), #3
 
 List of contributors
 ====================
+* democat3457 (Colin W.), [#52](https://github.com/Impelon/Disenchanter/pull/52)

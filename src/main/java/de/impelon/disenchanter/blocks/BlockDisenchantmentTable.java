@@ -35,6 +35,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -318,11 +319,41 @@ public class BlockDisenchantmentTable extends BlockContainer {
 			if (DisenchanterMain.config.get("disenchanting", "EnableTCBehaviour", true).getBoolean())
 				return null;
 		
+		NBTTagList origTags = null;
+		
 		if (itemstack.getTagCompound().getTag("ench") != null)
-			return (NBTTagList) itemstack.getTagCompound().getTag("ench");
+			origTags = (NBTTagList) itemstack.getTagCompound().getTag("ench");
 		if (itemstack.getTagCompound().getTag("StoredEnchantments") != null)
-			return (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
-		return null;
+			origTags = (NBTTagList) itemstack.getTagCompound().getTag("StoredEnchantments");
+		
+		if (origTags == null)
+			return null;
+		NBTTagList tags = origTags.copy();
+		
+		lbl:
+		for (int i = tags.tagCount() - 1; i > -1; i--) {
+			NBTTagCompound enchantTag = tags.getCompoundTagAt(i);
+			Enchantment enchant = Enchantment.getEnchantmentByID(enchantTag.getInteger("id"));
+			String[] enchantBlacklist = DisenchanterMain.config.get("disenchanting", "EnchantmentBlacklist", new String[]{}).getStringList();
+			
+			for (String eb : enchantBlacklist) {
+				if (eb == null || eb.equals(""))
+					continue;
+
+				if (Enchantment.REGISTRY.containsKey(new ResourceLocation(eb))) {
+					Enchantment e = Enchantment.REGISTRY.getObject(new ResourceLocation(eb));
+					if (e == null)
+						continue;
+					if (e.equals(enchant)) {
+						tags.removeTag(i);
+						continue lbl;
+					}
+				}
+			}
+		}
+		if (tags.tagCount() == 0)
+			return null;
+		return tags;
 	}
 	
 	public boolean isEnchantmentStorage(ItemStack itemstack) {

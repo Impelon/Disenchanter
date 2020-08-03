@@ -62,6 +62,8 @@ public class CommonProxy {
 		config.get("disenchanting", "EnchantmentLossChance", 0.0, "What should the probability be of additional enchantments being lost from Items when disenchanting?");
 		config.get("disenchanting", "EnableTCBehaviour", true, "Should Items from Tinkers Construct be handeled differently? (banned / modifiers removed [in TC2])");
 		config.get("disenchanting", "AutomaticDisenchantmentProcessTicks", 100, "How many ticks should a disenchantment process last when using an automaic Disenchantment Table?");
+		config.get("disenchanting", "ItemBlacklist", new String[]{"minecraft:dirt"}, "Which items should not be disenchantable? (modid:itemid)");
+		config.get("disenchanting", "EnchantmentBlacklist", new String[]{}, "Which enchants should not be removable? (modid:enchantid)");
 
 		config.save();
 		
