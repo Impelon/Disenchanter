@@ -1,10 +1,11 @@
-package de.impelon.disenchanter.blocks;
+package de.impelon.disenchanter.block;
 
 import java.util.Random;
 
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.DisenchantingUtils;
-import de.impelon.disenchanter.proxies.CommonProxy;
+import de.impelon.disenchanter.proxy.CommonProxy;
+import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;

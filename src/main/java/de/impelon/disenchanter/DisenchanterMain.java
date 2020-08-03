@@ -1,14 +1,10 @@
 package de.impelon.disenchanter;
 
 import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,10 +14,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import de.impelon.disenchanter.DisenchanterMain;
-import de.impelon.disenchanter.proxies.CommonProxy;
+import de.impelon.disenchanter.proxy.CommonProxy;
 import de.impelon.disenchanter.update.VersionChecker;
 
 @Mod.EventBusSubscriber
@@ -39,7 +33,7 @@ public class DisenchanterMain {
 	@Mod.Instance(value = MODID)
 	public static DisenchanterMain instance;
 
-	@SidedProxy(clientSide = "de.impelon.disenchanter.proxies.CombinedClientProxy", serverSide = "de.impelon.disenchanter.proxies.ServerProxy")
+	@SidedProxy(clientSide = "de.impelon.disenchanter.proxy.CombinedClientProxy", serverSide = "de.impelon.disenchanter.proxy.ServerProxy")
 	public static CommonProxy proxy;
 
 	@EventHandler

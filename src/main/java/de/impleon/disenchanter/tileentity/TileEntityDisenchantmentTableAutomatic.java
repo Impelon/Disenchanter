@@ -1,8 +1,8 @@
-package de.impelon.disenchanter.blocks;
+package de.impleon.disenchanter.tileentity;
 
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.DisenchantingUtils;
-import de.impelon.disenchanter.proxies.CommonProxy;
+import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;

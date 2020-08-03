@@ -1,8 +1,9 @@
-package de.impelon.disenchanter.blocks;
+package de.impleon.disenchanter.tileentity;
 
 import java.util.Random;
 
 import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.block.ContainerDisenchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

@@ -1,4 +1,4 @@
-package de.impelon.disenchanter.proxies;
+package de.impelon.disenchanter.proxy;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;

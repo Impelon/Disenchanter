@@ -2,8 +2,8 @@ package de.impelon.disenchanter;
 
 import java.util.Random;
 
-import de.impelon.disenchanter.blocks.BlockDisenchantmentTable;
-import de.impelon.disenchanter.proxies.CommonProxy;
+import de.impelon.disenchanter.block.BlockDisenchantmentTable;
+import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.init.Items;
@@ -139,10 +139,10 @@ public class DisenchantingUtils {
 		lbl: for (int i = tags.tagCount() - 1; i > -1; i--) {
 			NBTTagCompound enchantTag = tags.getCompoundTagAt(i);
 			Enchantment enchant = Enchantment.getEnchantmentByID(enchantTag.getInteger("id"));
-			String[] enchantBlacklist = DisenchanterMain.config
-					.get("disenchanting", "EnchantmentBlacklist", new String[] {}).getStringList();
+			String[] disabeledEnchantments = DisenchanterMain.config
+					.get("disenchanting", "DisabeledEnchantments", new String[] {}).getStringList();
 
-			for (String eb : enchantBlacklist) {
+			for (String eb : disabeledEnchantments) {
 				if (eb == null || eb.equals(""))
 					continue;
 

@@ -1,34 +1,27 @@
-package de.impelon.disenchanter.proxies;
+package de.impelon.disenchanter.proxy;
 
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
-import de.impelon.disenchanter.blocks.BlockDisenchantmentTable;
-import de.impelon.disenchanter.blocks.ItemBlockDisenchantment;
-import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
-import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTableAutomatic;
 import de.impelon.disenchanter.crafting.UpgradeTableRecipe;
 import de.impelon.disenchanter.gui.GUIHandler;
+import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTable;
+import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.block.BlockDisenchantmentTable;
+import de.impelon.disenchanter.block.ItemBlockDisenchantment;
 import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -47,18 +40,19 @@ public class CommonProxy {
 		config.load();
 		
 		config.get("general", "CheckVersion", true, "Should Disenchanter check for new versions on startup?");
-		config.get("general", "EnableAutomaticRecipe", true, "Should the recipe for the automatic-upgrade be avalible?");
-		config.get("general", "EnableVoidingRecipe", true, "Should the recipe for the voiding-upgrade be avalible?");
-		config.get("general", "EnableBulkDisenchantingRecipe", true, "Should the recipe for the bulk-disenchanting-upgrade be avalible?");
-		config.get("general", "EnableClearRecipe", true, "Should the recipe for clearing all upgrades be avalible?");
+		config.get("general", "EnableAutomaticRecipe", true, "Should the recipe for the automatic-upgrade be available?");
+		config.get("general", "EnableVoidingRecipe", true, "Should the recipe for the voiding-upgrade be available?");
+		config.get("general", "EnableBulkDisenchantingRecipe", true, "Should the recipe for the bulk-disenchanting-upgrade be available?");
+		config.get("general", "EnableClearRecipe", true, "Should the recipe for clearing all upgrades be available?");
 		config.get("disenchanting", "FlatDamage", 10, "How much flat damage should be dealt to items when disenchanting?");
 		config.get("disenchanting", "MaxDurabilityDamage", 0.025, "How much of the item's maximal durability should be dealt as damage to items when disenchanting?");
 		config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2, "How much of the item's maximal durability should be dealt as reduceable damage to items when disenchanting?");
-		config.get("disenchanting", "MachineDamageMultiplier", 2.5, "By how much should the dammage on the item be multiplied when using an automaic Disenchantment Table?");
+		config.get("disenchanting", "MachineDamageMultiplier", 2.5, "By how much should the dammage on the item be multiplied when using an automatic disenchantment table?");
 		config.get("disenchanting", "EnchantmentLossChance", 0.0, "What should the probability be of additional enchantments being lost from items when disenchanting?");
-		config.get("disenchanting", "AutomaticDisenchantmentProcessTicks", 100, "How many ticks should a disenchantment process last when using an automaic Disenchantment Table?");
+		config.get("disenchanting", "AutomaticDisenchantmentProcessTicks", 100, "How many ticks should a disenchantment process last when using an automatic disenchantment table?");
 		config.get("disenchanting", "DisabeledItems", new String[]{"minecraft:dirt"}, "Which items should not be disenchantable? (modid:itemid)");
 		config.get("disenchanting", "DisabeledEnchantments", new String[]{}, "Which enchantments should be ignored when disenchanting? (modid:enchantid)");
+		config.get("visual", "BookRenderAngle", -80.0, "What angle should the book above the disenchantment table be rendered at? The regular enchanting table has an angle of 80.");
 
 		config.save();
 		
@@ -87,9 +81,7 @@ public class CommonProxy {
 	public void registerRecipes(RegistryEvent.Register<IRecipe> ev) {
 		
 		ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, OreDictionary.WILDCARD_VALUE);
-		
-		//TODO: Switch to JSON for ShapedOreRecipe first, UpgradeTableRecipe later
-		
+				
 		ev.getRegistry().register(new ShapedOreRecipe(null, new ItemStack(itemDisenchantmentTable, 1, 0),
 					"   ",
 					"YEY",

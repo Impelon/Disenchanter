@@ -1,13 +1,12 @@
-package de.impelon.disenchanter.gui;
+package de.impleon.disenchanter.tileentity;
 
+import de.impelon.disenchanter.DisenchanterMain;
 import net.minecraft.client.model.ModelBook;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
-
-import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,8 +32,9 @@ public class TileEntityDisenchantmentTableRenderer extends TileEntitySpecialRend
 			f2 += ((float) Math.PI * 2F);
 
 		float f3 = tileentity.bookRotationPrev + f2 * partialTicks;
+		float bookAngle = (float) DisenchanterMain.config.get("visual", "BookRenderAngle", -80.0).getDouble();
 		GlStateManager.rotate(-f3 * 180.0F / (float) Math.PI, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotate(-80.0F, 0.0F, 0.0F, 1.0F);
+		GlStateManager.rotate(bookAngle, 0.0F, 0.0F, 1.0F);
 		this.bindTexture(bookResource);
 		float f4 = tileentity.pageFlipPrev + (tileentity.pageFlip - tileentity.pageFlipPrev) * partialTicks + 0.25F;
 		float f5 = f4 + 0.5F;

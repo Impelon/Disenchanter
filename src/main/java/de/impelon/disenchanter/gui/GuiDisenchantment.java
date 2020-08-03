@@ -1,7 +1,7 @@
 package de.impelon.disenchanter.gui;
 
 import de.impelon.disenchanter.DisenchanterMain;
-import de.impelon.disenchanter.blocks.ContainerDisenchantment;
+import de.impelon.disenchanter.block.ContainerDisenchantment;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;

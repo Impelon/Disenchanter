@@ -1,6 +1,6 @@
 package de.impelon.disenchanter.crafting;
 
-import de.impelon.disenchanter.proxies.CommonProxy;
+import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -11,19 +11,6 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 public class UpgradeTableRecipe extends ShapedOreRecipe {
 	
 	private final PropertyBool addedProperty;
-	
-//	static {
-//	    RecipeSorter.register(DisenchanterMain.MODID + ":upgradeTable", UpgradeTableRecipe.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
-//	}
-	
-	/* 
-	 * TODO: remove constructor if converted to JSON recipe
-	 * see: 
-	 * https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/crafting/recipe/ArmorUpgradeRecipe.java
-	 * https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/crafting/recipe/AncientWillRecipe.java
-	 * https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/crafting/ModCraftingRecipes.java
-	 * https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/crafting/FluxfieldConditionFactory.java
-	 */
 	
 	public UpgradeTableRecipe(PropertyBool addedProperty, ItemStack result, Object... recipe) {
 		super(null, result, recipe);
@@ -51,8 +38,8 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 		}
 
 		ItemStack res = super.getCraftingResult(grid);
-		res.setItemDamage(table.getItemDamage() + CommonProxy.disenchantmentTable.
-				getMetaFromState(CommonProxy.disenchantmentTable.getDefaultState().withProperty(this.addedProperty, true)));
+		res.setItemDamage(CommonProxy.disenchantmentTable.
+				getMetaFromState(CommonProxy.disenchantmentTable.getStateFromMeta(table.getItemDamage()).withProperty(this.addedProperty, true)));
 		return res;
 	}
 

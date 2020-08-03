@@ -1,8 +1,10 @@
-package de.impelon.disenchanter.blocks;
+package de.impelon.disenchanter.block;
 
 import java.util.Random;
 
 import de.impelon.disenchanter.DisenchanterMain;
+import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTable;
+import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -13,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
@@ -28,6 +29,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -61,12 +63,12 @@ public class BlockDisenchantmentTable extends BlockContainer {
 
 		for (int blockX = x - 2; blockX <= x + 2; ++blockX) {
 			for (int blockZ = z - 2; blockZ <= z + 2; ++blockZ) {
-				if (blockX > x - 2 && blockX < x + 2 && blockZ == z - 1) 
+				if (blockX >= x - 1 && blockX <= x + 1 && blockZ == z - 1) 
 					blockZ = z + 2;
 
 				if (random.nextInt(16) == 0) {
 					for (int blockY = y; blockY <= y + 1; ++blockY) {
-						if (w.getBlockState(new BlockPos(blockX, blockY, blockZ)).getBlock().equals(Blocks.BOOKSHELF)) {
+						if (ForgeHooks.getEnchantPower(w, new BlockPos(blockX, blockY, blockZ)) > 0) {
 							if (!w.isAirBlock(new BlockPos((blockX - x) / 2 + x, blockY, (blockZ - z) / 2 + z)))
 								break;
 							
