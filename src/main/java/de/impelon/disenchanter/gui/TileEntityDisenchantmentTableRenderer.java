@@ -4,8 +4,6 @@ import net.minecraft.client.model.ModelBook;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityEnchantmentTable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -29,7 +27,7 @@ public class TileEntityDisenchantmentTableRenderer extends TileEntitySpecialRend
 		
 		float f2;
 
-		for (f2 = tileentity.bookRotation - tileentity.bookRotationPrev; f2 >= (float) Math.PI; f2 -= ((float) Math.PI * 2F)) {}
+		for (f2 = tileentity.bookRotation - tileentity.bookRotationPrev; f2 >= (float) Math.PI; f2 -= ((float) Math.PI * 2F));
 		
 		while (f2 < -(float) Math.PI)
 			f2 += ((float) Math.PI * 2F);

@@ -1,21 +1,16 @@
 package de.impelon.disenchanter.blocks;
 
 import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.DisenchantingUtils;
 import de.impelon.disenchanter.proxies.CommonProxy;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.ForgeHooks;
 
 public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchantmentTable implements ISidedInventory {
 
@@ -45,10 +40,8 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	@Override
 	public void update() {
 		super.update();
-		if (!this.world.isRemote && this.tickCount % DisenchanterMain.config.get("disenchanting", "AutomaticDisenchantmentCycleTicks", 100).getInt() == 0) {
-			BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
-		
-			table.disenchant(this, true, this.world, this.pos, random);
+		if (!this.world.isRemote && this.tickCount % DisenchanterMain.config.get("disenchanting", "AutomaticDisenchantmentCycleTicks", 100).getInt() == 0) {		
+			DisenchantingUtils.disenchantInTable(this, true, this.world, this.pos, random);
 		}
 	}
 	

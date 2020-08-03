@@ -3,9 +3,8 @@ package de.impelon.disenchanter.blocks;
 import java.util.Random;
 
 import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.DisenchantingUtils;
 import de.impelon.disenchanter.proxies.CommonProxy;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -13,17 +12,13 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
 public class ContainerDisenchantment extends Container {
 	
@@ -110,8 +105,7 @@ public class ContainerDisenchantment extends Container {
 				if (tileentity != null)
 					return stack;
 				
-				BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
-				table.disenchant(slots, false, world, posBlock, random);
+				DisenchantingUtils.disenchantInTable(slots, false, world, posBlock, random);
 				return stack;
 			}
 
@@ -143,11 +137,10 @@ public class ContainerDisenchantment extends Container {
 			ItemStack itemstack = this.slots.getStackInSlot(0);
 			ItemStack bookstack = this.slots.getStackInSlot(1);
 			ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
-			BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
 			
 
-			if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY && table.getEnchantmentList(itemstack) != null) {
-				table.disenchant(itemstack.copy(), outputBookstack, this.tileentity != null, this.world, this.posBlock, this.random);
+			if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY && DisenchantingUtils.getEnchantmentList(itemstack) != null) {
+				DisenchantingUtils.disenchant(itemstack.copy(), outputBookstack, this.tileentity != null, this.world, this.posBlock, this.random);
 				if (!(ItemStack.areItemStacksEqual(this.slots.getStackInSlot(2), outputBookstack)))
 					this.slots.setInventorySlotContents(2, outputBookstack);
 			} else

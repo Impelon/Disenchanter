@@ -2,12 +2,8 @@ package de.impelon.disenchanter.blocks;
 
 import java.util.List;
 
-import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.proxies.CommonProxy;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.Style;
@@ -34,15 +30,15 @@ public class ItemBlockDisenchantment extends ItemBlock {
 	public void addInformation(ItemStack stack, World w, List<String> l, ITooltipFlag advanced) {		
 		super.addInformation(stack, w, l, advanced);
 		
-		BlockDisenchantmentTable table = DisenchanterMain.proxy.disenchantmentTable;
+		BlockDisenchantmentTable table = CommonProxy.disenchantmentTable;
 		
-		if (table.getStateFromMeta(stack.getItemDamage()).getValue(table.AUTOMATIC))
+		if (table.getStateFromMeta(stack.getItemDamage()).getValue(BlockDisenchantmentTable.AUTOMATIC))
 			l.add(new TextComponentTranslation("msg.automatic.txt")
 				.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
-		if (table.getStateFromMeta(stack.getItemDamage()).getValue(table.BULKDISENCHANTING))
+		if (table.getStateFromMeta(stack.getItemDamage()).getValue(BlockDisenchantmentTable.BULKDISENCHANTING))
 			l.add(new TextComponentTranslation("msg.bulk.txt")
 					.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
-		if (table.getStateFromMeta(stack.getItemDamage()).getValue(table.VOIDING))
+		if (table.getStateFromMeta(stack.getItemDamage()).getValue(BlockDisenchantmentTable.VOIDING))
 			l.add(new TextComponentTranslation("msg.voiding.txt")
 					.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
 	}

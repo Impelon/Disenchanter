@@ -2,24 +2,16 @@ package de.impelon.disenchanter.proxies;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
-import net.minecraft.client.renderer.block.statemap.StateMap;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import de.impelon.disenchanter.blocks.BlockDisenchantmentTable;
 import de.impelon.disenchanter.blocks.TileEntityDisenchantmentTable;
 import de.impelon.disenchanter.gui.TileEntityDisenchantmentTableRenderer;
@@ -45,7 +37,7 @@ public class CombinedClientProxy extends CommonProxy {
 				variant.append(BlockDisenchantmentTable.BULKDISENCHANTING.getName() + "=" + state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING).toString());
 				variant.append(',');
 				variant.append(BlockDisenchantmentTable.VOIDING.getName() + "=" + state.getValue(BlockDisenchantmentTable.VOIDING).toString());
-				return new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), variant.toString());
+				return new ModelResourceLocation(disenchantmentTable.getRegistryName(), variant.toString());
 		    }
 		});
 	}
@@ -63,13 +55,16 @@ public class CombinedClientProxy extends CommonProxy {
 			variant.append(',');
 			variant.append(BlockDisenchantmentTable.VOIDING.getName() + "=" + state.getValue(BlockDisenchantmentTable.VOIDING).toString());
 			ModelLoader.setCustomModelResourceLocation(itemDisenchantmentTable, meta, 
-					new ModelResourceLocation(disenchantmentTable.getUnlocalizedName().substring(5), variant.toString()));
+					new ModelResourceLocation(disenchantmentTable.getRegistryName(), variant.toString()));
 		}
 	}
 	
 	@Override
 	public void load(FMLInitializationEvent ev) {
 		super.load(ev);
+		if (DisenchanterMain.config.get("general", "CheckVersion", true).getBoolean())
+			MinecraftForge.EVENT_BUS.register(DisenchanterMain.versionChecker);
+		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDisenchantmentTable.class, new TileEntityDisenchantmentTableRenderer());
 	}
 	

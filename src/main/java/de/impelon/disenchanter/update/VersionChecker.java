@@ -82,6 +82,8 @@ public class VersionChecker implements Runnable {
 			warning.setStyle(linkStyle);
 			ev.player.sendStatusMessage(warning, false);
 			MinecraftForge.EVENT_BUS.unregister(this);
+		} else {
+			MinecraftForge.EVENT_BUS.unregister(this);
 		}
 	}
 

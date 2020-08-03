@@ -1,13 +1,11 @@
 package de.impelon.disenchanter.crafting;
 
-import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.proxies.CommonProxy;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class UpgradeTableRecipe extends ShapedOreRecipe {
@@ -36,8 +34,8 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 	public boolean matches(InventoryCrafting grid, World world) {
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
 			ItemStack st = grid.getStackInSlot(slot);
-			if (st != null && st.getItem() == Item.getItemFromBlock(DisenchanterMain.proxy.disenchantmentTable))
-				if (DisenchanterMain.proxy.disenchantmentTable.getStateFromMeta(st.getItemDamage()).getValue(this.addedProperty))
+			if (st != null && st.getItem() == Item.getItemFromBlock(CommonProxy.disenchantmentTable))
+				if (CommonProxy.disenchantmentTable.getStateFromMeta(st.getItemDamage()).getValue(this.addedProperty))
 					return false;
 		}
 		return super.matches(grid, world);
@@ -48,13 +46,13 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 		ItemStack table = null;
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
 				ItemStack st = grid.getStackInSlot(slot);
-				if (st != null && st.getItem() == Item.getItemFromBlock(DisenchanterMain.proxy.disenchantmentTable))
+				if (st != null && st.getItem() == Item.getItemFromBlock(CommonProxy.disenchantmentTable))
 					table = st.copy();
 		}
 
 		ItemStack res = super.getCraftingResult(grid);
-		res.setItemDamage(table.getItemDamage() + DisenchanterMain.proxy.disenchantmentTable.
-				getMetaFromState(DisenchanterMain.proxy.disenchantmentTable.getDefaultState().withProperty(this.addedProperty, true)));
+		res.setItemDamage(table.getItemDamage() + CommonProxy.disenchantmentTable.
+				getMetaFromState(CommonProxy.disenchantmentTable.getDefaultState().withProperty(this.addedProperty, true)));
 		return res;
 	}
 
