@@ -1,7 +1,7 @@
 package de.impleon.disenchanter.tileentity;
 
 import de.impelon.disenchanter.DisenchanterMain;
-import de.impelon.disenchanter.block.ContainerDisenchantment;
+import de.impelon.disenchanter.inventory.ContainerDisenchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

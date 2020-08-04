@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
-import de.impelon.disenchanter.block.ContainerDisenchantment;
+import de.impelon.disenchanter.inventory.ContainerDisenchantment;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;

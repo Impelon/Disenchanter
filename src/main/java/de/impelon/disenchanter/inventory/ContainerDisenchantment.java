@@ -1,4 +1,4 @@
-package de.impelon.disenchanter.block;
+package de.impelon.disenchanter.inventory;
 
 import java.util.Random;
 
