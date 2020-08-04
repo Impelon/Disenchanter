@@ -50,14 +50,15 @@ public class CommonProxy {
 		config.get("disenchanting", "MachineDamageMultiplier", 2.5, "By how much should the dammage on the item be multiplied when using an automatic disenchantment table?");
 		config.get("disenchanting", "EnchantmentLossChance", 0.0, "What should the probability be of additional enchantments being lost from items when disenchanting?");
 		config.get("disenchanting", "AutomaticDisenchantmentProcessTicks", 100, "How many ticks should a disenchantment process last when using an automatic disenchantment table?");
-		config.get("disenchanting", "DisabeledItems", new String[]{"minecraft:dirt"}, "Which items should not be disenchantable? (modid:itemid)");
-		config.get("disenchanting", "DisabeledEnchantments", new String[]{}, "Which enchantments should be ignored when disenchanting? (modid:enchantid)");
+		config.get("disenchanting", "DisabledItems", new String[]{"minecraft:dirt"}, "Which items should not be disenchantable? (modid:itemid)");
+		config.get("disenchanting", "DisabledEnchantments", new String[]{}, "Which enchantments should be ignored when disenchanting? (modid:enchantid)");
+		config.get("disenchanting", "EnableTCBehaviour", true, "Should items from Tinkers Construct be handeled differently? (enchantments can not be removed)");
 		config.get("visual", "BookRenderAngle", -80.0, "What angle should the book above the disenchantment table be rendered at? The regular enchanting table has an angle of 80.");
 
 		config.save();
 		
-		GameRegistry.registerTileEntity(TileEntityDisenchantmentTable.class, "TileDisentchantmentTable");
-		GameRegistry.registerTileEntity(TileEntityDisenchantmentTableAutomatic.class, "TileDisentchantmentTableAutomatic");
+		GameRegistry.registerTileEntity(TileEntityDisenchantmentTable.class, new ResourceLocation(DisenchanterMain.MODID, "TileDisentchantmentTable"));
+		GameRegistry.registerTileEntity(TileEntityDisenchantmentTableAutomatic.class, new ResourceLocation(DisenchanterMain.MODID, "TileDisentchantmentTableAutomatic"));
 	}
 	
 	public void load(FMLInitializationEvent ev) {			

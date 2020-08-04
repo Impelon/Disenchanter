@@ -41,7 +41,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	public void update() {
 		super.update();
 		if (!this.world.isRemote && this.tickCount % DisenchanterMain.config.get("disenchanting", "AutomaticDisenchantmentCycleTicks", 100).getInt() == 0) {		
-			DisenchantingUtils.disenchantInTable(this, true, this.world, this.pos, random);
+			DisenchantingUtils.disenchantInInventory(this, true, this.world, this.pos, random);
 		}
 	}
 	

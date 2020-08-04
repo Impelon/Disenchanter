@@ -2,7 +2,6 @@ package de.impelon.disenchanter.block;
 
 import java.util.Random;
 
-import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.DisenchantingUtils;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
@@ -14,10 +13,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -68,19 +65,6 @@ public class ContainerDisenchantment extends Container {
 			public boolean isItemValid(ItemStack stack) {
 				if (stack.getItem().equals(Items.BOOK))
 					return false;
-				String[] itemBlacklist = DisenchanterMain.config.get("disenchanting", "ItemBlacklist", new String[]{"minecraft:dirt"}).getStringList();
-				for (String i : itemBlacklist) {
-					if (i == null || i.equals(""))
-						continue;
-					
-					if (Item.REGISTRY.containsKey(new ResourceLocation(i))) {
-						Item item = Item.REGISTRY.getObject(new ResourceLocation(i));
-						if (item == null)
-							continue;
-						if (item.equals(stack.getItem()))
-							return false;
-					}
-				}
 				return true;
 			}
 		});
@@ -106,7 +90,7 @@ public class ContainerDisenchantment extends Container {
 				if (tileentity != null)
 					return stack;
 				
-				DisenchantingUtils.disenchantInTable(slots, false, world, posBlock, random);
+				DisenchantingUtils.disenchantInInventory(slots, false, world, posBlock, random);
 				return stack;
 			}
 
