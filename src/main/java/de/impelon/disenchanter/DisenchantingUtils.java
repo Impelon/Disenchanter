@@ -1,5 +1,7 @@
 package de.impelon.disenchanter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
@@ -41,23 +43,20 @@ public class DisenchantingUtils {
 		ItemStack bookstack = inventory.getStackInSlot(1);
 		ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
 
-		if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY
-				&& getAvailableEnchantmentList(itemstack) != null) {
+		if (disenchant(itemstack, outputBookstack, isAutomatic, world, position, random)) {
 			if (bookstack.getCount() > 1)
 				bookstack.setCount(bookstack.getCount() - 1);
 			else
 				bookstack = ItemStack.EMPTY;
 			inventory.setInventorySlotContents(1, bookstack);
 
-			disenchant(itemstack, outputBookstack, isAutomatic, world, position, random);
-
 			if (isItemStackBroken(itemstack))
 				itemstack = ItemStack.EMPTY;
 
-			if (itemstack != ItemStack.EMPTY && getEnchantmentList(itemstack) == null) {
-				if (itemstack.getItem() == Items.ENCHANTED_BOOK)
+			if (itemstack != ItemStack.EMPTY) {
+				if (itemstack.getItem() == Items.ENCHANTED_BOOK  && getEnchantmentList(itemstack) == null)
 					itemstack = new ItemStack(Items.BOOK);
-				if (world.getBlockState(position).getValue(BlockDisenchantmentTable.VOIDING))
+				if (world.getBlockState(position).getValue(BlockDisenchantmentTable.VOIDING) && getAvailableEnchantmentIndices(itemstack).isEmpty())
 					itemstack = ItemStack.EMPTY;
 			}
 			inventory.setInventorySlotContents(0, itemstack);
@@ -84,8 +83,9 @@ public class DisenchantingUtils {
 	 * @param world the world the disenchanting is performed in
 	 * @param position the position the disenchanting is performed at
 	 * @param random a {@linkplain Random}-instance to use for random decisions
+	 * @return true if enchantments were transferred, false otherwise
 	 */
-	public static void disenchant(ItemStack input, ItemStack outputBookstack, boolean isAutomatic, World world,
+	public static boolean disenchant(ItemStack input, ItemStack outputBookstack, boolean isAutomatic, World world,
 			BlockPos position, Random random) {
 		float power = getEnchantingPower(world, position);
 		int flatDmg = DisenchanterMain.config.get("disenchanting", "FlatDamage", 10).getInt();
@@ -96,7 +96,13 @@ public class DisenchantingUtils {
 				? DisenchanterMain.config.get("disenchanting", "MachineDamageMultiplier", 2.5).getDouble()
 				: 1.0;
 
-		while (transferEnchantment(input, outputBookstack, 0, random)) {
+		List<Integer> indices;
+		boolean hasTransferredEnchantments = false;
+		while (!(indices = getAvailableEnchantmentIndices(input)).isEmpty()) {
+			if (!transferEnchantment(input, outputBookstack, indices.get(0), random))
+				break;
+			hasTransferredEnchantments = true;
+			
 			input.attemptDamageItem((int) (machineDmgMultiplier
 					* (flatDmg + input.getMaxDamage() * durabiltyDmg + input.getMaxDamage() * (reduceableDmg / power))),
 					random, null);
@@ -105,6 +111,7 @@ public class DisenchantingUtils {
 					|| !(world.getBlockState(position).getValue(BlockDisenchantmentTable.BULKDISENCHANTING)))
 				break;
 		}
+		return hasTransferredEnchantments;
 	}
 
 	/**
@@ -122,7 +129,7 @@ public class DisenchantingUtils {
 	 */
 	public static boolean transferEnchantment(ItemStack input, ItemStack outputBookstack, int index, Random random) {
 		if (input != ItemStack.EMPTY && outputBookstack != ItemStack.EMPTY && input.getTagCompound() != null) {
-			NBTTagList enchants = getAvailableEnchantmentList(input);
+			NBTTagList enchants = getEnchantmentList(input);
 			if (enchants == null)
 				return false;
 
@@ -154,31 +161,32 @@ public class DisenchantingUtils {
 
 	/**
 	 * <p>
-	 * Returns the nbt-list of enchantments that are available for disenchanting on
+	 * Returns the list of the indices of the enchantments that are available for disenchanting on
 	 * the given itemstack. This takes disabled items and enchantments into account.
 	 * </p>
 	 * 
 	 * @param itemstack the itemstack to get the enchantments from
-	 * @return the nbt-list of available enchantments
+	 * @return the list of indices in the itemstack's enchantment nbt-list
 	 */
-	public static NBTTagList getAvailableEnchantmentList(ItemStack itemstack) {
+	public static List<Integer> getAvailableEnchantmentIndices(ItemStack itemstack) {
+		List<Integer> available = new ArrayList<Integer>();
+		
 		String[] disabledItems = DisenchanterMain.config.get("disenchanting", "DisabledItems", new String[] {})
 				.getStringList();
 		for (String disabeledName : disabledItems) {
 			if (itemstack.getItem().getRegistryName().toString().equalsIgnoreCase(disabeledName)) {
-				return null;
+				return available;
 			}
 		}
 
-		NBTTagList original = getEnchantmentList(itemstack);
-		if (original == null)
-			return null;
-		NBTTagList available = new NBTTagList();
+		NBTTagList enchants = getEnchantmentList(itemstack);
+		if (enchants == null)
+			return available;
 
 		String[] disabledEnchantments = DisenchanterMain.config
 				.get("disenchanting", "DisabledEnchantments", new String[] {}).getStringList();
-		for (int index = 0; index < original.tagCount(); index++) {
-			NBTTagCompound enchant = original.getCompoundTagAt(index);
+		for (int index = 0; index < enchants.tagCount(); index++) {
+			NBTTagCompound enchant = enchants.getCompoundTagAt(index);
 			Enchantment enchantment = Enchantment.getEnchantmentByID(enchant.getInteger("id"));
 			boolean valid = true;
 			for (String disabeledName : disabledEnchantments) {
@@ -188,11 +196,9 @@ public class DisenchantingUtils {
 				}
 			}
 			if (valid)
-				available.appendTag(enchant);
+				available.add(index);
 		}
 
-		if (available.tagCount() <= 0)
-			return null;
 		return available;
 	}
 

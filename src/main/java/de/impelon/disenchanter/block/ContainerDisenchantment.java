@@ -124,8 +124,7 @@ public class ContainerDisenchantment extends Container {
 			ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
 			
 
-			if (itemstack != ItemStack.EMPTY && bookstack != ItemStack.EMPTY && DisenchantingUtils.getEnchantmentList(itemstack) != null) {
-				DisenchantingUtils.disenchant(itemstack.copy(), outputBookstack, this.tileentity != null, this.world, this.posBlock, this.random);
+			if (bookstack != ItemStack.EMPTY && DisenchantingUtils.disenchant(itemstack.copy(), outputBookstack, this.tileentity != null, this.world, this.posBlock, this.random)) {
 				if (!(ItemStack.areItemStacksEqual(this.slots.getStackInSlot(2), outputBookstack)))
 					this.slots.setInventorySlotContents(2, outputBookstack);
 			} else
