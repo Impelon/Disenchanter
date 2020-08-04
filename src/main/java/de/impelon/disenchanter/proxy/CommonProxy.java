@@ -53,8 +53,10 @@ public class CommonProxy {
 		config.get("disenchanting", "DisabledItems", new String[]{"minecraft:dirt"}, "Which items should not be disenchantable? (modid:itemid)");
 		config.get("disenchanting", "DisabledEnchantments", new String[]{}, "Which enchantments should be ignored when disenchanting? (modid:enchantid)");
 		config.get("disenchanting", "EnableTCBehaviour", true, "Should items from Tinkers Construct be handeled differently? (enchantments can not be removed)");
-		config.get("visual", "BookRenderAngle", -80.0, "What angle should the book above the disenchantment table be rendered at? The regular enchanting table has an angle of 80.");
+		config.get("visual", "BookRenderYOffset", 0.4, "How should the book be positioned above the disenchantment table compared to the regular enchanting table? (0.0 is the same as the enchanting table)");
+		config.get("visual", "BookRenderFlipped", true, "Should the book above the disenchantment table be flipped upside-down?");
 
+		
 		config.save();
 		
 		GameRegistry.registerTileEntity(TileEntityDisenchantmentTable.class, new ResourceLocation(DisenchanterMain.MODID, "TileDisentchantmentTable"));
