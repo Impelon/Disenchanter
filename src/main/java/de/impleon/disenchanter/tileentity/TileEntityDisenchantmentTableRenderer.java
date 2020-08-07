@@ -1,6 +1,6 @@
 package de.impleon.disenchanter.tileentity;
 
-import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.DisenchanterConfig;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityEnchantmentTableRenderer;
 import net.minecraft.tileentity.TileEntityEnchantmentTable;
@@ -15,10 +15,10 @@ public class TileEntityDisenchantmentTableRenderer extends TileEntityEnchantment
 	public void render(TileEntityEnchantmentTable tileentity, double x, double y, double z, float partialTicks,
 			int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
-		float bookYOffset = (float) DisenchanterMain.config.get("visual", "BookRenderYOffset", 0.4).getDouble();
+		float bookYOffset = (float) DisenchanterConfig.visual.bookRendererYOffset;
 		GlStateManager.translate((float) x, (float) y + bookYOffset, (float) z);
 
-		if (DisenchanterMain.config.get("visual", "BookRenderFlipped", true).getBoolean()) {
+		if (DisenchanterConfig.visual.bookRendererFlipped) {
 			float f = (float) tileentity.tickCount + partialTicks;
 			float bookFloatOffset = 0.85F + MathHelper.sin(f * 0.1F) * 0.01F;
 			GlStateManager.translate(0.5F, bookFloatOffset, 0.5F);

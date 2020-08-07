@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTable;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableRenderer;
+import de.impelon.disenchanter.DisenchanterConfig;
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 
@@ -62,7 +63,7 @@ public class CombinedClientProxy extends CommonProxy {
 	@Override
 	public void load(FMLInitializationEvent ev) {
 		super.load(ev);
-		if (DisenchanterMain.config.get("general", "CheckVersion", true).getBoolean())
+		if (DisenchanterConfig.general.shouldCheckVersion)
 			MinecraftForge.EVENT_BUS.register(DisenchanterMain.versionChecker);
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDisenchantmentTable.class, new TileEntityDisenchantmentTableRenderer());
@@ -72,7 +73,7 @@ public class CombinedClientProxy extends CommonProxy {
 	public void postInit(FMLPostInitializationEvent ev) {
 		super.postInit(ev);
 		
-		if (DisenchanterMain.config.get("general", "CheckVersion", true).getBoolean())
+		if (DisenchanterConfig.general.shouldCheckVersion)
 			new Thread(DisenchanterMain.versionChecker, "Version Check").start();
 	}
 }

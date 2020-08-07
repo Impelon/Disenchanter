@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -28,7 +27,6 @@ public class DisenchanterMain {
 	public static final String PREFIX = TextFormatting.GRAY + "[" + TextFormatting.GOLD + TextFormatting.BOLD + NAME
 			+ TextFormatting.GRAY + "] " + TextFormatting.RESET;
 	public static final VersionChecker versionChecker = new VersionChecker();
-	public static Configuration config;
 
 	@Mod.Instance(value = MODID)
 	public static DisenchanterMain instance;

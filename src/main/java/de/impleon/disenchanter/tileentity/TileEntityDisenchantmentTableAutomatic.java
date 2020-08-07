@@ -1,6 +1,6 @@
 package de.impleon.disenchanter.tileentity;
 
-import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.DisenchanterConfig;
 import de.impelon.disenchanter.DisenchantingUtils;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +40,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	@Override
 	public void update() {
 		super.update();
-		if (!this.world.isRemote && this.tickCount % DisenchanterMain.config.get("disenchanting", "AutomaticDisenchantmentCycleTicks", 100).getInt() == 0) {		
+		if (!this.world.isRemote && this.tickCount % DisenchanterConfig.disenchanting.ticksAutomaticDisenchantmentProcess == 0) {		
 			DisenchantingUtils.disenchantInInventory(this, true, this.world, this.pos, this.world.rand);
 		}
 	}

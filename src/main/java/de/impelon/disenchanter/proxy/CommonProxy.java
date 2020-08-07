@@ -1,6 +1,5 @@
 package de.impelon.disenchanter.proxy;
 
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -11,6 +10,7 @@ import de.impelon.disenchanter.crafting.UpgradeTableRecipe;
 import de.impelon.disenchanter.gui.GUIHandler;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTable;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
+import de.impelon.disenchanter.DisenchanterConfig;
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 import de.impelon.disenchanter.block.ItemBlockDisenchantment;
@@ -35,30 +35,6 @@ public class CommonProxy {
 	public static final SoundEvent disenchantmentTableUse = new SoundEvent(disenchantmentTableUseLocation).setRegistryName(disenchantmentTableUseLocation);
 		
 	public void preInit(FMLPreInitializationEvent ev) {
-		Configuration config = new Configuration(ev.getSuggestedConfigurationFile());
-		DisenchanterMain.config = config;
-		config.load();
-		
-		config.get("general", "CheckVersion", true, "Should Disenchanter check for new versions on startup?");
-		config.get("general", "EnableAutomaticRecipe", true, "Should the recipe for the automatic-upgrade be available?");
-		config.get("general", "EnableVoidingRecipe", true, "Should the recipe for the voiding-upgrade be available?");
-		config.get("general", "EnableBulkDisenchantingRecipe", true, "Should the recipe for the bulk-disenchanting-upgrade be available?");
-		config.get("general", "EnableClearRecipe", true, "Should the recipe for clearing all upgrades be available?");
-		config.get("disenchanting", "FlatDamage", 10, "How much flat damage should be dealt to items when disenchanting?");
-		config.get("disenchanting", "MaxDurabilityDamage", 0.025, "How much of the item's maximal durability should be dealt as damage to items when disenchanting?");
-		config.get("disenchanting", "MaxDurabilityDamageReduceable", 0.2, "How much of the item's maximal durability should be dealt as reduceable damage to items when disenchanting?");
-		config.get("disenchanting", "MachineDamageMultiplier", 2.5, "By how much should the dammage on the item be multiplied when using an automatic disenchantment table?");
-		config.get("disenchanting", "EnchantmentLossChance", 0.0, "What should the probability be of additional enchantments being lost from items when disenchanting?");
-		config.get("disenchanting", "AutomaticDisenchantmentProcessTicks", 100, "How many ticks should a disenchantment process last when using an automatic disenchantment table?");
-		config.get("disenchanting", "DisabledItems", new String[]{}, "Which items should not be disenchantable? (modid:itemid e.g. minecraft:dirt) Java Regex can be used with a [r]-prefix, e.g. [r]minecraft:.* to ban all vanilla items.");
-		config.get("disenchanting", "DisabledEnchantments", new String[]{}, "Which enchantments should be ignored when disenchanting? (modid:enchantid e.g. minecraft:bane_of_arthropods) Java Regex can be used [r]-prefix, e.g. [r]minecraft:.* to ban all vanilla enchantments.");
-		config.get("disenchanting", "EnableTCBehaviour", true, "Should items from Tinkers Construct be handeled differently? (enchantments can not be removed)");
-		config.get("visual", "BookRenderYOffset", 0.4, "How should the book be positioned above the disenchantment table compared to the regular enchanting table? (0.0 is the same as the enchanting table)");
-		config.get("visual", "BookRenderFlipped", true, "Should the book above the disenchantment table be flipped upside-down?");
-
-		
-		config.save();
-		
 		GameRegistry.registerTileEntity(TileEntityDisenchantmentTable.class, new ResourceLocation(DisenchanterMain.MODID, "TileDisentchantmentTable"));
 		GameRegistry.registerTileEntity(TileEntityDisenchantmentTableAutomatic.class, new ResourceLocation(DisenchanterMain.MODID, "TileDisentchantmentTableAutomatic"));
 	}
@@ -94,7 +70,7 @@ public class CommonProxy {
 					Character.valueOf('Y'), "dyeYellow"
 		).setRegistryName(itemDisenchantmentTable.getRegistryName()));
 		
-		if (DisenchanterMain.config.get("general", "EnableAutomaticRecipe", true).getBoolean())
+		if (DisenchanterConfig.general.enableAutomaticRecipe)
 			ev.getRegistry().register(new UpgradeTableRecipe(BlockDisenchantmentTable.AUTOMATIC, new ItemStack(itemDisenchantmentTable, 1, 1),
 					"IMI",
 					"BCB",
@@ -106,7 +82,7 @@ public class CommonProxy {
 					Character.valueOf('M'), Items.COMPARATOR
 			).setRegistryName(DisenchanterMain.MODID, "upgradetable_automatic"));
 		
-		if (DisenchanterMain.config.get("general", "EnableBulkDisenchantingRecipe", true).getBoolean())
+		if (DisenchanterConfig.general.enableBulkDisenchantingRecipe)
 			ev.getRegistry().register(new UpgradeTableRecipe(BlockDisenchantmentTable.BULKDISENCHANTING, new ItemStack(itemDisenchantmentTable, 1, 2),
 					"QGQ",
 					"GDG",
@@ -117,7 +93,7 @@ public class CommonProxy {
 					Character.valueOf('G'), "ingotGold"
 			).setRegistryName(DisenchanterMain.MODID, "upgradetable_bulkdisenchanting"));
 		
-		if (DisenchanterMain.config.get("general", "EnableVoidingRecipe", true).getBoolean())
+		if (DisenchanterConfig.general.enableVoidingRecipe)
 			ev.getRegistry().register(new UpgradeTableRecipe(BlockDisenchantmentTable.VOIDING, new ItemStack(itemDisenchantmentTable, 1, 4),
 					"POP",
 					"EHE",
@@ -129,7 +105,7 @@ public class CommonProxy {
 					Character.valueOf('O'), Blocks.OBSIDIAN
 			).setRegistryName(DisenchanterMain.MODID, "upgradetable_voiding"));
 		
-		if (DisenchanterMain.config.get("general", "EnableClearRecipe", true).getBoolean())
+		if (DisenchanterConfig.general.enableClearRecipe)
 			ev.getRegistry().register(new ShapedOreRecipe(null, new ItemStack(itemDisenchantmentTable, 1, 0),
 					"PPP",
 					"PTP",

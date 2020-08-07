@@ -6,7 +6,6 @@ import de.impelon.disenchanter.DisenchantingUtils;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
@@ -20,10 +19,9 @@ import net.minecraft.world.World;
 
 public class ContainerDisenchantment extends Container {
 	
-	private EntityPlayerMP player = null;
 	private World world;
 	private BlockPos posBlock;
-	private TileEntityDisenchantmentTableAutomatic tileentity;
+	private TileEntityDisenchantmentTableAutomatic tileentityAutomatic;
 	private Random random = new Random();
 	private IInventory slots = new InventoryBasic("Disenchant", true, 3) {
 
@@ -47,16 +45,14 @@ public class ContainerDisenchantment extends Container {
 	};
 
 	public ContainerDisenchantment(final InventoryPlayer pInventory, World w, BlockPos pos) {
-		if (pInventory.player instanceof EntityPlayerMP)
-			this.player = (EntityPlayerMP) pInventory.player;
 		this.world = w;
 		this.posBlock = pos;
-		this.tileentity = null;
+		this.tileentityAutomatic = null;
 		
 		TileEntity te = this.world.getTileEntity(pos);
 		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
-			this.tileentity = (TileEntityDisenchantmentTableAutomatic) te;
-			this.slots = this.tileentity;
+			this.tileentityAutomatic = (TileEntityDisenchantmentTableAutomatic) te;
+			this.slots = this.tileentityAutomatic;
 		}
 		
 		this.addSlotToContainer(new Slot(this.slots, 0, 26, 35) {
@@ -87,7 +83,7 @@ public class ContainerDisenchantment extends Container {
 			
 			@Override
 			public ItemStack onTake(EntityPlayer p, ItemStack stack) {
-				if (tileentity != null)
+				if (tileentityAutomatic != null)
 					return stack;
 				
 				DisenchantingUtils.disenchantInInventory(slots, false, world, posBlock, random);
@@ -112,19 +108,19 @@ public class ContainerDisenchantment extends Container {
 	public void onCraftMatrixChanged(IInventory inventory) {
 		super.onCraftMatrixChanged(inventory);
 
-		if (inventory == this.slots && this.tileentity == null)
+		if (inventory == this.slots && this.tileentityAutomatic == null)
 			this.updateOutput();
 
 	}
 
 	public void updateOutput() {
-		if (!this.world.isRemote && this.tileentity == null) {
+		if (!this.world.isRemote && this.tileentityAutomatic == null) {
 			ItemStack itemstack = this.slots.getStackInSlot(0);
 			ItemStack bookstack = this.slots.getStackInSlot(1);
 			ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
 			
 
-			if (bookstack != ItemStack.EMPTY && DisenchantingUtils.disenchant(itemstack.copy(), outputBookstack, this.tileentity != null, this.world, this.posBlock, this.random)) {
+			if (bookstack != ItemStack.EMPTY && DisenchantingUtils.disenchant(itemstack.copy(), outputBookstack, this.tileentityAutomatic != null, false, this.world, this.posBlock, this.random)) {
 				if (!(ItemStack.areItemStacksEqual(this.slots.getStackInSlot(2), outputBookstack)))
 					this.slots.setInventorySlotContents(2, outputBookstack);
 			} else
@@ -137,7 +133,7 @@ public class ContainerDisenchantment extends Container {
 	public void onContainerClosed(EntityPlayer p) {
 		super.onContainerClosed(p);
 		
-		if (this.tileentity == null)
+		if (this.tileentityAutomatic == null)
 			if (!this.world.isRemote)
 				this.clearContainer(p, p.world, this.slots);
 	}
