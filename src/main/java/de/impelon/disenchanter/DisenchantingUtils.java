@@ -64,9 +64,12 @@ public class DisenchantingUtils {
 					itemstack = ItemStack.EMPTY;
 			}
 			inventory.setInventorySlotContents(0, itemstack);
-
-			if (isAutomatic && getEnchantmentList(outputBookstack) != null)
+			
+			if (getEnchantmentList(outputBookstack) == null)
+				outputBookstack = new ItemStack(Items.BOOK);
+			if (isAutomatic)
 				inventory.setInventorySlotContents(2, outputBookstack);
+					
 
 			if (!world.isRemote)
 				world.playSound(null, position, CommonProxy.disenchantmentTableUse, SoundCategory.BLOCKS,
