@@ -174,8 +174,15 @@ public class DisenchantingUtils {
 		String[] disabledItems = DisenchanterMain.config.get("disenchanting", "DisabledItems", new String[] {})
 				.getStringList();
 		for (String disabeledName : disabledItems) {
-			if (itemstack.getItem().getRegistryName().toString().equalsIgnoreCase(disabeledName)) {
-				return available;
+			String[] splitted = disabeledName.split("\\[r\\]", 2);
+			if (splitted.length > 1) {
+				if (itemstack.getItem().getRegistryName().toString().matches(splitted[1])) {
+					return available;
+				}
+			} else {
+				if (itemstack.getItem().getRegistryName().toString().equalsIgnoreCase(splitted[0])) {
+					return available;
+				}
 			}
 		}
 
@@ -190,9 +197,17 @@ public class DisenchantingUtils {
 			Enchantment enchantment = Enchantment.getEnchantmentByID(enchant.getInteger("id"));
 			boolean valid = true;
 			for (String disabeledName : disabledEnchantments) {
-				if (enchantment.getRegistryName().toString().equalsIgnoreCase(disabeledName)) {
-					valid = false;
-					break;
+				String[] splitted = disabeledName.split("\\[r\\]", 2);
+				if (splitted.length > 1) {
+					if (enchantment.getRegistryName().toString().matches(splitted[1])) {
+						valid = false;
+						break;
+					}
+				} else {
+					if (enchantment.getRegistryName().toString().equalsIgnoreCase(splitted[0])) {
+						valid = false;
+						break;
+					}
 				}
 			}
 			if (valid)

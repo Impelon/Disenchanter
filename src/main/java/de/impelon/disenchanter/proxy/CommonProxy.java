@@ -50,8 +50,8 @@ public class CommonProxy {
 		config.get("disenchanting", "MachineDamageMultiplier", 2.5, "By how much should the dammage on the item be multiplied when using an automatic disenchantment table?");
 		config.get("disenchanting", "EnchantmentLossChance", 0.0, "What should the probability be of additional enchantments being lost from items when disenchanting?");
 		config.get("disenchanting", "AutomaticDisenchantmentProcessTicks", 100, "How many ticks should a disenchantment process last when using an automatic disenchantment table?");
-		config.get("disenchanting", "DisabledItems", new String[]{"minecraft:dirt"}, "Which items should not be disenchantable? (modid:itemid)");
-		config.get("disenchanting", "DisabledEnchantments", new String[]{}, "Which enchantments should be ignored when disenchanting? (modid:enchantid)");
+		config.get("disenchanting", "DisabledItems", new String[]{}, "Which items should not be disenchantable? (modid:itemid e.g. minecraft:dirt) Java Regex can be used with a [r]-prefix, e.g. [r]minecraft:.* to ban all vanilla items.");
+		config.get("disenchanting", "DisabledEnchantments", new String[]{}, "Which enchantments should be ignored when disenchanting? (modid:enchantid e.g. minecraft:bane_of_arthropods) Java Regex can be used [r]-prefix, e.g. [r]minecraft:.* to ban all vanilla enchantments.");
 		config.get("disenchanting", "EnableTCBehaviour", true, "Should items from Tinkers Construct be handeled differently? (enchantments can not be removed)");
 		config.get("visual", "BookRenderYOffset", 0.4, "How should the book be positioned above the disenchantment table compared to the regular enchanting table? (0.0 is the same as the enchanting table)");
 		config.get("visual", "BookRenderFlipped", true, "Should the book above the disenchantment table be flipped upside-down?");
