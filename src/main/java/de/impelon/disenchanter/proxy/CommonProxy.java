@@ -8,12 +8,13 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import de.impelon.disenchanter.crafting.UpgradeTableRecipe;
 import de.impelon.disenchanter.gui.GUIHandler;
+import de.impelon.disenchanter.item.ItemBlockDisenchantment;
+import de.impelon.disenchanter.item.ItemXPTablet;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTable;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import de.impelon.disenchanter.DisenchanterConfig;
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
-import de.impelon.disenchanter.block.ItemBlockDisenchantment;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -30,6 +31,7 @@ public class CommonProxy {
 	
 	public static final BlockDisenchantmentTable disenchantmentTable = new BlockDisenchantmentTable();
 	public static final ItemBlockDisenchantment itemDisenchantmentTable = new ItemBlockDisenchantment();
+	public static final ItemXPTablet xpTablet = new ItemXPTablet();
 	
 	private static final ResourceLocation disenchantmentTableUseLocation = new ResourceLocation(DisenchanterMain.MODID, "block.disenchantment_table.use");
 	public static final SoundEvent disenchantmentTableUse = new SoundEvent(disenchantmentTableUseLocation).setRegistryName(disenchantmentTableUseLocation);
@@ -50,6 +52,7 @@ public class CommonProxy {
 	}
 	
 	public void registerItems(RegistryEvent.Register<Item> ev) {
+		ev.getRegistry().register(xpTablet);
 		ev.getRegistry().register(itemDisenchantmentTable.setRegistryName(disenchantmentTable.getRegistryName()));
 	}
 	

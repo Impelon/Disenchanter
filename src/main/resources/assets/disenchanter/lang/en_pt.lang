@@ -1,8 +1,10 @@
 tile.disenchanter:disenchantmenttable.name=Warlock's Carrel
+item.disenchanter:xptablet.name=Talisman o' Charybdis
 container.disenchant=Spell Lootin'
+msg.stored_xp.txt=looted wisdom: %.1f/%.1f
 msg.automatic.txt=jinxed
 msg.bulk.txt=booty'n
 msg.voiding.txt=maelstrom
-msg.outdated.txt=Yaaarr, yer' model o' Spell Looter is gone overboard. Crack yis drift bottle to plunder ye web-ship!
-msg.currentversion.txt=Yer' model: 
-msg.latestversion.txt=shiny, golden, new model: 
+msg.outdated.txt=Yaaarr, yer' model o' Spell Looter be gone overboard. Crack yis drift bottle to plunder ye web-ship!
+msg.currentversion.txt=Yer' model: %s
+msg.latestversion.txt=shiny, golden, new model: %s

@@ -1,8 +1,10 @@
 tile.disenchanter:disenchantmenttable.name=Disenchantment Table
+item.disenchanter:xptablet.name=Experience Tablet
 container.disenchant=Disenchant
+msg.stored_xp.txt=stored experience: %.1f/%.1f
 msg.automatic.txt=automatic
 msg.bulk.txt=bulk-disenchanting
 msg.voiding.txt=voiding
 msg.outdated.txt=Your version of Disenchanter is outdated. Click here to visit the website!
-msg.currentversion.txt=current version: 
-msg.latestversion.txt=latest version: 
+msg.currentversion.txt=current version: %s
+msg.latestversion.txt=latest version: %s

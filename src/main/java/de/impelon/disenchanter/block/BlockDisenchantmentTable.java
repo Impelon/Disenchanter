@@ -42,10 +42,10 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	
 	public BlockDisenchantmentTable() {
 		super(Material.ROCK, MapColor.YELLOW);
-		this.setLightOpacity(0);
 		this.setCreativeTab(CreativeTabs.DECORATIONS);
 		this.setRegistryName(DisenchanterMain.MODID, "disenchantmentTable");
 		this.setUnlocalizedName(this.getRegistryName().toString().toLowerCase());
+		this.setLightOpacity(0);
 		this.setHardness(5.0F);
 		this.setResistance(2000.0F);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(AUTOMATIC, false).withProperty(BULKDISENCHANTING, false).withProperty(VOIDING, false));

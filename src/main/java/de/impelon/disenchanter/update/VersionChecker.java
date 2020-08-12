@@ -77,8 +77,8 @@ public class VersionChecker implements Runnable {
 			Style linkStyle = new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getUrl()));
 			TextComponentString warning = new TextComponentString(DisenchanterMain.PREFIX +
 					new TextComponentTranslation("msg.outdated.txt").getFormattedText() + " " + TextFormatting.ITALIC + "(" +
-					new TextComponentTranslation("msg.currentversion.txt").getFormattedText() + DisenchanterMain.VERSION + " " + TextFormatting.ITALIC +
-					new TextComponentTranslation("msg.latestversion.txt").getFormattedText() + getLatestVersion() + TextFormatting.ITALIC + ")");
+					new TextComponentTranslation("msg.currentversion.txt", DisenchanterMain.VERSION).getFormattedText() + " " + TextFormatting.ITALIC +
+					new TextComponentTranslation("msg.latestversion.txt", getLatestVersion()).getFormattedText() + TextFormatting.ITALIC + ")");
 			warning.setStyle(linkStyle);
 			ev.player.sendStatusMessage(warning, false);
 			MinecraftForge.EVENT_BUS.unregister(this);

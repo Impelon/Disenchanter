@@ -47,6 +47,8 @@ public class CombinedClientProxy extends CommonProxy {
 	public void registerItems(RegistryEvent.Register<Item> ev) {
 		super.registerItems(ev);
 		
+		ModelLoader.setCustomModelResourceLocation(xpTablet, 0, new ModelResourceLocation(xpTablet.getRegistryName().toString()));
+		
 		for (byte meta = 0; meta < 8; meta++) {
 			IBlockState state = disenchantmentTable.getStateFromMeta(meta);
 			StringBuilder variant = new StringBuilder();
@@ -58,6 +60,7 @@ public class CombinedClientProxy extends CommonProxy {
 			ModelLoader.setCustomModelResourceLocation(itemDisenchantmentTable, meta, 
 					new ModelResourceLocation(disenchantmentTable.getRegistryName(), variant.toString()));
 		}
+		
 	}
 	
 	@Override

@@ -1,7 +1,8 @@
-package de.impelon.disenchanter.block;
+package de.impelon.disenchanter.item;
 
 import java.util.List;
 
+import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemBlock;
