@@ -9,14 +9,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class UpgradeTableRecipe extends ShapedOreRecipe {
-	
+
 	private final PropertyBool addedProperty;
-	
+
 	public UpgradeTableRecipe(PropertyBool addedProperty, ItemStack result, Object... recipe) {
 		super(null, result, recipe);
 		this.addedProperty = addedProperty;
 	}
-	
+
 	@Override
 	public boolean matches(InventoryCrafting grid, World world) {
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
@@ -32,14 +32,14 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 	public ItemStack getCraftingResult(InventoryCrafting grid) {
 		ItemStack table = null;
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
-				ItemStack st = grid.getStackInSlot(slot);
-				if (st != null && st.getItem() == Item.getItemFromBlock(CommonProxy.disenchantmentTable))
-					table = st.copy();
+			ItemStack st = grid.getStackInSlot(slot);
+			if (st != null && st.getItem() == Item.getItemFromBlock(CommonProxy.disenchantmentTable))
+				table = st.copy();
 		}
 
 		ItemStack res = super.getCraftingResult(grid);
-		res.setItemDamage(CommonProxy.disenchantmentTable.
-				getMetaFromState(CommonProxy.disenchantmentTable.getStateFromMeta(table.getItemDamage()).withProperty(this.addedProperty, true)));
+		res.setItemDamage(CommonProxy.disenchantmentTable.getMetaFromState(CommonProxy.disenchantmentTable
+				.getStateFromMeta(table.getItemDamage()).withProperty(this.addedProperty, true)));
 		return res;
 	}
 

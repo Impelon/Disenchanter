@@ -9,50 +9,42 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiDisenchantment extends GuiContainer {
-	
-	private static final ResourceLocation guiResource = new ResourceLocation(DisenchanterMain.MODID, "textures/gui/container/disenchanting_table.png");
+
+	private static final ResourceLocation guiResource = new ResourceLocation(DisenchanterMain.MODID,
+			"textures/gui/container/disenchanting_table.png");
 	private String customName;
 
-	public GuiDisenchantment(InventoryPlayer p, World w,
-			int x, int y, int z, String customName) {
+	public GuiDisenchantment(InventoryPlayer p, World w, int x, int y, int z, String customName) {
 		super(new ContainerDisenchantment(p, w, new BlockPos(x, y, z)));
 		this.customName = customName;
 	}
-	
+
 	@Override
 	public void drawScreen(int x, int y, float partialTicks) {
-        this.drawDefaultBackground();
-        super.drawScreen(x, y, partialTicks);
-        this.renderHoveredToolTip(x, y);
-    }
-	
+		this.drawDefaultBackground();
+		super.drawScreen(x, y, partialTicks);
+		this.renderHoveredToolTip(x, y);
+	}
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
-		this.fontRenderer.drawString(this.customName == null ? 
-				I18n.format("container.disenchant", new Object[0]) : this.customName, 8, 5, 4210752);
-		this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+		this.fontRenderer.drawString(
+				this.customName == null ? I18n.format("container.disenchant", new Object[0]) : this.customName, 8, 5,
+				4210752);
+		this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
+				4210752);
 	}
-	
+
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f,
-			int x, int y) {
+	protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(guiResource);
-        this.drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
+		this.mc.getTextureManager().bindTexture(guiResource);
+		this.drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
 	}
-	
-	// Quick fix for the duplication bug when using the drop keybind in the GUI
-	// Credits for the solution go to Thornack
-	// Original post over at https://www.minecraftforge.net/forum/topic/40068-how-would-you-disable-item-drop-when-in-gui/
-	
-	@Override
-	protected void keyTyped(char key, int event){
-		if (event == 1 || event == this.mc.gameSettings.keyBindInventory.getKeyCode()){
-			this.mc.player.closeScreen();
-		}
-		this.checkHotbarKeys(key);
-	}
-	
+
 }

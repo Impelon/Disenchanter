@@ -18,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ContainerDisenchantment extends Container {
-	
+
 	private World world;
 	private BlockPos posBlock;
 	private TileEntityDisenchantmentTableAutomatic tileentityAutomatic;
@@ -29,13 +29,13 @@ public class ContainerDisenchantment extends Container {
 		public int getInventoryStackLimit() {
 			return 1;
 		}
-				
+
 		@Override
 		public void markDirty() {
 			super.markDirty();
 			ContainerDisenchantment.this.onCraftMatrixChanged(this);
 		}
-		
+
 		@Override
 		public ItemStack removeStackFromSlot(int index) {
 			if (index == this.getSizeInventory() - 1)
@@ -48,15 +48,15 @@ public class ContainerDisenchantment extends Container {
 		this.world = w;
 		this.posBlock = pos;
 		this.tileentityAutomatic = null;
-		
+
 		TileEntity te = this.world.getTileEntity(pos);
 		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
 			this.tileentityAutomatic = (TileEntityDisenchantmentTableAutomatic) te;
 			this.slots = this.tileentityAutomatic;
 		}
-		
+
 		this.addSlotToContainer(new Slot(this.slots, 0, 26, 35) {
-			
+
 			@Override
 			public boolean isItemValid(ItemStack stack) {
 				if (stack.getItem().equals(Items.BOOK))
@@ -80,12 +80,12 @@ public class ContainerDisenchantment extends Container {
 			public boolean isItemValid(ItemStack stack) {
 				return false;
 			}
-			
+
 			@Override
 			public ItemStack onTake(EntityPlayer p, ItemStack stack) {
 				if (tileentityAutomatic != null)
 					return stack;
-				
+
 				DisenchantingUtils.disenchantInInventory(slots, false, world, posBlock, random);
 				return stack;
 			}
@@ -96,8 +96,7 @@ public class ContainerDisenchantment extends Container {
 
 		for (l = 0; l < 3; ++l)
 			for (int i1 = 0; i1 < 9; ++i1)
-				this.addSlotToContainer(new Slot(pInventory, i1 + l * 9 + 9,
-						8 + i1 * 18, 84 + l * 18));
+				this.addSlotToContainer(new Slot(pInventory, i1 + l * 9 + 9, 8 + i1 * 18, 84 + l * 18));
 
 		for (l = 0; l < 9; ++l)
 			this.addSlotToContainer(new Slot(pInventory, l, 8 + l * 18, 142));
@@ -118,21 +117,20 @@ public class ContainerDisenchantment extends Container {
 			ItemStack itemstack = this.slots.getStackInSlot(0);
 			ItemStack bookstack = this.slots.getStackInSlot(1);
 			ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
-			
 
-			if (bookstack != ItemStack.EMPTY && DisenchantingUtils.disenchant(itemstack.copy(), outputBookstack, this.tileentityAutomatic != null, false, this.world, this.posBlock, this.random)) {
+			if (bookstack != ItemStack.EMPTY && DisenchantingUtils.disenchant(itemstack.copy(), outputBookstack,
+					this.tileentityAutomatic != null, false, this.world, this.posBlock, this.random)) {
 				if (!(ItemStack.areItemStacksEqual(this.slots.getStackInSlot(2), outputBookstack)))
 					this.slots.setInventorySlotContents(2, outputBookstack);
-			} else
-				if (this.slots.getStackInSlot(2) != ItemStack.EMPTY)
-					this.slots.setInventorySlotContents(2, ItemStack.EMPTY);
+			} else if (this.slots.getStackInSlot(2) != ItemStack.EMPTY)
+				this.slots.setInventorySlotContents(2, ItemStack.EMPTY);
 		}
 	}
 
 	@Override
 	public void onContainerClosed(EntityPlayer p) {
 		super.onContainerClosed(p);
-		
+
 		if (this.tileentityAutomatic == null)
 			if (!this.world.isRemote)
 				this.clearContainer(p, p.world, this.slots);
@@ -141,7 +139,8 @@ public class ContainerDisenchantment extends Container {
 	@Override
 	public boolean canInteractWith(EntityPlayer p) {
 		return !this.world.getBlockState(this.posBlock).getBlock().equals(CommonProxy.disenchantmentTable) ? false
-				: p.getDistanceSq((double) this.posBlock.getX() + 0.5D, (double) this.posBlock.getY() + 0.5D, (double) this.posBlock.getZ() + 0.5D) <= 64.0D;
+				: p.getDistanceSq((double) this.posBlock.getX() + 0.5D, (double) this.posBlock.getY() + 0.5D,
+						(double) this.posBlock.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
@@ -174,7 +173,7 @@ public class ContainerDisenchantment extends Container {
 			} else if (!this.mergeItemStack(itemstack, 3, 39, true)) {
 				return ItemStack.EMPTY;
 			}
-			
+
 			if (itemstack.getCount() <= 0)
 				slot.putStack(ItemStack.EMPTY);
 			else

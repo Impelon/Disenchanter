@@ -26,12 +26,15 @@ public class VersionChecker implements Runnable {
 	public void run() {
 		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/Impelon/Disenchanter/1.12/src/main/resources/mcmod.info").openStream(), "UTF-8"));
+			in = new BufferedReader(new InputStreamReader(
+					new URL("https://raw.githubusercontent.com/Impelon/Disenchanter/1.12/src/main/resources/mcmod.info")
+							.openStream(),
+					"UTF-8"));
 			StringBuilder modinfo = new StringBuilder();
 			String ln;
 			while ((ln = in.readLine()) != null)
 				modinfo.append(ln);
-			
+
 			int verindex = modinfo.indexOf("\"version\"");
 			if (verindex != -1) {
 				String verstr = modinfo.substring(verindex + 9, modinfo.indexOf(",", verindex));
@@ -62,29 +65,26 @@ public class VersionChecker implements Runnable {
 	public String getLatestVersion() {
 		return latestVersion;
 	}
-	
+
 	public String getUrl() {
 		return url;
 	}
-	
+
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
 	public void onEvent(PlayerTickEvent ev) {
-		if (ev.player.world.isRemote) {
-			if (isLatestVersion()) {
-				MinecraftForge.EVENT_BUS.unregister(this);
-				return;
-			}
+		if (ev.player.world.isRemote && !isLatestVersion()) {
 			Style linkStyle = new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getUrl()));
-			TextComponentString warning = new TextComponentString(DisenchanterMain.PREFIX +
-					new TextComponentTranslation("msg.outdated.txt").getFormattedText() + " " + TextFormatting.ITALIC + "(" +
-					new TextComponentTranslation("msg.currentversion.txt", DisenchanterMain.VERSION).getFormattedText() + " " + TextFormatting.ITALIC +
-					new TextComponentTranslation("msg.latestversion.txt", getLatestVersion()).getFormattedText() + TextFormatting.ITALIC + ")");
+			TextComponentString warning = new TextComponentString(DisenchanterMain.PREFIX
+					+ new TextComponentTranslation("msg.outdated.txt").getFormattedText() 
+					+ " " + TextFormatting.ITALIC + "("
+					+ new TextComponentTranslation("msg.currentversion.txt", DisenchanterMain.VERSION).getFormattedText()
+					+ " " + TextFormatting.ITALIC
+					+ new TextComponentTranslation("msg.latestversion.txt", getLatestVersion()).getFormattedText()
+					+ TextFormatting.ITALIC + ")");
 			warning.setStyle(linkStyle);
 			ev.player.sendStatusMessage(warning, false);
-			MinecraftForge.EVENT_BUS.unregister(this);
-		} else {
-			MinecraftForge.EVENT_BUS.unregister(this);
 		}
+		MinecraftForge.EVENT_BUS.unregister(this);
 	}
 
 }

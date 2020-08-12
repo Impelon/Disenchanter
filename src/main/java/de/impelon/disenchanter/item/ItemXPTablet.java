@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemXPTablet extends Item {
-	
+
 	public ItemXPTablet() {
 		super();
 		this.setCreativeTab(CreativeTabs.DECORATIONS);
@@ -23,15 +23,14 @@ public class ItemXPTablet extends Item {
 		this.setUnlocalizedName(this.getRegistryName().toString().toLowerCase());
 		this.setMaxStackSize(1);
 	}
-	
-	
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, World w, List<String> l, ITooltipFlag advanced) {		
+	public void addInformation(ItemStack stack, World w, List<String> l, ITooltipFlag advanced) {
 		super.addInformation(stack, w, l, advanced);
-		
-		l.add(new TextComponentTranslation("msg.stored_xp.txt", 0.0, 1.0).setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
+
+		l.add(new TextComponentTranslation("msg.stored_xp.txt", 0.0, 1.0)
+				.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
 	}
 
 }

@@ -19,63 +19,77 @@ import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 
 public class CombinedClientProxy extends CommonProxy {
-	
+
 	@Override
 	public void preInit(FMLPreInitializationEvent ev) {
 		super.preInit(ev);
 	}
-	
+
 	@Override
 	public void registerBlocks(RegistryEvent.Register<Block> ev) {
 		super.registerBlocks(ev);
-		
+
 		ModelLoader.setCustomStateMapper(disenchantmentTable, new DefaultStateMapper() {
 			@Override
 			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
 				StringBuilder variant = new StringBuilder();
-				variant.append(BlockDisenchantmentTable.AUTOMATIC.getName() + "=" + state.getValue(BlockDisenchantmentTable.AUTOMATIC).toString());
+				variant.append(BlockDisenchantmentTable.AUTOMATIC.getName());
+				variant.append("=");
+				variant.append(state.getValue(BlockDisenchantmentTable.AUTOMATIC));
 				variant.append(',');
-				variant.append(BlockDisenchantmentTable.BULKDISENCHANTING.getName() + "=" + state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING).toString());
+				variant.append(BlockDisenchantmentTable.BULKDISENCHANTING.getName());
+				variant.append("=");
+				variant.append(state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING));
 				variant.append(',');
-				variant.append(BlockDisenchantmentTable.VOIDING.getName() + "=" + state.getValue(BlockDisenchantmentTable.VOIDING).toString());
+				variant.append(BlockDisenchantmentTable.VOIDING.getName());
+				variant.append("=");
+				variant.append(state.getValue(BlockDisenchantmentTable.VOIDING));
 				return new ModelResourceLocation(disenchantmentTable.getRegistryName(), variant.toString());
-		    }
+			}
 		});
 	}
-	
+
 	@Override
 	public void registerItems(RegistryEvent.Register<Item> ev) {
 		super.registerItems(ev);
-		
-		ModelLoader.setCustomModelResourceLocation(xpTablet, 0, new ModelResourceLocation(xpTablet.getRegistryName().toString()));
-		
+
+		ModelLoader.setCustomModelResourceLocation(xpTablet, 0,
+				new ModelResourceLocation(xpTablet.getRegistryName().toString()));
+
 		for (byte meta = 0; meta < 8; meta++) {
 			IBlockState state = disenchantmentTable.getStateFromMeta(meta);
 			StringBuilder variant = new StringBuilder();
-			variant.append(BlockDisenchantmentTable.AUTOMATIC.getName() + "=" + state.getValue(BlockDisenchantmentTable.AUTOMATIC).toString());
+			variant.append(BlockDisenchantmentTable.AUTOMATIC.getName());
+			variant.append("=");
+			variant.append(state.getValue(BlockDisenchantmentTable.AUTOMATIC));
 			variant.append(',');
-			variant.append(BlockDisenchantmentTable.BULKDISENCHANTING.getName() + "=" + state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING).toString());
+			variant.append(BlockDisenchantmentTable.BULKDISENCHANTING.getName());
+			variant.append("=");
+			variant.append(state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING));
 			variant.append(',');
-			variant.append(BlockDisenchantmentTable.VOIDING.getName() + "=" + state.getValue(BlockDisenchantmentTable.VOIDING).toString());
-			ModelLoader.setCustomModelResourceLocation(itemDisenchantmentTable, meta, 
+			variant.append(BlockDisenchantmentTable.VOIDING.getName());
+			variant.append("=");
+			variant.append(state.getValue(BlockDisenchantmentTable.VOIDING));
+			ModelLoader.setCustomModelResourceLocation(itemDisenchantmentTable, meta,
 					new ModelResourceLocation(disenchantmentTable.getRegistryName(), variant.toString()));
 		}
-		
+
 	}
-	
+
 	@Override
 	public void load(FMLInitializationEvent ev) {
 		super.load(ev);
 		if (DisenchanterConfig.general.shouldCheckVersion)
 			MinecraftForge.EVENT_BUS.register(DisenchanterMain.versionChecker);
-		
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDisenchantmentTable.class, new TileEntityDisenchantmentTableRenderer());
+
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDisenchantmentTable.class,
+				new TileEntityDisenchantmentTableRenderer());
 	}
-	
+
 	@Override
 	public void postInit(FMLPostInitializationEvent ev) {
 		super.postInit(ev);
-		
+
 		if (DisenchanterConfig.general.shouldCheckVersion)
 			new Thread(DisenchanterMain.versionChecker, "Version Check").start();
 	}

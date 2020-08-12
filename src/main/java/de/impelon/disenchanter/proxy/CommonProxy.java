@@ -26,40 +26,43 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-
 public class CommonProxy {
-	
+
 	public static final BlockDisenchantmentTable disenchantmentTable = new BlockDisenchantmentTable();
 	public static final ItemBlockDisenchantment itemDisenchantmentTable = new ItemBlockDisenchantment();
 	public static final ItemXPTablet xpTablet = new ItemXPTablet();
-	
-	private static final ResourceLocation disenchantmentTableUseLocation = new ResourceLocation(DisenchanterMain.MODID, "block.disenchantment_table.use");
-	public static final SoundEvent disenchantmentTableUse = new SoundEvent(disenchantmentTableUseLocation).setRegistryName(disenchantmentTableUseLocation);
-		
+
+	private static final ResourceLocation disenchantmentTableUseLocation = new ResourceLocation(DisenchanterMain.MODID,
+			"block.disenchantment_table.use");
+	public static final SoundEvent disenchantmentTableUse = new SoundEvent(disenchantmentTableUseLocation)
+			.setRegistryName(disenchantmentTableUseLocation);
+
 	public void preInit(FMLPreInitializationEvent ev) {
-		GameRegistry.registerTileEntity(TileEntityDisenchantmentTable.class, new ResourceLocation(DisenchanterMain.MODID, "TileDisentchantmentTable"));
-		GameRegistry.registerTileEntity(TileEntityDisenchantmentTableAutomatic.class, new ResourceLocation(DisenchanterMain.MODID, "TileDisentchantmentTableAutomatic"));
+		GameRegistry.registerTileEntity(TileEntityDisenchantmentTable.class,
+				new ResourceLocation(DisenchanterMain.MODID, "TileDisentchantmentTable"));
+		GameRegistry.registerTileEntity(TileEntityDisenchantmentTableAutomatic.class,
+				new ResourceLocation(DisenchanterMain.MODID, "TileDisentchantmentTableAutomatic"));
 	}
-	
-	public void load(FMLInitializationEvent ev) {			
+
+	public void load(FMLInitializationEvent ev) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(DisenchanterMain.instance, new GUIHandler());
 	}
-	
+
 	public void postInit(FMLPostInitializationEvent ev) {}
-	
+
 	public void registerBlocks(RegistryEvent.Register<Block> ev) {
 		ev.getRegistry().register(disenchantmentTable);
 	}
-	
+
 	public void registerItems(RegistryEvent.Register<Item> ev) {
 		ev.getRegistry().register(xpTablet);
 		ev.getRegistry().register(itemDisenchantmentTable.setRegistryName(disenchantmentTable.getRegistryName()));
 	}
-	
+
 	public void registerSoundEvents(RegistryEvent.Register<SoundEvent> ev) {
 		ev.getRegistry().register(disenchantmentTableUse);
 	}
-	
+
 	public void registerRecipes(RegistryEvent.Register<IRecipe> ev) {
 		
 		ItemStack table = new ItemStack(Item.getItemFromBlock(disenchantmentTable), 1, OreDictionary.WILDCARD_VALUE);
