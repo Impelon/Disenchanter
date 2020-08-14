@@ -75,6 +75,17 @@ public class CommonProxy {
 					Character.valueOf('E'), "gemEmerald",
 					Character.valueOf('Y'), "dyeYellow"
 		).setRegistryName(itemDisenchantmentTable.getRegistryName()));
+
+		if (DisenchanterConfig.general.enableTabletRecipe)
+			ev.getRegistry().register(new ShapedOreRecipe(null, new ItemStack(xpTablet, 1, 0),
+					"OPO",
+					"GEG",
+					"OPO",
+					Character.valueOf('E'), Items.ENDER_PEARL,
+					Character.valueOf('G'), "ingotGold",
+					Character.valueOf('P'), "dyePurple",
+					Character.valueOf('O'), Blocks.OBSIDIAN
+			).setRegistryName(xpTablet.getRegistryName()));
 		
 		if (DisenchanterConfig.general.enableAutomaticRecipe)
 			ev.getRegistry().register(new UpgradeTableRecipe(BlockDisenchantmentTable.AUTOMATIC, new ItemStack(itemDisenchantmentTable, 1, 1),

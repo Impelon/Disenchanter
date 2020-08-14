@@ -17,7 +17,11 @@ public class DisenchanterConfig {
 		
 		@Config.Name("CheckVersion")
 		@Config.Comment("Should Disenchanter check for new versions on startup?")
-		public boolean shouldCheckVersion = true;
+		public boolean shouldCheckVersion = true;		
+		
+		@Config.Name("EnableTabletRecipe")
+		@Config.Comment("Should the recipe for the experience-tablet be available?")
+		public boolean enableTabletRecipe = true;
 		
 		@Config.Name("EnableAutomaticRecipe")
 		@Config.Comment("Should the recipe for the automatic-upgrade be available?")

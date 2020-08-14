@@ -1,7 +1,7 @@
 tile.disenchanter:disenchantmenttable.name=Disenchantment Table
 item.disenchanter:xptablet.name=Experience Tablet
 container.disenchant=Disenchant
-msg.stored_xp.txt=stored experience: %.1f/%.1f
+msg.stored_xp.txt=stored experience: %d/%d
 msg.automatic.txt=automatic
 msg.bulk.txt=bulk-disenchanting
 msg.voiding.txt=voiding

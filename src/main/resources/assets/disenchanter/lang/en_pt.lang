@@ -1,7 +1,7 @@
 tile.disenchanter:disenchantmenttable.name=Warlock's Carrel
 item.disenchanter:xptablet.name=Talisman o' Charybdis
 container.disenchant=Spell Lootin'
-msg.stored_xp.txt=looted wisdom: %.1f/%.1f
+msg.stored_xp.txt=looted wisdom: %d o' %d
 msg.automatic.txt=jinxed
 msg.bulk.txt=booty'n
 msg.voiding.txt=maelstrom

@@ -1,7 +1,7 @@
 tile.disenchanter:disenchantmenttable.name=Tingy t dismagignify
 item.disenchanter:xptablet.name=Rock wit ur levlz
 container.disenchant=Dismagignify
-msg.stored_xp.txt=tis big XP %.1f/%.1f
+msg.stored_xp.txt=tis big XP %d/%d
 msg.automatic.txt=who dis wrok?!
 msg.bulk.txt=dismagnifnify EWEYTING!1
 msg.voiding.txt=were s mi item?!
