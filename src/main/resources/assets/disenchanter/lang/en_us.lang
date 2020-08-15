@@ -1,5 +1,5 @@
 tile.disenchanter:disenchantmenttable.name=Disenchantment Table
-item.disenchanter:experience_jar.name=Jar o' Enchanting
+item.disenchanter:experience_jar.name=Jar of Experience
 container.disenchant=Disenchant
 msg.stored_xp.txt=bottled experience: %d/%d
 msg.automatic.txt=automatic
