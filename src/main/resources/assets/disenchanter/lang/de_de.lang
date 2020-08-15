@@ -1,5 +1,5 @@
 tile.disenchanter:disenchantmenttable.name=Entzauberungstisch
-item.disenchanter:xptablet.name=Erfahrungstafel
+item.disenchanter:experience_jar.name=Erfahrungsflasche
 container.disenchant=Entzaubern
 msg.stored_xp.txt=gesammelte Erfahrungspunkte: %d/%d
 msg.automatic.txt=automatisch

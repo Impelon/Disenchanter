@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "disenchanter:items/xptablet"
+    "layer0": "disenchanter:items/experience_jar"
   }
 }

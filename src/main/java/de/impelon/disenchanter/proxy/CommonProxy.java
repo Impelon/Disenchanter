@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import de.impelon.disenchanter.crafting.UpgradeTableRecipe;
 import de.impelon.disenchanter.gui.GUIHandler;
 import de.impelon.disenchanter.item.ItemBlockDisenchantment;
-import de.impelon.disenchanter.item.ItemXPTablet;
+import de.impelon.disenchanter.item.ItemExperienceJar;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTable;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import de.impelon.disenchanter.DisenchanterConfig;
@@ -30,7 +30,7 @@ public class CommonProxy {
 
 	public static final BlockDisenchantmentTable disenchantmentTable = new BlockDisenchantmentTable();
 	public static final ItemBlockDisenchantment itemDisenchantmentTable = new ItemBlockDisenchantment();
-	public static final ItemXPTablet xpTablet = new ItemXPTablet();
+	public static final ItemExperienceJar itemExperienceJar = new ItemExperienceJar();
 
 	private static final ResourceLocation disenchantmentTableUseLocation = new ResourceLocation(DisenchanterMain.MODID,
 			"block.disenchantment_table.use");
@@ -55,7 +55,7 @@ public class CommonProxy {
 	}
 
 	public void registerItems(RegistryEvent.Register<Item> ev) {
-		ev.getRegistry().register(xpTablet);
+		ev.getRegistry().register(itemExperienceJar);
 		ev.getRegistry().register(itemDisenchantmentTable.setRegistryName(disenchantmentTable.getRegistryName()));
 	}
 
@@ -76,16 +76,15 @@ public class CommonProxy {
 					Character.valueOf('Y'), "dyeYellow"
 		).setRegistryName(itemDisenchantmentTable.getRegistryName()));
 
-		if (DisenchanterConfig.general.enableTabletRecipe)
-			ev.getRegistry().register(new ShapedOreRecipe(null, new ItemStack(xpTablet, 1, 0),
-					"OPO",
+		if (DisenchanterConfig.general.enableJarRecipe)
+			ev.getRegistry().register(new ShapedOreRecipe(null, new ItemStack(itemExperienceJar, 1, 0),
+					"GPG",
 					"GEG",
-					"OPO",
-					Character.valueOf('E'), Items.ENDER_PEARL,
-					Character.valueOf('G'), "ingotGold",
-					Character.valueOf('P'), "dyePurple",
-					Character.valueOf('O'), Blocks.OBSIDIAN
-			).setRegistryName(xpTablet.getRegistryName()));
+					"GGG",
+					Character.valueOf('E'), "gemEmerald",
+					Character.valueOf('G'), "blockGlass",
+					Character.valueOf('P'), Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE
+			).setRegistryName(itemExperienceJar.getRegistryName()));
 		
 		if (DisenchanterConfig.general.enableAutomaticRecipe)
 			ev.getRegistry().register(new UpgradeTableRecipe(BlockDisenchantmentTable.AUTOMATIC, new ItemStack(itemDisenchantmentTable, 1, 1),

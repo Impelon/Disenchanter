@@ -1,5 +1,5 @@
 tile.disenchanter:disenchantmenttable.name=Tingy t dismagignify
-item.disenchanter:xptablet.name=Rock wit ur levlz
+item.disenchanter:experience_jar.name=Jaz wit ur levlz
 container.disenchant=Dismagignify
 msg.stored_xp.txt=tis big XP %d/%d
 msg.automatic.txt=who dis wrok?!
