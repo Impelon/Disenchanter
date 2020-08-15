@@ -17,10 +17,14 @@ public class DisenchanterConfig {
 		
 		@Config.Name("CheckVersion")
 		@Config.Comment("Should Disenchanter check for new versions on startup?")
-		public boolean shouldCheckVersion = true;		
+		public boolean shouldCheckVersion = true;
+		
+		@Config.Name("JarDefaultExperienceCapacity")
+		@Config.Comment("How many experience points should the jar of experience store at most by default?")
+		public int jarDefaultExperienceCapacity = 2048;
 		
 		@Config.Name("EnableJarRecipe")
-		@Config.Comment("Should the recipe for the jar o' enchanting be available?")
+		@Config.Comment("Should the recipe for the jar of experience be available?")
 		public boolean enableJarRecipe = true;
 		
 		@Config.Name("EnableAutomaticRecipe")
