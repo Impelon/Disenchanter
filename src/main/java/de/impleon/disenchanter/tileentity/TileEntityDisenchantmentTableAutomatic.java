@@ -69,7 +69,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	public void setInventorySlotContents(int slotID, ItemStack stack) {
 		this.disenchantmentTableContent.set(slotID, stack);
 
-		if (stack != ItemStack.EMPTY && stack.getCount() > getInventoryStackLimit())
+		if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit())
 			stack.setCount(this.getInventoryStackLimit());
 	}
 

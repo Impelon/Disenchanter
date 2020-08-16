@@ -6,6 +6,7 @@ import java.util.Random;
 
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 import de.impelon.disenchanter.inventory.ContainerDisenchantment;
+import de.impelon.disenchanter.item.ItemExperienceJar;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
@@ -39,37 +40,38 @@ public class DisenchantingUtils {
 	 */
 	public static void disenchantInInventory(IInventory inventory, boolean isAutomatic, World world, BlockPos position,
 			Random random) {
-		if (inventory.getSizeInventory() < 3 || (isAutomatic && inventory.getStackInSlot(2) != ItemStack.EMPTY))
+		if (inventory.getSizeInventory() < 3 || (isAutomatic && !inventory.getStackInSlot(2).isEmpty()))
 			return;
 
 		ItemStack itemstack = inventory.getStackInSlot(0);
-		ItemStack bookstack = inventory.getStackInSlot(1);
-		ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
+		ItemStack receiver = inventory.getStackInSlot(1);
+		ItemStack target = getAppropriateResultTarget(receiver);
+		if (target.isEmpty())
+			return;
 
-		if (disenchant(itemstack, outputBookstack, isAutomatic, false, world, position, random)) {
-			if (bookstack.getCount() > 1)
-				bookstack.setCount(bookstack.getCount() - 1);
+		if (disenchant(itemstack, target, isAutomatic, false, world, position, random)) {
+			if (receiver.getCount() > 1)
+				receiver.setCount(receiver.getCount() - 1);
 			else
-				bookstack = ItemStack.EMPTY;
-			inventory.setInventorySlotContents(1, bookstack);
+				receiver = ItemStack.EMPTY;
+			inventory.setInventorySlotContents(1, receiver);
 
 			if (isItemStackBroken(itemstack))
 				itemstack = ItemStack.EMPTY;
 
-			if (itemstack != ItemStack.EMPTY) {
-				if (itemstack.getItem() == Items.ENCHANTED_BOOK && getEnchantmentList(itemstack) == null)
+			if (!itemstack.isEmpty()) {
+				if (itemstack.getItem().equals(Items.ENCHANTED_BOOK) && getEnchantmentList(itemstack) == null)
 					itemstack = new ItemStack(Items.BOOK);
 				if (world.getBlockState(position).getValue(BlockDisenchantmentTable.VOIDING)
 						&& getAvailableEnchantmentIndices(itemstack).isEmpty())
 					itemstack = ItemStack.EMPTY;
 			}
 			inventory.setInventorySlotContents(0, itemstack);
-			
-			if (getEnchantmentList(outputBookstack) == null)
-				outputBookstack = new ItemStack(Items.BOOK);
+
+			if (target.getItem().equals(Items.ENCHANTED_BOOK) && getEnchantmentList(target) == null)
+				target = new ItemStack(Items.BOOK);
 			if (isAutomatic)
-				inventory.setInventorySlotContents(2, outputBookstack);
-					
+				inventory.setInventorySlotContents(2, target);
 
 			if (!world.isRemote)
 				world.playSound(null, position, CommonProxy.disenchantmentTableUse, SoundCategory.BLOCKS,
@@ -83,19 +85,19 @@ public class DisenchantingUtils {
 	 * from the input-itemstack to the output-itemstack as needed.
 	 * </p>
 	 * 
-	 * @param input           the itemstack to transfer enchantments from
-	 * @param outputBookstack the itemstack to transfer enchantments to; needs to be
-	 *                        a stack of {@linkplain ItemEnchantedBook}
-	 * @param isAutomatic     true when the disenchanting process is performed by an
-	 *                        automatic disenchantment table, false otherwise
-	 * @param world           the world the disenchanting is performed in
-	 * @param position        the position the disenchanting is performed at
-	 * @param random          a {@linkplain Random}-instance to use for random
-	 *                        decisions
+	 * @param source      the itemstack to transfer enchantments from
+	 * @param target      the itemstack to transfer enchantments to; needs to be a
+	 *                    stack of {@linkplain ItemEnchantedBook} or
+	 *                    {@linkplain ItemExperienceJar}
+	 * @param isAutomatic true when the disenchanting process is performed by an
+	 *                    automatic disenchantment table, false otherwise
+	 * @param world       the world the disenchanting is performed in
+	 * @param position    the position the disenchanting is performed at
+	 * @param random      a {@linkplain Random}-instance to use for random decisions
 	 * @return true if enchantments were transferred, false otherwise
 	 */
-	public static boolean disenchant(ItemStack input, ItemStack outputBookstack, boolean isAutomatic, boolean ignoreEnchantmentLoss, World world,
-			BlockPos position, Random random) {
+	public static boolean disenchant(ItemStack source, ItemStack target, boolean isAutomatic,
+			boolean ignoreEnchantmentLoss, World world, BlockPos position, Random random) {
 		float power = getEnchantingPower(world, position);
 		int flatDmg = DisenchanterConfig.disenchanting.flatDamage;
 		double durabilityDmg = DisenchanterConfig.disenchanting.maxDurabilityDamage;
@@ -104,15 +106,15 @@ public class DisenchantingUtils {
 
 		List<Integer> indices;
 		boolean hasTransferredEnchantments = false;
-		while (!(indices = getAvailableEnchantmentIndices(input)).isEmpty()) {
-			if (!transferEnchantment(input, outputBookstack, indices.get(0), ignoreEnchantmentLoss, random))
+		while (!(indices = getAvailableEnchantmentIndices(source)).isEmpty()) {
+			if (!transferEnchantment(source, target, indices.get(0), ignoreEnchantmentLoss, random))
 				break;
 			hasTransferredEnchantments = true;
 
-			input.attemptDamageItem((int) (dmgMultiplier * (flatDmg + input.getMaxDamage() * durabilityDmg
-					+ input.getMaxDamage() * (reduceableDmg / power))), random, null);
+			source.attemptDamageItem((int) (dmgMultiplier * (flatDmg + source.getMaxDamage() * durabilityDmg
+					+ source.getMaxDamage() * (reduceableDmg / power))), random, null);
 
-			if (isItemStackBroken(input)
+			if (isItemStackBroken(source)
 					|| !(world.getBlockState(position).getValue(BlockDisenchantmentTable.BULKDISENCHANTING)))
 				break;
 		}
@@ -124,19 +126,24 @@ public class DisenchantingUtils {
 	 * Transfers the enchantment at the given index from the enchantment-nbt-list of
 	 * the input-itemstack to the output-itemstack.
 	 * </p>
+	 * <p>
+	 * If the target is a stack of {@linkplain ItemExperienceJar}, this will instead
+	 * convert to enchantment to experience points.
+	 * </p>
 	 * 
-	 * @param input           the itemstack to transfer the enchantment from
-	 * @param outputBookstack the itemstack to transfer the enchantment to; needs to
-	 *                        be a stack of {@linkplain ItemEnchantedBook}
-	 * @param index           the index of the enchantment-nbt-list of the input to
-	 *                        transfer the enchantment from
-	 * @param random          a {@linkplain Random}-instance to use for random
-	 *                        decisions
+	 * @param source the itemstack to transfer the enchantment from
+	 * @param target the itemstack to transfer the enchantment to; needs to be a
+	 *               stack of {@linkplain ItemEnchantedBook} or
+	 *               {@linkplain ItemExperienceJar}
+	 * @param index  the index of the enchantment-nbt-list of the input to transfer
+	 *               the enchantment from
+	 * @param random a {@linkplain Random}-instance to use for random decisions
 	 * @return true if an enchantment was transferred, false otherwise
 	 */
-	public static boolean transferEnchantment(ItemStack input, ItemStack outputBookstack, int index, boolean ignoreEnchantmentLoss, Random random) {
-		if (input != ItemStack.EMPTY && outputBookstack != ItemStack.EMPTY && input.getTagCompound() != null) {
-			NBTTagList enchants = getEnchantmentList(input);
+	public static boolean transferEnchantment(ItemStack source, ItemStack target, int index,
+			boolean ignoreEnchantmentLoss, Random random) {
+		if (!source.isEmpty() && !target.isEmpty() && source.getTagCompound() != null) {
+			NBTTagList enchants = getEnchantmentList(source);
 			if (enchants == null)
 				return false;
 
@@ -146,20 +153,29 @@ public class DisenchantingUtils {
 				NBTTagCompound enchant = enchants.getCompoundTagAt(index);
 				int id = enchant.getInteger("id");
 				int lvl = enchant.getInteger("lvl");
+				EnchantmentData enchantment = new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl);
 				double enchantmentLoss = DisenchanterConfig.disenchanting.enchantmentLossChance;
 
-				if (!ignoreEnchantmentLoss && random.nextFloat() > enchantmentLoss)
-					ItemEnchantedBook.addEnchantment(outputBookstack,
-							new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
+				if (!ignoreEnchantmentLoss && random.nextFloat() > enchantmentLoss) {
+					if (target.getItem().equals(Items.ENCHANTED_BOOK))
+						ItemEnchantedBook.addEnchantment(target, enchantment);
+					else if (target.getItem().equals(CommonProxy.itemExperienceJar)) {
+						ItemExperienceJar.ensureValidTag(target);
+						ItemExperienceJar.setStoredExperienceClamped(target,
+								ItemExperienceJar.getStoredExperience(target) + getExperienceForEnchantment(
+										enchantment.enchantment, enchantment.enchantmentLevel));
+					}
+				}
 
 				enchants.removeTag(index);
-				input.setRepairCost(input.getRepairCost() / 2);
+				double repairCostMultiplier = DisenchanterConfig.disenchanting.repairCostMultiplier;
+				source.setRepairCost((int) (source.getRepairCost() * repairCostMultiplier));
 			}
 			if (enchants.tagCount() <= 0)
-				if (isEnchantmentStorage(input))
-					input.getTagCompound().removeTag("StoredEnchantments");
+				if (isEnchantmentStorage(source))
+					source.getTagCompound().removeTag("StoredEnchantments");
 				else
-					input.getTagCompound().removeTag("ench");
+					source.getTagCompound().removeTag("ench");
 			return true;
 		}
 		return false;
@@ -200,19 +216,17 @@ public class DisenchantingUtils {
 		for (int index = 0; index < enchants.tagCount(); index++) {
 			NBTTagCompound enchant = enchants.getCompoundTagAt(index);
 			Enchantment enchantment = Enchantment.getEnchantmentByID(enchant.getInteger("id"));
-			boolean valid = true;
+			boolean valid = DisenchanterConfig.disenchanting.disableCurses ? enchantment.isCurse() : true;
 			for (String disabeledName : disabledEnchantments) {
+				if (!valid)
+					break;
 				String[] splitted = disabeledName.split("\\[r\\]", 2);
 				if (splitted.length > 1) {
-					if (enchantment.getRegistryName().toString().matches(splitted[1])) {
+					if (enchantment.getRegistryName().toString().matches(splitted[1]))
 						valid = false;
-						break;
-					}
 				} else {
-					if (enchantment.getRegistryName().toString().equalsIgnoreCase(splitted[0])) {
+					if (enchantment.getRegistryName().toString().equalsIgnoreCase(splitted[0]))
 						valid = false;
-						break;
-					}
 				}
 			}
 			if (valid)
@@ -231,7 +245,7 @@ public class DisenchantingUtils {
 	 * @return the nbt-list of enchantments
 	 */
 	public static NBTTagList getEnchantmentList(ItemStack itemstack) {
-		if (itemstack == ItemStack.EMPTY || itemstack.getTagCompound() == null)
+		if (itemstack.isEmpty() || itemstack.getTagCompound() == null)
 			return null;
 
 		if (itemstack.getTagCompound().getTag("InfiTool") != null)
@@ -251,6 +265,46 @@ public class DisenchantingUtils {
 
 	/**
 	 * <p>
+	 * Returns the experience points to be gained when disenchanting this
+	 * enchantment.
+	 * </p>
+	 * 
+	 * @param enchantment the enchantment to get the experience from
+	 * @param level       the level of the enchantment
+	 * @return the experience points to be gained
+	 */
+	public static int getExperienceForEnchantment(Enchantment enchantment, int level) {
+		int min = enchantment.getMinEnchantability(level);
+		int max = enchantment.getMaxEnchantability(level);
+		int flatXp = DisenchanterConfig.disenchanting.flatExperience;
+		double minEnchantabilityXp = DisenchanterConfig.disenchanting.minEnchantabilityExperience;
+		double maxEnchantabilityXp = DisenchanterConfig.disenchanting.maxEnchantabilityExperience;
+		return flatXp + (int) (min * minEnchantabilityXp + max * maxEnchantabilityXp);
+	}
+
+	/**
+	 * <p>
+	 * Returns the itemstack that should be used as disenchanting-target when using
+	 * the given itemstack as receiver.
+	 * </p>
+	 * 
+	 * @param receiver the itemstack to get the target for
+	 * @return an itemstack that should be used as target for the
+	 *         disenchanting-process, {@linkplain ItemStack#EMPTY} if there is no
+	 *         appropriate target for the given receiver
+	 */
+	public static ItemStack getAppropriateResultTarget(ItemStack receiver) {
+		if (!receiver.isEmpty()) {
+			if (receiver.getItem().equals(Items.BOOK))
+				return new ItemStack(Items.ENCHANTED_BOOK);
+			else if (receiver.getItem().equals(CommonProxy.itemExperienceJar))
+				return receiver.copy();
+		}
+		return ItemStack.EMPTY;
+	}
+
+	/**
+	 * <p>
 	 * Returns whether the given itemstack can store enchantments.
 	 * </p>
 	 * 
@@ -259,6 +313,18 @@ public class DisenchantingUtils {
 	 */
 	public static boolean isEnchantmentStorage(ItemStack itemstack) {
 		return itemstack.getTagCompound().getTag("StoredEnchantments") != null;
+	}
+
+	/**
+	 * <p>
+	 * Returns whether the given itemstack is broken (considering the durability).
+	 * </p>
+	 * 
+	 * @param itemstack the itemstack to check
+	 * @return true if the itemstack is broker, false otherwise
+	 */
+	public static boolean isItemStackBroken(ItemStack itemstack) {
+		return itemstack.isItemStackDamageable() && itemstack.getItemDamage() > itemstack.getMaxDamage();
 	}
 
 	/**
@@ -299,18 +365,6 @@ public class DisenchantingUtils {
 		}
 
 		return power;
-	}
-
-	/**
-	 * <p>
-	 * Returns whether the given itemstack is broken (considering the durability).
-	 * </p>
-	 * 
-	 * @param itemstack the itemstack to check
-	 * @return true if the itemstack is broker, false otherwise
-	 */
-	public static boolean isItemStackBroken(ItemStack itemstack) {
-		return itemstack.isItemStackDamageable() && itemstack.getItemDamage() > itemstack.getMaxDamage();
 	}
 
 }

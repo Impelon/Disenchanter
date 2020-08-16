@@ -3,7 +3,6 @@ package de.impelon.disenchanter.crafting;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -21,7 +20,7 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 	public boolean matches(InventoryCrafting grid, World world) {
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
 			ItemStack st = grid.getStackInSlot(slot);
-			if (st != null && st.getItem() == Item.getItemFromBlock(CommonProxy.disenchantmentTable))
+			if (st != null && st.getItem().equals(CommonProxy.itemDisenchantmentTable))
 				if (CommonProxy.disenchantmentTable.getStateFromMeta(st.getItemDamage()).getValue(this.addedProperty))
 					return false;
 		}
@@ -33,7 +32,7 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 		ItemStack table = null;
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
 			ItemStack st = grid.getStackInSlot(slot);
-			if (st != null && st.getItem() == Item.getItemFromBlock(CommonProxy.disenchantmentTable))
+			if (st != null && st.getItem().equals(CommonProxy.itemDisenchantmentTable))
 				table = st.copy();
 		}
 

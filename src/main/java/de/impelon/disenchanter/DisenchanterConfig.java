@@ -21,7 +21,7 @@ public class DisenchanterConfig {
 		
 		@Config.Name("JarDefaultExperienceCapacity")
 		@Config.Comment("How many experience points should the jar of experience store at most by default?")
-		public int jarDefaultExperienceCapacity = 2048;
+		public int jarDefaultExperienceCapacity = 1024;
 		
 		@Config.Name("EnableJarRecipe")
 		@Config.Comment("Should the recipe for the jar of experience be available?")
@@ -68,9 +68,30 @@ public class DisenchanterConfig {
 		public double machineDamageMultiplier = 2.5;
 		
 		@Config.Name("EnchantmentLossChance")
-		@Config.Comment("What should the probability be of additional enchantments being lost when disenchanting?")
+		@Config.Comment("What should the probability be that an enchantment is lost when disenchanting?")
 		@Config.RangeDouble(min = 0.0, max = 1.0)
 		public double enchantmentLossChance = 0.0;
+		
+		@Config.Name("RepairCostMultiplier")
+		@Config.Comment({"By how much should the repair cost of the item (f.e. used by anvils) be multiplied when disenchanting?",
+						 "0.5 is halving the repair cost (using an anvil doubles the repair cost); 1.0 leaves the cost unchanged."})
+		@Config.RangeDouble(min = 0.0)
+		public double repairCostMultiplier = 0.5;
+		
+		@Config.Name("FlatExperience")
+		@Config.Comment({"When converting an enchantment to XP, a flat amount of experience points will be added.",
+						"What should that amount be?"})
+		public int flatExperience = 0;
+
+		@Config.Name("MinEnchantabilityExperience")
+		@Config.Comment({"When converting an enchantment to XP, experience points relative to the enchantment's minimum enchantability will be added.",
+						 "What percentage of the enchantability should be used?"})
+		public double minEnchantabilityExperience = 0.33;
+		
+		@Config.Name("MaxEnchantabilityExperience")
+		@Config.Comment({"When converting an enchantment to XP, experience points relative to the enchantment's maximum enchantability will be added.",
+						 "What percentage of the enchantability should be used?"})
+		public double maxEnchantabilityExperience = 0.15;
 		
 		@Config.Name("AutomaticDisenchantmentProcessTicks")
 		@Config.Comment("How many ticks should the disenchanting process last when using an automatic disenchantment table?")
@@ -88,6 +109,10 @@ public class DisenchanterConfig {
 						 "Entries are of the format `modid:enchantid`; for example minecraft:bane_of_arthropods",
 						 "Java Regex can be used with a [r]-prefix; for example [r]minecraft:.* to ban all vanilla enchantments."})
 		public String[] disabledEnchantments = {};
+		
+		@Config.Name("DisableCurses")
+		@Config.Comment("Should curse-enchantments -like curse of vanishing- be ignored when disenchanting?")
+		public boolean disableCurses = false;
 
 		@Config.Name("EnableTCBehaviour")
 		@Config.Comment({"Should items from Tinkers Construct be handeled differently?",

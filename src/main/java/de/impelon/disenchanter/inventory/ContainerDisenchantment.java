@@ -3,6 +3,7 @@ package de.impelon.disenchanter.inventory;
 import java.util.Random;
 
 import de.impelon.disenchanter.DisenchantingUtils;
+import de.impelon.disenchanter.item.ItemExperienceJar;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,7 +70,7 @@ public class ContainerDisenchantment extends Container {
 
 			@Override
 			public boolean isItemValid(ItemStack stack) {
-				return stack.getItem().equals(Items.BOOK);
+				return stack.getItem().equals(Items.BOOK) || (stack.getItem().equals(CommonProxy.itemExperienceJar) && ItemExperienceJar.hasAvailableExperienceCapacity(stack));
 			}
 
 		});
@@ -115,14 +116,14 @@ public class ContainerDisenchantment extends Container {
 	public void updateOutput() {
 		if (!this.world.isRemote && this.tileentityAutomatic == null) {
 			ItemStack itemstack = this.slots.getStackInSlot(0);
-			ItemStack bookstack = this.slots.getStackInSlot(1);
-			ItemStack outputBookstack = new ItemStack(Items.ENCHANTED_BOOK);
+			ItemStack receiver = this.slots.getStackInSlot(1);
+			ItemStack target = DisenchantingUtils.getAppropriateResultTarget(receiver);
 
-			if (bookstack != ItemStack.EMPTY && DisenchantingUtils.disenchant(itemstack.copy(), outputBookstack,
+			if (!itemstack.isEmpty() && !target.isEmpty() && DisenchantingUtils.disenchant(itemstack.copy(), target,
 					this.tileentityAutomatic != null, false, this.world, this.posBlock, this.random)) {
-				if (!(ItemStack.areItemStacksEqual(this.slots.getStackInSlot(2), outputBookstack)))
-					this.slots.setInventorySlotContents(2, outputBookstack);
-			} else if (this.slots.getStackInSlot(2) != ItemStack.EMPTY)
+				if (!(ItemStack.areItemStacksEqual(this.slots.getStackInSlot(2), target)))
+					this.slots.setInventorySlotContents(2, target);
+			} else if (!this.slots.getStackInSlot(2).isEmpty())
 				this.slots.setInventorySlotContents(2, ItemStack.EMPTY);
 		}
 	}
