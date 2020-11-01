@@ -6,12 +6,12 @@ import java.util.Random;
 
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 import de.impelon.disenchanter.inventory.ContainerDisenchantment;
+import de.impelon.disenchanter.inventory.DisenchantmentItemStackHandler;
 import de.impelon.disenchanter.item.ItemExperienceJar;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,9 +38,9 @@ public class DisenchantingUtils {
 	 * @param position    the position the disenchanting is performed at
 	 * @param random      a {@linkplain Random}-instance to use for random decisions
 	 */
-	public static void disenchantInInventory(IInventory inventory, boolean isAutomatic, World world, BlockPos position,
+	public static void disenchantInInventory(DisenchantmentItemStackHandler inventory, boolean isAutomatic, World world, BlockPos position,
 			Random random) {
-		if (inventory.getSizeInventory() < 3 || (isAutomatic && !inventory.getStackInSlot(2).isEmpty()))
+		if (isAutomatic && !inventory.getStackInSlot(2).isEmpty())
 			return;
 
 		ItemStack itemstack = inventory.getStackInSlot(0);
@@ -54,7 +54,7 @@ public class DisenchantingUtils {
 				receiver.setCount(receiver.getCount() - 1);
 			else
 				receiver = ItemStack.EMPTY;
-			inventory.setInventorySlotContents(1, receiver);
+			inventory.setStackInSlot(1, receiver);
 
 			if (isItemStackBroken(itemstack))
 				itemstack = ItemStack.EMPTY;
@@ -66,12 +66,12 @@ public class DisenchantingUtils {
 						&& getAvailableEnchantmentIndices(itemstack).isEmpty())
 					itemstack = ItemStack.EMPTY;
 			}
-			inventory.setInventorySlotContents(0, itemstack);
+			inventory.setStackInSlot(0, itemstack);
 
 			if (target.getItem().equals(Items.ENCHANTED_BOOK) && getEnchantmentList(target) == null)
 				target = new ItemStack(Items.BOOK);
 			if (isAutomatic)
-				inventory.setInventorySlotContents(2, target);
+				inventory.setStackInSlot(2, target);
 
 			if (!world.isRemote)
 				world.playSound(null, position, CommonProxy.disenchantmentTableUse, SoundCategory.BLOCKS,
