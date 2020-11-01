@@ -139,7 +139,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 
 	@Override
 	public boolean hasComparatorInputOverride(IBlockState state) {
-		return true;
+		return state.getValue(AUTOMATIC);
 	}
 
 	@Override

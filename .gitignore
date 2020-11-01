@@ -1,3 +1,6 @@
+### GIMP ###
+*.xcf
+
 # Created by https://www.gitignore.io/api/java,gradle,eclipse,forgegradle
 # Edit at https://www.gitignore.io/?templates=java,gradle,eclipse,forgegradle
 
@@ -144,4 +147,3 @@ eclipse
 run
 gradle*
 *.txt
-

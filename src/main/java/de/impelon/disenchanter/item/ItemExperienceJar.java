@@ -150,16 +150,16 @@ public class ItemExperienceJar extends Item {
 	}
 	
 	/**
-	 * Returns the percentage of how much of the stack's experience capacity is filled by its stored experience.
+	 * Returns the ratio of how much of the stack's experience capacity is filled by its stored experience.
 	 * 
 	 * @param stack the itemstack
-	 * @return the percentage or 0 if the stack has no capacity
+	 * @return the ratio or 0 if the stack has no capacity
 	 */
 	public static float getExperienceFillLevel(ItemStack stack) {
 		int capacity = getExperienceCapacity(stack);
 		if (capacity == 0)
 			return 0;
-		return getStoredExperience(stack) / capacity;
+		return ((float) getStoredExperience(stack)) / capacity;
 	}
 	
 	/**
