@@ -6,6 +6,54 @@
   "overrides": [
     {
       "predicate": {
+        "disenchanter:fill_level": 0.111111111
+      },
+      "model": "disenchanter:item/experience_jar_1"
+    },
+    {
+      "predicate": {
+        "disenchanter:fill_level": 0.222222222
+      },
+      "model": "disenchanter:item/experience_jar_2"
+    },
+    {
+      "predicate": {
+        "disenchanter:fill_level": 0.333333333
+      },
+      "model": "disenchanter:item/experience_jar_3"
+    },
+    {
+      "predicate": {
+        "disenchanter:fill_level": 0.444444444
+      },
+      "model": "disenchanter:item/experience_jar_4"
+    },
+    {
+      "predicate": {
+        "disenchanter:fill_level": 0.555555555
+      },
+      "model": "disenchanter:item/experience_jar_5"
+    },
+    {
+      "predicate": {
+        "disenchanter:fill_level": 0.666666666
+      },
+      "model": "disenchanter:item/experience_jar_6"
+    },
+    {
+      "predicate": {
+        "disenchanter:fill_level": 0.777777777
+      },
+      "model": "disenchanter:item/experience_jar_7"
+    },
+    {
+      "predicate": {
+        "disenchanter:fill_level": 0.888888888
+      },
+      "model": "disenchanter:item/experience_jar_8"
+    },
+    {
+      "predicate": {
         "disenchanter:fill_level": 1
       },
       "model": "disenchanter:item/experience_jar_full"
