@@ -23,20 +23,14 @@ import net.minecraftforge.items.SlotItemHandler;
 public class ContainerDisenchantment extends Container {
 	
 	protected static final int SOURCE_SLOT = DisenchantmentItemStackHandler.SOURCE_SLOT;
-	protected static final int TARGET_SLOT = DisenchantmentItemStackHandler.TARGET_SLOT;
+	protected static final int TARGET_SLOT = DisenchantmentItemStackHandler.RECEIVER_SLOT;
 	protected static final int OUTPUT_SLOT = DisenchantmentItemStackHandler.OUTPUT_SLOT;
 
 	private boolean isAutomatic;
 	private World world;
 	private BlockPos posBlock;
 	private Random random = new Random();
-	private DisenchantmentItemStackHandler tableContent = new DisenchantmentItemStackHandler() {
-		@Override
-		protected void onContentsChanged(int slot) {
-			//TODO
-			ContainerDisenchantment.this.onCraftMatrixChanged(this);
-		};
-	};
+	private DisenchantmentItemStackHandler tableContent;
 
 	public ContainerDisenchantment(final InventoryPlayer pInventory, World w, BlockPos pos) {
 		this.world = w;
@@ -47,6 +41,14 @@ public class ContainerDisenchantment extends Container {
 		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
 			this.isAutomatic = true;
 			this.tableContent = (DisenchantmentItemStackHandler) te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		} else {
+			this.tableContent = new DisenchantmentItemStackHandler() {
+				@Override
+				protected void onContentsChanged(int slot) {
+					//TODO
+					ContainerDisenchantment.this.onCraftMatrixChanged(this);
+				};
+			};
 		}
 
 		this.addSlotToContainer(new SlotItemHandler(this.tableContent, SOURCE_SLOT, 26, 35));
@@ -91,11 +93,11 @@ public class ContainerDisenchantment extends Container {
 
 	public void updateOutput() {
 		if (!this.world.isRemote && !this.isAutomatic) {
-			ItemStack itemstack = this.slots.getStackInSlot(0);
-			ItemStack receiver = this.slots.getStackInSlot(1);
+			ItemStack source = this.tableContent.getSourceStack();
+			ItemStack receiver = this.tableContent.getReceiverStack();
 			ItemStack target = DisenchantingUtils.getAppropriateResultTarget(receiver);
 
-			if (!itemstack.isEmpty() && !target.isEmpty() && DisenchantingUtils.disenchant(itemstack.copy(), target,
+			if (!source.isEmpty() && !target.isEmpty() && DisenchantingUtils.disenchant(source.copy(), target,
 					this.isAutomatic, false, this.world, this.posBlock, this.random)) {
 				if (!(ItemStack.areItemStacksEqual(this.slots.getStackInSlot(2), target)))
 					this.slots.setInventorySlotContents(2, target);

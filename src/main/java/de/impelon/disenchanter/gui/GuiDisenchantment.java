@@ -44,7 +44,7 @@ public class GuiDisenchantment extends GuiContainer {
 	protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.getTextureManager().bindTexture(guiResource);
-		this.drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize);
+		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 
 }

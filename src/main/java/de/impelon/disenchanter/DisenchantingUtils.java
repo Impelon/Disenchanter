@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
+import de.impelon.disenchanter.inventory.AbstractDisenchantmentItemStackHandler;
 import de.impelon.disenchanter.inventory.ContainerDisenchantment;
-import de.impelon.disenchanter.inventory.DisenchantmentItemStackHandler;
 import de.impelon.disenchanter.item.ItemExperienceJar;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.enchantment.Enchantment;
@@ -38,40 +38,40 @@ public class DisenchantingUtils {
 	 * @param position    the position the disenchanting is performed at
 	 * @param random      a {@linkplain Random}-instance to use for random decisions
 	 */
-	public static void disenchantInInventory(DisenchantmentItemStackHandler inventory, boolean isAutomatic, World world, BlockPos position,
+	public static void disenchantInInventory(AbstractDisenchantmentItemStackHandler inventory, boolean isAutomatic, World world, BlockPos position,
 			Random random) {
-		if (isAutomatic && !inventory.getStackInSlot(2).isEmpty())
+		if (isAutomatic && !inventory.getOutputStack().isEmpty())
 			return;
 
-		ItemStack itemstack = inventory.getStackInSlot(0);
-		ItemStack receiver = inventory.getStackInSlot(1);
+		ItemStack source = inventory.getSourceStack();
+		ItemStack receiver = inventory.getReceiverStack();
 		ItemStack target = getAppropriateResultTarget(receiver);
 		if (target.isEmpty())
 			return;
 
-		if (disenchant(itemstack, target, isAutomatic, false, world, position, random)) {
+		if (disenchant(source, target, isAutomatic, false, world, position, random)) {
 			if (receiver.getCount() > 1)
 				receiver.setCount(receiver.getCount() - 1);
 			else
 				receiver = ItemStack.EMPTY;
-			inventory.setStackInSlot(1, receiver);
+			inventory.setReceiverStack(receiver);
 
-			if (isItemStackBroken(itemstack))
-				itemstack = ItemStack.EMPTY;
+			if (isItemStackBroken(source))
+				source = ItemStack.EMPTY;
 
-			if (!itemstack.isEmpty()) {
-				if (itemstack.getItem().equals(Items.ENCHANTED_BOOK) && getEnchantmentList(itemstack) == null)
-					itemstack = new ItemStack(Items.BOOK);
+			if (!source.isEmpty()) {
+				if (source.getItem().equals(Items.ENCHANTED_BOOK) && getEnchantmentList(source) == null)
+					source = new ItemStack(Items.BOOK);
 				if (world.getBlockState(position).getValue(BlockDisenchantmentTable.VOIDING)
-						&& getAvailableEnchantmentIndices(itemstack).isEmpty())
-					itemstack = ItemStack.EMPTY;
+						&& getAvailableEnchantmentIndices(source).isEmpty())
+					source = ItemStack.EMPTY;
 			}
-			inventory.setStackInSlot(0, itemstack);
+			inventory.setSourceStack(source);
 
 			if (target.getItem().equals(Items.ENCHANTED_BOOK) && getEnchantmentList(target) == null)
 				target = new ItemStack(Items.BOOK);
 			if (isAutomatic)
-				inventory.setStackInSlot(2, target);
+				inventory.setOutputStack(target);
 
 			if (!world.isRemote)
 				world.playSound(null, position, CommonProxy.disenchantmentTableUse, SoundCategory.BLOCKS,
