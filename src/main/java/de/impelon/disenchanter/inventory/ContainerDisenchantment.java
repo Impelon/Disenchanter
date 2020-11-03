@@ -112,7 +112,7 @@ public class ContainerDisenchantment extends Container {
 
 		if (!this.isAutomatic)
 			if (!this.world.isRemote)
-				this.clearContainer(p, p.world, this.slots);
+				InventoryUtils.returnInventoryToPlayer(p, p.world, this.tableContent);
 	}
 
 	@Override

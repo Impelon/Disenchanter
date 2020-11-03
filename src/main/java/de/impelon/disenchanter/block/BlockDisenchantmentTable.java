@@ -3,6 +3,7 @@ package de.impelon.disenchanter.block;
 import java.util.Random;
 
 import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.inventory.InventoryUtils;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTable;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.block.BlockContainer;
@@ -15,9 +16,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -146,7 +144,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	public int getComparatorInputOverride(IBlockState state, World w, BlockPos pos) {
 		TileEntity te = w.getTileEntity(pos);
 		if (te instanceof TileEntityDisenchantmentTableAutomatic)
-			return Container.calcRedstone(te);
+			return InventoryUtils.calcRedstoneFromInventory(te);
 		return 0;
 	}
 
@@ -172,9 +170,8 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	@Override
 	public void breakBlock(World w, BlockPos pos, IBlockState state) {
 		TileEntity te = w.getTileEntity(pos);
-		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
-			InventoryHelper.dropInventoryItems(w, pos, (IInventory) te);
-		}
+		if (te instanceof TileEntityDisenchantmentTableAutomatic)
+			InventoryUtils.dropInventory(w, pos, te);
 		super.breakBlock(w, pos, state);
 	}
 
