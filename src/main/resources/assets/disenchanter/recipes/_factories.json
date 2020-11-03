@@ -1,0 +1,5 @@
+{
+  "recipes": {
+    "upgrade_table": "de.impelon.disenchanter.crafting.UpgradeTableRecipeFactory"
+  }
+}

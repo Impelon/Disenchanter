@@ -4,15 +4,22 @@ import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class UpgradeTableRecipe extends ShapedOreRecipe {
 
 	private final PropertyBool addedProperty;
 
-	public UpgradeTableRecipe(PropertyBool addedProperty, ItemStack result, Object... recipe) {
-		super(null, result, recipe);
+	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, ItemStack result, Object... recipe) {
+		super(group, result, recipe);
+		this.addedProperty = addedProperty;
+	}
+	
+	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, ItemStack result, ShapedPrimer recipe) {
+		super(group, result, recipe);
 		this.addedProperty = addedProperty;
 	}
 

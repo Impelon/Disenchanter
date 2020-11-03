@@ -87,7 +87,7 @@ public class CommonProxy {
 			).setRegistryName(itemExperienceJar.getRegistryName()));
 		
 		if (DisenchanterConfig.general.enableAutomaticRecipe)
-			ev.getRegistry().register(new UpgradeTableRecipe(BlockDisenchantmentTable.AUTOMATIC, new ItemStack(itemDisenchantmentTable, 1, 1),
+			ev.getRegistry().register(new UpgradeTableRecipe(null, BlockDisenchantmentTable.AUTOMATIC, new ItemStack(itemDisenchantmentTable, 1, 1),
 					"IMI",
 					"BCB",
 					"ITI",
@@ -99,7 +99,7 @@ public class CommonProxy {
 			).setRegistryName(DisenchanterMain.MODID, "upgradetable_automatic"));
 		
 		if (DisenchanterConfig.general.enableBulkDisenchantingRecipe)
-			ev.getRegistry().register(new UpgradeTableRecipe(BlockDisenchantmentTable.BULKDISENCHANTING, new ItemStack(itemDisenchantmentTable, 1, 2),
+			ev.getRegistry().register(new UpgradeTableRecipe(null, BlockDisenchantmentTable.BULKDISENCHANTING, new ItemStack(itemDisenchantmentTable, 1, 2),
 					"QGQ",
 					"GDG",
 					"QTQ",
@@ -110,7 +110,7 @@ public class CommonProxy {
 			).setRegistryName(DisenchanterMain.MODID, "upgradetable_bulkdisenchanting"));
 		
 		if (DisenchanterConfig.general.enableVoidingRecipe)
-			ev.getRegistry().register(new UpgradeTableRecipe(BlockDisenchantmentTable.VOIDING, new ItemStack(itemDisenchantmentTable, 1, 4),
+			ev.getRegistry().register(new UpgradeTableRecipe(null, BlockDisenchantmentTable.VOIDING, new ItemStack(itemDisenchantmentTable, 1, 4),
 					"POP",
 					"EHE",
 					"PTP",
