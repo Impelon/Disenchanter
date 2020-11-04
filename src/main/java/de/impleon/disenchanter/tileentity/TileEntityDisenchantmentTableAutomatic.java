@@ -10,8 +10,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchantmentTable {
 	
-	protected static final String INVENTORY_TAG = "Items";
-
 	protected DisenchantmentItemStackHandler tableContent = new DisenchantmentItemStackHandler() {
 		@Override
 		protected void onContentsChanged(int slot) {
@@ -22,14 +20,13 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	@Override
 	public void readFromNBT(NBTTagCompound nbtData) {
 		super.readFromNBT(nbtData);
-		if (nbtData.hasKey(INVENTORY_TAG))
-            this.tableContent.deserializeNBT((NBTTagCompound) nbtData.getTag(INVENTORY_TAG));
+		this.tableContent.deserializeNBT(nbtData);
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtData) {
 		super.writeToNBT(nbtData);
-		nbtData.setTag(INVENTORY_TAG, this.tableContent.serializeNBT());
+		nbtData.merge(this.tableContent.serializeNBT());
 
 		return nbtData;
 	}

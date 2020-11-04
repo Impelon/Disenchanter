@@ -1,2 +1,2 @@
 # Disenchanter
-A small Mod for MinecraftForge essentially adding a block to disenchant items.
+A small mod for MinecraftForge essentially adding a block to disenchant items.

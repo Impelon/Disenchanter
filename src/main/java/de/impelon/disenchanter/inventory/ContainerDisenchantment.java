@@ -3,15 +3,12 @@ package de.impelon.disenchanter.inventory;
 import java.util.Random;
 
 import de.impelon.disenchanter.DisenchantingUtils;
-import de.impelon.disenchanter.item.ItemExperienceJar;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -25,6 +22,7 @@ public class ContainerDisenchantment extends Container {
 	protected static final int SOURCE_SLOT = DisenchantmentItemStackHandler.SOURCE_SLOT;
 	protected static final int TARGET_SLOT = DisenchantmentItemStackHandler.RECEIVER_SLOT;
 	protected static final int OUTPUT_SLOT = DisenchantmentItemStackHandler.OUTPUT_SLOT;
+	protected static final int FIRST_NON_TABLE_SLOT = OUTPUT_SLOT + 1;
 
 	private boolean isAutomatic;
 	private World world;
@@ -32,7 +30,7 @@ public class ContainerDisenchantment extends Container {
 	private Random random = new Random();
 	private DisenchantmentItemStackHandler tableContent;
 
-	public ContainerDisenchantment(final InventoryPlayer pInventory, World w, BlockPos pos) {
+	public ContainerDisenchantment(InventoryPlayer pInventory, World w, BlockPos pos) {
 		this.world = w;
 		this.posBlock = pos;
 		this.isAutomatic = false;
@@ -45,8 +43,7 @@ public class ContainerDisenchantment extends Container {
 			this.tableContent = new DisenchantmentItemStackHandler() {
 				@Override
 				protected void onContentsChanged(int slot) {
-					//TODO
-					ContainerDisenchantment.this.onCraftMatrixChanged(this);
+					ContainerDisenchantment.this.onTableContentChanged();
 				};
 			};
 		}
@@ -82,13 +79,10 @@ public class ContainerDisenchantment extends Container {
 
 	}
 
-	@Override
-	public void onCraftMatrixChanged(IInventory inventory) {
-		super.onCraftMatrixChanged(inventory);
-
-		if (inventory == this.slots && !this.isAutomatic)
+	protected void onTableContentChanged() {
+		if (!this.isAutomatic)
 			this.updateOutput();
-
+		this.detectAndSendChanges();
 	}
 
 	public void updateOutput() {
@@ -99,10 +93,11 @@ public class ContainerDisenchantment extends Container {
 
 			if (!source.isEmpty() && !target.isEmpty() && DisenchantingUtils.disenchant(source.copy(), target,
 					this.isAutomatic, false, this.world, this.posBlock, this.random)) {
-				if (!(ItemStack.areItemStacksEqual(this.slots.getStackInSlot(2), target)))
-					this.slots.setInventorySlotContents(2, target);
-			} else if (!this.slots.getStackInSlot(2).isEmpty())
-				this.slots.setInventorySlotContents(2, ItemStack.EMPTY);
+				//TODO
+				if (!(ItemStack.areItemStacksEqual(this.tableContent.getOutputStack(), target)))
+					this.tableContent.setOutputStack(target);
+			} else if (!this.tableContent.getOutputStack().isEmpty())
+				this.tableContent.setOutputStack(ItemStack.EMPTY);
 		}
 	}
 
@@ -133,13 +128,13 @@ public class ContainerDisenchantment extends Container {
 			
 			switch (slotID) {
 			case OUTPUT_SLOT:
-				if (!this.mergeItemStack(itemstack, 3, this.inventorySlots.size(), true))
+				if (!this.mergeItemStack(itemstack, FIRST_NON_TABLE_SLOT, this.inventorySlots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onSlotChange(itemstack, itemstackPrev);
 				break;
 			case SOURCE_SLOT:
 			case TARGET_SLOT:
-				if (!this.mergeItemStack(itemstack, 3, this.inventorySlots.size(), true))
+				if (!this.mergeItemStack(itemstack, FIRST_NON_TABLE_SLOT, this.inventorySlots.size(), true))
 					return ItemStack.EMPTY;
 				break;
 			default: {
@@ -160,7 +155,7 @@ public class ContainerDisenchantment extends Container {
 			}
 
 			if (itemstack.getCount() <= 0)
-				slot.putStack(ItemStack.EMPTY);
+				slot.putStack(ItemStack.EMPTY);	
 			else
 				slot.onSlotChanged();
 
