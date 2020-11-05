@@ -22,6 +22,10 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * Mostly reimplements utility-functions of the legacy {@link IInventory} or delegates to said functions.
  */
 public class InventoryUtils {
+	
+	public static ItemStack copyStackWithSize(ItemStack itemstack, int size) {
+		return ItemHandlerHelper.copyStackWithSize(itemstack, size);
+	}
 
 	public static NonNullList<ItemStack> extractItemsFromInventory(IItemHandler inventory, boolean simulate) {
 		NonNullList<ItemStack> items = NonNullList.create();

@@ -13,6 +13,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	protected DisenchantmentItemStackHandler tableContent = new DisenchantmentItemStackHandler() {
 		@Override
 		protected void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
 			TileEntityDisenchantmentTableAutomatic.this.markDirty();
 		};
 	};

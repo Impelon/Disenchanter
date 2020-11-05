@@ -29,6 +29,9 @@ public class DisenchantingUtils {
 	 * transfer enchantments from the input-itemstack to the output-itemstack as
 	 * needed.
 	 * </p>
+	 * <p>
+	 * Returns the resulting output-itemstack, if any.
+	 * </p>
 	 * 
 	 * @param inventory   an inventory like the slots of
 	 *                    {@linkplain ContainerDisenchantment}
@@ -37,17 +40,18 @@ public class DisenchantingUtils {
 	 * @param world       the world the disenchanting is performed in
 	 * @param position    the position the disenchanting is performed at
 	 * @param random      a {@linkplain Random}-instance to use for random decisions
+	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the disenchanting process should not be completed.
 	 */
-	public static void disenchantInInventory(AbstractDisenchantmentItemStackHandler inventory, boolean isAutomatic, World world, BlockPos position,
+	public static ItemStack disenchantInInventory(AbstractDisenchantmentItemStackHandler inventory, boolean isAutomatic, World world, BlockPos position,
 			Random random) {
 		if (isAutomatic && !inventory.getOutputStack().isEmpty())
-			return;
+			return ItemStack.EMPTY;
 
 		ItemStack source = inventory.getSourceStack();
 		ItemStack receiver = inventory.getReceiverStack();
 		ItemStack target = getAppropriateResultTarget(receiver);
 		if (target.isEmpty())
-			return;
+			return ItemStack.EMPTY;
 
 		if (disenchant(source, target, isAutomatic, false, world, position, random)) {
 			if (receiver.getCount() > 1)
@@ -77,6 +81,7 @@ public class DisenchantingUtils {
 				world.playSound(null, position, CommonProxy.disenchantmentTableUse, SoundCategory.BLOCKS,
 						isAutomatic ? 0.5F : 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
 		}
+		return target;
 	}
 
 	/**
@@ -156,7 +161,7 @@ public class DisenchantingUtils {
 				EnchantmentData enchantment = new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl);
 				double enchantmentLoss = DisenchanterConfig.disenchanting.enchantmentLossChance;
 
-				if (!ignoreEnchantmentLoss && random.nextFloat() > enchantmentLoss) {
+				if (ignoreEnchantmentLoss || random.nextFloat() > enchantmentLoss) {
 					if (target.getItem().equals(Items.ENCHANTED_BOOK))
 						ItemEnchantedBook.addEnchantment(target, enchantment);
 					else if (target.getItem().equals(CommonProxy.itemExperienceJar)) {
@@ -321,7 +326,7 @@ public class DisenchantingUtils {
 	 * </p>
 	 * 
 	 * @param itemstack the itemstack to check
-	 * @return true if the itemstack is broker, false otherwise
+	 * @return true if the itemstack is broken, false otherwise
 	 */
 	public static boolean isItemStackBroken(ItemStack itemstack) {
 		return itemstack.isItemStackDamageable() && itemstack.getItemDamage() > itemstack.getMaxDamage();

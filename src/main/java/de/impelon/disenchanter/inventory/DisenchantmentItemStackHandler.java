@@ -46,7 +46,6 @@ public class DisenchantmentItemStackHandler extends AbstractDisenchantmentItemSt
 	public void setSourceStack(ItemStack stack) {
 		this.setStackInSlot(SOURCE_SLOT, stack);
 	}
-
 	
 	@Override
 	public void setReceiverStack(ItemStack stack) {

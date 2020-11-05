@@ -7,7 +7,6 @@ import de.impelon.disenchanter.proxy.CommonProxy;
 import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -18,9 +17,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerDisenchantment extends Container {
-	
+
 	protected static final int SOURCE_SLOT = DisenchantmentItemStackHandler.SOURCE_SLOT;
-	protected static final int TARGET_SLOT = DisenchantmentItemStackHandler.RECEIVER_SLOT;
+	protected static final int RECEIVER_SLOT = DisenchantmentItemStackHandler.RECEIVER_SLOT;
 	protected static final int OUTPUT_SLOT = DisenchantmentItemStackHandler.OUTPUT_SLOT;
 	protected static final int FIRST_NON_TABLE_SLOT = OUTPUT_SLOT + 1;
 
@@ -38,43 +37,54 @@ public class ContainerDisenchantment extends Container {
 		TileEntity te = this.world.getTileEntity(pos);
 		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
 			this.isAutomatic = true;
-			this.tableContent = (DisenchantmentItemStackHandler) te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			this.tableContent = (DisenchantmentItemStackHandler) te
+					.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		} else {
 			this.tableContent = new DisenchantmentItemStackHandler() {
 				@Override
 				protected void onContentsChanged(int slot) {
+					super.onContentsChanged(slot);
 					ContainerDisenchantment.this.onTableContentChanged();
 				};
 			};
 		}
 
 		this.addSlotToContainer(new SlotItemHandler(this.tableContent, SOURCE_SLOT, 26, 35));
-		this.addSlotToContainer(new SlotItemHandler(this.tableContent, TARGET_SLOT, 75, 35));
+		this.addSlotToContainer(new SlotItemHandler(this.tableContent, RECEIVER_SLOT, 75, 35));
 		this.addSlotToContainer(new SlotItemHandler(this.tableContent, OUTPUT_SLOT, 133, 35) {
 
 			@Override
 			public boolean isItemValid(ItemStack stack) {
 				return false;
 			}
-
-			@Override
-			public ItemStack onTake(EntityPlayer p, ItemStack stack) {
-				if (isAutomatic)
-					return stack;
-
-				DisenchantingUtils.disenchantInInventory(tableContent, isAutomatic, world, posBlock, random);
-				return stack;
-			}
+			
+//			@Override
+//			public ItemStack onTake(EntityPlayer p, ItemStack stack) {
+//				if (isAutomatic)
+//					return stack;
+//
+//				DisenchantingUtils.disenchantInInventory(tableContent, isAutomatic, world, posBlock, random);
+//				return stack;
+//			}
+//			
+//			@Override
+//			public ItemStack decrStackSize(int amount) {
+//				if (!isAutomatic)
+//					DisenchantingUtils.disenchantInInventory(tableContent, isAutomatic, world, posBlock, random);
+//				ItemStack result = super.decrStackSize(amount);
+//				System.out.println(result);
+//				return result;
+//			}
 
 		});
 
 		int tmp;
 
-		for (tmp = 0; tmp < 3; ++tmp)
-			for (int col = 0; col < 9; ++col)
+		for (tmp = 0; tmp < 3; tmp++)
+			for (int col = 0; col < 9; col++)
 				this.addSlotToContainer(new Slot(pInventory, col + tmp * 9 + 9, 8 + col * 18, 84 + tmp * 18));
 
-		for (tmp = 0; tmp < 9; ++tmp)
+		for (tmp = 0; tmp < 9; tmp++)
 			this.addSlotToContainer(new Slot(pInventory, tmp, 8 + tmp * 18, 142));
 
 	}
@@ -90,10 +100,8 @@ public class ContainerDisenchantment extends Container {
 			ItemStack source = this.tableContent.getSourceStack();
 			ItemStack receiver = this.tableContent.getReceiverStack();
 			ItemStack target = DisenchantingUtils.getAppropriateResultTarget(receiver);
-
 			if (!source.isEmpty() && !target.isEmpty() && DisenchantingUtils.disenchant(source.copy(), target,
-					this.isAutomatic, false, this.world, this.posBlock, this.random)) {
-				//TODO
+					this.isAutomatic, true, this.world, this.posBlock, this.random)) {
 				if (!(ItemStack.areItemStacksEqual(this.tableContent.getOutputStack(), target)))
 					this.tableContent.setOutputStack(target);
 			} else if (!this.tableContent.getOutputStack().isEmpty())
@@ -120,42 +128,34 @@ public class ContainerDisenchantment extends Container {
 	public ItemStack transferStackInSlot(EntityPlayer p, int slotID) {
 		ItemStack itemstackPrev = ItemStack.EMPTY;
 		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = (Slot) this.inventorySlots.get(slotID);
+		Slot slot = this.inventorySlots.get(slotID);
 
 		if (slot != null && slot.getHasStack()) {
 			itemstack = slot.getStack();
 			itemstackPrev = itemstack.copy();
-			
+
 			switch (slotID) {
 			case OUTPUT_SLOT:
 				if (!this.mergeItemStack(itemstack, FIRST_NON_TABLE_SLOT, this.inventorySlots.size(), true))
 					return ItemStack.EMPTY;
-				slot.onSlotChange(itemstack, itemstackPrev);
 				break;
 			case SOURCE_SLOT:
-			case TARGET_SLOT:
+			case RECEIVER_SLOT:
 				if (!this.mergeItemStack(itemstack, FIRST_NON_TABLE_SLOT, this.inventorySlots.size(), true))
 					return ItemStack.EMPTY;
 				break;
 			default: {
-				ItemStack i = itemstack.splitStack(1);
-				//TODO correct splitting
-				if (i.getItem().equals(Items.BOOK)) {
-					if (((Slot) this.inventorySlots.get(1)).getHasStack() || !this.mergeItemStack(i, 1, 2, false)) {
-						itemstack.setCount(itemstack.getCount() + 1);
-						return ItemStack.EMPTY;
-					}
-				} else {
-					if (((Slot) this.inventorySlots.get(0)).getHasStack() || !this.mergeItemStack(i, 0, 1, false)) {
-						itemstack.setCount(itemstack.getCount() + 1);
-						return ItemStack.EMPTY;
-					}
-				}
-			}	
+				ItemStack i = InventoryUtils.copyStackWithSize(itemstack, 1);
+				int slockToCheck = this.tableContent.isItemValid(DisenchantmentItemStackHandler.RECEIVER_SLOT, i)
+						? RECEIVER_SLOT
+						: SOURCE_SLOT;
+				if (this.inventorySlots.get(slockToCheck).getHasStack() || !this.mergeItemStack(i, slockToCheck, slockToCheck + 1, false)) 
+					return ItemStack.EMPTY;
+				itemstack.shrink(1);
 			}
-
-			if (itemstack.getCount() <= 0)
-				slot.putStack(ItemStack.EMPTY);	
+			}
+			if (itemstack.isEmpty())
+				slot.putStack(ItemStack.EMPTY);
 			else
 				slot.onSlotChanged();
 
