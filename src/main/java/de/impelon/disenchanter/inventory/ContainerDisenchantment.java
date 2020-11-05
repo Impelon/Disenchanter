@@ -4,7 +4,7 @@ import java.util.Random;
 
 import de.impelon.disenchanter.DisenchantingUtils;
 import de.impelon.disenchanter.proxy.CommonProxy;
-import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
+import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

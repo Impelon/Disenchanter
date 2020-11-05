@@ -1,4 +1,4 @@
-package de.impleon.disenchanter.tileentity;
+package de.impelon.disenchanter.tileentity;
 
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.inventory.ContainerDisenchantment;

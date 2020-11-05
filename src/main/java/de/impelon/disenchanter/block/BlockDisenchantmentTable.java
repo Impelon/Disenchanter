@@ -4,8 +4,8 @@ import java.util.Random;
 
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.inventory.InventoryUtils;
-import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTable;
-import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
+import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTable;
+import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;

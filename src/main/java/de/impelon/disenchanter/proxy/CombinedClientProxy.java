@@ -12,11 +12,11 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTable;
-import de.impleon.disenchanter.tileentity.TileEntityDisenchantmentTableRenderer;
 import de.impelon.disenchanter.DisenchanterConfig;
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
+import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTable;
+import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableRenderer;
 
 public class CombinedClientProxy extends CommonProxy {
 
