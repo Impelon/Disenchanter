@@ -1,7 +1,7 @@
 package de.impelon.disenchanter.tileentity;
 
 import de.impelon.disenchanter.DisenchanterMain;
-import de.impelon.disenchanter.inventory.ContainerDisenchantment;
+import de.impelon.disenchanter.inventory.ContainerDisenchantmentBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -16,7 +16,7 @@ public class TileEntityDisenchantmentTable extends TileEntityEnchantmentTable {
 
 	@Override
 	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
-		return new ContainerDisenchantment(playerInventory, this.world, this.pos);
+		return ContainerDisenchantmentBase.create(playerInventory, this.world, this.pos);
 	}
 
 	@Override

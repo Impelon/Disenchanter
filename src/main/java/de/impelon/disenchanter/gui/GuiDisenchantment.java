@@ -1,13 +1,13 @@
 package de.impelon.disenchanter.gui;
 
 import de.impelon.disenchanter.DisenchanterMain;
-import de.impelon.disenchanter.inventory.ContainerDisenchantment;
+import de.impelon.disenchanter.inventory.ContainerDisenchantmentBase;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,11 +17,11 @@ public class GuiDisenchantment extends GuiContainer {
 
 	private static final ResourceLocation guiResource = new ResourceLocation(DisenchanterMain.MODID,
 			"textures/gui/container/disenchanting_table.png");
-	private String customName;
+	private String displayName;
 
-	public GuiDisenchantment(InventoryPlayer p, World w, int x, int y, int z, String customName) {
-		super(new ContainerDisenchantment(p, w, new BlockPos(x, y, z)));
-		this.customName = customName;
+	public GuiDisenchantment(InventoryPlayer playerInventory, World world, BlockPos position, String displayName) {
+		super(ContainerDisenchantmentBase.create(playerInventory, world, position));
+		this.displayName = displayName;
 	}
 
 	@Override
@@ -33,11 +33,10 @@ public class GuiDisenchantment extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
-		this.fontRenderer.drawString(
-				this.customName == null ? I18n.format("container.disenchant", new Object[0]) : this.customName, 8, 5,
-				4210752);
-		this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
-				4210752);
+		if (this.displayName != null)
+			this.fontRenderer.drawString(this.displayName, 8, 5, 4210752);
+		this.fontRenderer.drawString((new TextComponentTranslation("container.inventory")).getFormattedText(), 8,
+				this.ySize - 94, 4210752);
 	}
 
 	@Override

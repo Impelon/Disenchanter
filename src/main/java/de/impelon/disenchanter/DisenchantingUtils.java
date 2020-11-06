@@ -6,7 +6,7 @@ import java.util.Random;
 
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 import de.impelon.disenchanter.inventory.AbstractDisenchantmentItemStackHandler;
-import de.impelon.disenchanter.inventory.ContainerDisenchantment;
+import de.impelon.disenchanter.inventory.ContainerDisenchantmentBase;
 import de.impelon.disenchanter.item.ItemExperienceJar;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.enchantment.Enchantment;
@@ -34,7 +34,7 @@ public class DisenchantingUtils {
 	 * </p>
 	 * 
 	 * @param inventory   an inventory like the slots of
-	 *                    {@linkplain ContainerDisenchantment}
+	 *                    {@linkplain ContainerDisenchantmentBase}
 	 * @param isAutomatic true when the disenchanting process is performed by an
 	 *                    automatic disenchantment table, false otherwise
 	 * @param world       the world the disenchanting is performed in

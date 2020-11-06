@@ -17,7 +17,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 			TileEntityDisenchantmentTableAutomatic.this.markDirty();
 		};
 	};
-
+	
 	@Override
 	public void readFromNBT(NBTTagCompound nbtData) {
 		super.readFromNBT(nbtData);
