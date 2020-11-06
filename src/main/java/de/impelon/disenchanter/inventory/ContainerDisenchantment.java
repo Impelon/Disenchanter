@@ -7,6 +7,7 @@ import de.impelon.disenchanter.proxy.CommonProxy;
 import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -23,18 +24,19 @@ public class ContainerDisenchantment extends Container {
 	protected static final int OUTPUT_SLOT = DisenchantmentItemStackHandler.OUTPUT_SLOT;
 	protected static final int FIRST_NON_TABLE_SLOT = OUTPUT_SLOT + 1;
 
-	private boolean isAutomatic;
-	private World world;
-	private BlockPos posBlock;
-	private Random random = new Random();
-	private DisenchantmentItemStackHandler tableContent;
+	protected boolean outputUpdatesDisabeled = false;
+	protected boolean isAutomatic;
+	protected World world;
+	protected BlockPos position;
+	protected Random random = new Random();
+	protected DisenchantmentItemStackHandler tableContent;
 
-	public ContainerDisenchantment(InventoryPlayer pInventory, World w, BlockPos pos) {
-		this.world = w;
-		this.posBlock = pos;
+	public ContainerDisenchantment(InventoryPlayer playerInventory, World world, BlockPos position) {
+		this.world = world;
+		this.position = position;
 		this.isAutomatic = false;
 
-		TileEntity te = this.world.getTileEntity(pos);
+		TileEntity te = this.world.getTileEntity(position);
 		if (te instanceof TileEntityDisenchantmentTableAutomatic) {
 			this.isAutomatic = true;
 			this.tableContent = (DisenchantmentItemStackHandler) te
@@ -44,7 +46,7 @@ public class ContainerDisenchantment extends Container {
 				@Override
 				protected void onContentsChanged(int slot) {
 					super.onContentsChanged(slot);
-					ContainerDisenchantment.this.onTableContentChanged();
+					ContainerDisenchantment.this.onTableContentChanged(slot);
 				};
 			};
 		}
@@ -57,24 +59,6 @@ public class ContainerDisenchantment extends Container {
 			public boolean isItemValid(ItemStack stack) {
 				return false;
 			}
-			
-//			@Override
-//			public ItemStack onTake(EntityPlayer p, ItemStack stack) {
-//				if (isAutomatic)
-//					return stack;
-//
-//				DisenchantingUtils.disenchantInInventory(tableContent, isAutomatic, world, posBlock, random);
-//				return stack;
-//			}
-//			
-//			@Override
-//			public ItemStack decrStackSize(int amount) {
-//				if (!isAutomatic)
-//					DisenchantingUtils.disenchantInInventory(tableContent, isAutomatic, world, posBlock, random);
-//				ItemStack result = super.decrStackSize(amount);
-//				System.out.println(result);
-//				return result;
-//			}
 
 		});
 
@@ -82,27 +66,26 @@ public class ContainerDisenchantment extends Container {
 
 		for (tmp = 0; tmp < 3; tmp++)
 			for (int col = 0; col < 9; col++)
-				this.addSlotToContainer(new Slot(pInventory, col + tmp * 9 + 9, 8 + col * 18, 84 + tmp * 18));
+				this.addSlotToContainer(new Slot(playerInventory, col + tmp * 9 + 9, 8 + col * 18, 84 + tmp * 18));
 
 		for (tmp = 0; tmp < 9; tmp++)
-			this.addSlotToContainer(new Slot(pInventory, tmp, 8 + tmp * 18, 142));
-
+			this.addSlotToContainer(new Slot(playerInventory, tmp, 8 + tmp * 18, 142));
 	}
 
-	protected void onTableContentChanged() {
+	protected void onTableContentChanged(int slot) {
 		if (!this.isAutomatic)
 			this.updateOutput();
 		this.detectAndSendChanges();
 	}
 
 	public void updateOutput() {
-		if (!this.world.isRemote && !this.isAutomatic) {
+		if (!this.isAutomatic && !this.world.isRemote && !this.outputUpdatesDisabeled) {
 			ItemStack source = this.tableContent.getSourceStack();
 			ItemStack receiver = this.tableContent.getReceiverStack();
 			ItemStack target = DisenchantingUtils.getAppropriateResultTarget(receiver);
 			if (!source.isEmpty() && !target.isEmpty() && DisenchantingUtils.disenchant(source.copy(), target,
-					this.isAutomatic, true, this.world, this.posBlock, this.random)) {
-				if (!(ItemStack.areItemStacksEqual(this.tableContent.getOutputStack(), target)))
+					this.isAutomatic, true, this.world, this.position, this.random)) {
+				if (!(ItemStack.areItemStacksEqual(this.tableContent.getOutputStack(), target))) 
 					this.tableContent.setOutputStack(target);
 			} else if (!this.tableContent.getOutputStack().isEmpty())
 				this.tableContent.setOutputStack(ItemStack.EMPTY);
@@ -113,15 +96,14 @@ public class ContainerDisenchantment extends Container {
 	public void onContainerClosed(EntityPlayer p) {
 		super.onContainerClosed(p);
 
-		if (!this.isAutomatic)
-			if (!this.world.isRemote)
-				InventoryUtils.returnInventoryToPlayer(p, p.world, this.tableContent);
+		if (!this.isAutomatic && !this.world.isRemote)
+			InventoryUtils.returnInventoryToPlayer(p, p.world, this.tableContent);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer p) {
-		return !this.world.getBlockState(this.posBlock).getBlock().equals(CommonProxy.disenchantmentTable) ? false
-				: p.getDistanceSq(this.posBlock.add(0.5, 0.5, 0.5)) <= 64.0D;
+		return !this.world.getBlockState(this.position).getBlock().equals(CommonProxy.disenchantmentTable) ? false
+				: p.getDistanceSq(this.position.add(0.5, 0.5, 0.5)) <= 64.0D;
 	}
 
 	@Override
@@ -166,5 +148,17 @@ public class ContainerDisenchantment extends Container {
 		}
 
 		return itemstack;
+	}
+	
+	@Override
+	public ItemStack slotClick(int slot, int dragType, ClickType clickType, EntityPlayer player) {
+		if (!this.isAutomatic && slot == OUTPUT_SLOT) {
+			this.outputUpdatesDisabeled = true;
+			ItemStack output = DisenchantingUtils.disenchantInInventory(this.tableContent, this.isAutomatic, this.world, this.position, this.random);
+			this.tableContent.setOutputStack(output);
+		}
+		ItemStack result = super.slotClick(slot, dragType, clickType, player);
+		this.outputUpdatesDisabeled = false;
+		return result;
 	}
 }
