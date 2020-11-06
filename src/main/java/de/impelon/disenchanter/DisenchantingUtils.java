@@ -80,8 +80,9 @@ public class DisenchantingUtils {
 			if (!world.isRemote)
 				world.playSound(null, position, CommonProxy.disenchantmentTableUse, SoundCategory.BLOCKS,
 						isAutomatic ? 0.5F : 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
+			return target;
 		}
-		return target;
+		return ItemStack.EMPTY;
 	}
 
 	/**

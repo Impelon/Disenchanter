@@ -23,7 +23,7 @@ public abstract class ContainerDisenchantmentBase extends Container {
 
 	protected World world;
 	protected BlockPos position;
-	protected Random random = new Random();
+	protected Random random;
 
 	public static ContainerDisenchantmentBase create(InventoryPlayer playerInventory, World world, BlockPos position) {
 		TileEntity te = world.getTileEntity(position);
@@ -35,19 +35,24 @@ public abstract class ContainerDisenchantmentBase extends Container {
 	public ContainerDisenchantmentBase(InventoryPlayer playerInventory, World world, BlockPos position) {
 		this.world = world;
 		this.position = position;
+		this.random = new Random();
 
 		this.addTableSlots();
 		this.addPlayerSlots(playerInventory);
 	}
-	
+
 	/**
-	 * Access to this should be fast, as it is needed often. Allows implementations
-	 * to act on different inventory-systems (for example tile entity vs. virtual
-	 * inventory).
-	 * @return the disenchantment-inventory this container is linked to 
+	 * Access to this should be fast, as it is needed often. It <b>MUST</b> be available at
+	 * the time the constructor of <b>THIS</b>
+	 * ({@link ContainerDisenchantmentBase}) base class is called.
+	 * 
+	 * Allows implementations to act on different inventory-systems (for example
+	 * tile entity vs. virtual inventory).
+	 * 
+	 * @return the disenchantment-inventory this container is linked to
 	 */
 	protected abstract AbstractDisenchantmentItemStackHandler getTableInventory();
-	
+
 	protected void addTableSlots() {
 		this.addSlotToContainer(new SlotItemHandler(this.getTableInventory(), SOURCE_SLOT, 26, 35));
 		this.addSlotToContainer(new SlotItemHandler(this.getTableInventory(), RECEIVER_SLOT, 75, 35));

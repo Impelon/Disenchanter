@@ -8,7 +8,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class ContainerDisenchantmentAutomatic extends ContainerDisenchantmentBase {
 	
-	protected AbstractDisenchantmentItemStackHandler tableContent = null;
+	protected AbstractDisenchantmentItemStackHandler tableContent;
 
 	public ContainerDisenchantmentAutomatic(InventoryPlayer playerInventory, World world, BlockPos position) {
 		super(playerInventory, world, position);
@@ -17,7 +17,6 @@ public class ContainerDisenchantmentAutomatic extends ContainerDisenchantmentBas
 	@Override
 	protected AbstractDisenchantmentItemStackHandler getTableInventory() {
 		if (this.tableContent == null) {
-			System.out.println("automatic was null before " + this.hashCode());
 			TileEntity te = this.world.getTileEntity(this.position);
 			this.tableContent = (AbstractDisenchantmentItemStackHandler) te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		}
