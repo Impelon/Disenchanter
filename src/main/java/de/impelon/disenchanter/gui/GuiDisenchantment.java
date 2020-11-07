@@ -7,21 +7,22 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiDisenchantment extends GuiContainer {
-
+	
 	private static final ResourceLocation guiResource = new ResourceLocation(DisenchanterMain.MODID,
 			"textures/gui/container/disenchanting_table.png");
-	private String displayName;
+	private String tableName;
+	private String inventoryName;
 
-	public GuiDisenchantment(InventoryPlayer playerInventory, World world, BlockPos position, String displayName) {
+	public GuiDisenchantment(InventoryPlayer playerInventory, World world, BlockPos position, String tableName) {
 		super(ContainerDisenchantmentBase.create(playerInventory, world, position));
-		this.displayName = displayName;
+		this.tableName = tableName;
+		this.inventoryName = playerInventory.getDisplayName().getUnformattedText();
 	}
 
 	@Override
@@ -33,10 +34,9 @@ public class GuiDisenchantment extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
-		if (this.displayName != null)
-			this.fontRenderer.drawString(this.displayName, 8, 5, 4210752);
-		this.fontRenderer.drawString((new TextComponentTranslation("container.inventory")).getFormattedText(), 8,
-				this.ySize - 94, 4210752);
+		if (this.tableName != null)
+			this.fontRenderer.drawString(this.tableName, 8, 5, 4210752);
+		this.fontRenderer.drawString(this.inventoryName, 8, this.ySize - 94, 4210752);
 	}
 
 	@Override
@@ -45,5 +45,5 @@ public class GuiDisenchantment extends GuiContainer {
 		this.mc.getTextureManager().bindTexture(guiResource);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
-
+	
 }

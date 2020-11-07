@@ -70,10 +70,9 @@ public class BlockDisenchantmentTable extends BlockContainer {
 							if (!w.isAirBlock(new BlockPos((blockX - x) / 2 + x, blockY, (blockZ - z) / 2 + z)))
 								break;
 
-							w.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, (double) blockX + 0.25D,
-									(double) blockY + 0.55D, (double) blockZ + 0.25D, (double) (x - blockX) + 0.5D,
-									(double) (y - blockY) + (random.nextFloat() / 2) + 0.15D,
-									(double) (z - blockZ) + 0.5D, new int[0]);
+							w.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, blockX + 0.25D, blockY + 0.55D,
+									blockZ + 0.25D, x - blockX + 0.5D, (y - blockY) + (random.nextFloat() / 2) + 0.15D,
+									z - blockZ + 0.5D);
 						}
 					}
 				}

@@ -23,7 +23,7 @@ public class GUIHandler implements IGuiHandler {
 		BlockPos position = new BlockPos(x, y, z);
 		TileEntity tileentity = world.getTileEntity(position);
 		if (tileentity instanceof TileEntityDisenchantmentTable)
-			return new GuiDisenchantment(player.inventory, world, position, ((TileEntityDisenchantmentTable) tileentity).getDisplayName().getFormattedText());
+			return new GuiDisenchantment(player.inventory, world, position, ((TileEntityDisenchantmentTable) tileentity).getDisplayName().getUnformattedText());
 		return null;
 	}
 
