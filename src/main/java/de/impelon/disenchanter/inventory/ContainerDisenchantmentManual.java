@@ -2,7 +2,9 @@ package de.impelon.disenchanter.inventory;
 
 import de.impelon.disenchanter.DisenchantingUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -45,17 +47,20 @@ public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
 	}
 
 	protected void onTableContentChanged(int slot) {
-		this.updateOutput();
+		if (!this.outputUpdatesDisabeled)
+			this.updateOutput(true);
 		this.detectAndSendChanges();
 	}
 
-	public void updateOutput() {
-		if (!this.world.isRemote && !this.outputUpdatesDisabeled) {
+	public void updateOutput(boolean ignoreEnchantmentLoss) {
+		if (!this.world.isRemote) {
 			ItemStack source = this.getTableInventory().getSourceStack();
 			ItemStack receiver = this.getTableInventory().getReceiverStack();
 			ItemStack target = DisenchantingUtils.getAppropriateResultTarget(receiver);
 			if (!source.isEmpty() && !target.isEmpty() && DisenchantingUtils.disenchant(source.copy(), target, false,
-					true, this.world, this.position, this.random)) {
+					ignoreEnchantmentLoss, this.world, this.position, this.random)) {
+				if (target.getItem().equals(Items.ENCHANTED_BOOK) && DisenchantingUtils.getEnchantmentList(target) == null)
+					target = new ItemStack(Items.BOOK);
 				if (!(ItemStack.areItemStacksEqual(this.getTableInventory().getOutputStack(), target)))
 					this.getTableInventory().setOutputStack(target);
 			} else if (!this.getTableInventory().getOutputStack().isEmpty())
@@ -65,20 +70,21 @@ public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
 
 	@Override
 	public ItemStack slotClick(int slot, int dragType, ClickType clickType, EntityPlayer player) {
-		if (slot == OUTPUT_SLOT) {
+		if (slot == OUTPUT_SLOT && !this.world.isRemote && clickType != ClickType.CLONE) {
 			this.outputUpdatesDisabeled = true;
-			if (!this.world.isRemote) {
-				ItemStack output = DisenchantingUtils.disenchantInInventory(this.getTableInventory(), false, this.world,
-						this.position, this.random);
-				this.getTableInventory().setOutputStack(output);
-			}
-			this.detectAndSendChanges();
-			// because of desync client and server there is a ghost item created here,
-			// which can lead to item duplication
+			this.updateOutput(false);
+			boolean wasEmpty = this.getTableInventory().getOutputStack().isEmpty();
+			ItemStack result = super.slotClick(slot, dragType, clickType, player);
+			this.outputUpdatesDisabeled = false;
+			if (this.getTableInventory().getOutputStack().isEmpty() && !wasEmpty)
+				DisenchantingUtils.disenchantInInventory(this.getTableInventory(), false, this.world, this.position, this.random);
+			else
+				this.updateOutput(true);
+			if (player instanceof EntityPlayerMP)
+				((EntityPlayerMP) player).sendContainerToPlayer(this);
+			return result;
 		}
-		ItemStack result = super.slotClick(slot, dragType, clickType, player);
-		this.outputUpdatesDisabeled = false;
-		return result;
+		return super.slotClick(slot, dragType, clickType, player);
 	}
 
 }
