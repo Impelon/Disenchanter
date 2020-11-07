@@ -4,24 +4,21 @@ import de.impelon.disenchanter.DisenchantingUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
-
-	protected boolean outputUpdatesDisabeled;
+	
 	/**
 	 * Must <b>NOT</b> be initialized here, as that would override whatever was
 	 * initialized during the calling of the super-constructor.
 	 */
-	protected AbstractDisenchantmentItemStackHandler tableContent;
+	protected DisenchantmentItemStackHandler tableContent;
 
 	public ContainerDisenchantmentManual(InventoryPlayer playerInventory, World world, BlockPos position) {
 		super(playerInventory, world, position);
-		this.outputUpdatesDisabeled = false;
 	}
 
 	@Override
@@ -47,22 +44,20 @@ public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
 	}
 
 	protected void onTableContentChanged(int slot) {
-		if (!this.outputUpdatesDisabeled)
+		if (slot != OUTPUT_SLOT)
 			this.updateOutput(true);
 		this.detectAndSendChanges();
 	}
 
 	public void updateOutput(boolean ignoreEnchantmentLoss) {
 		if (!this.world.isRemote) {
-			ItemStack source = this.getTableInventory().getSourceStack();
-			ItemStack receiver = this.getTableInventory().getReceiverStack();
-			ItemStack target = DisenchantingUtils.getAppropriateResultTarget(receiver);
-			if (!source.isEmpty() && !target.isEmpty() && DisenchantingUtils.disenchant(source.copy(), target, false,
-					ignoreEnchantmentLoss, this.world, this.position, this.random)) {
-				if (target.getItem().equals(Items.ENCHANTED_BOOK) && DisenchantingUtils.getEnchantmentList(target) == null)
-					target = new ItemStack(Items.BOOK);
-				if (!(ItemStack.areItemStacksEqual(this.getTableInventory().getOutputStack(), target)))
-					this.getTableInventory().setOutputStack(target);
+			DisenchantmentItemStackHandler virtualContent = new DisenchantmentItemStackHandler();
+			virtualContent.setSourceStack(this.getTableInventory().getSourceStack().copy());
+			virtualContent.setReceiverStack(this.getTableInventory().getReceiverStack().copy());
+			ItemStack output = DisenchantingUtils.simulateDisenchantingInInventory(virtualContent, false, ignoreEnchantmentLoss, this.world, this.position, this.random);
+			if (!output.isEmpty()) {
+				if (!(ItemStack.areItemStacksEqual(this.getTableInventory().getOutputStack(), output)))
+					this.getTableInventory().setOutputStack(output);
 			} else if (!this.getTableInventory().getOutputStack().isEmpty())
 				this.getTableInventory().setOutputStack(ItemStack.EMPTY);
 		}
@@ -70,16 +65,13 @@ public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
 
 	@Override
 	public ItemStack slotClick(int slot, int dragType, ClickType clickType, EntityPlayer player) {
-		if (slot == OUTPUT_SLOT && !this.world.isRemote && clickType != ClickType.CLONE) {
-			this.outputUpdatesDisabeled = true;
+		if (slot == OUTPUT_SLOT && clickType != ClickType.CLONE && !this.world.isRemote) {
 			this.updateOutput(false);
 			boolean wasEmpty = this.getTableInventory().getOutputStack().isEmpty();
 			ItemStack result = super.slotClick(slot, dragType, clickType, player);
-			this.outputUpdatesDisabeled = false;
 			if (this.getTableInventory().getOutputStack().isEmpty() && !wasEmpty)
 				DisenchantingUtils.disenchantInInventory(this.getTableInventory(), false, this.world, this.position, this.random);
-			else
-				this.updateOutput(true);
+			this.updateOutput(true);
 			if (player instanceof EntityPlayerMP)
 				((EntityPlayerMP) player).sendContainerToPlayer(this);
 			return result;

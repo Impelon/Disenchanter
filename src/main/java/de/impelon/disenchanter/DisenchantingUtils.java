@@ -27,23 +27,64 @@ public class DisenchantingUtils {
 	 * <p>
 	 * Performs the disenchanting of an itemstack inside an inventory. This will
 	 * transfer enchantments from the input-itemstack to the output-itemstack as
-	 * needed.
+	 * needed. The enchantment loss mechanic will be considered.
 	 * </p>
 	 * <p>
-	 * Returns the resulting output-itemstack, if any.
+	 * <b>This method should be called when a disenchanting process is
+	 * <i>persistently</i> performed.</b>
 	 * </p>
 	 * 
-	 * @param inventory   an inventory like the slots of
-	 *                    {@linkplain ContainerDisenchantmentBase}
-	 * @param isAutomatic true when the disenchanting process is performed by an
-	 *                    automatic disenchantment table, false otherwise
-	 * @param world       the world the disenchanting is performed in
-	 * @param position    the position the disenchanting is performed at
-	 * @param random      a {@linkplain Random}-instance to use for random decisions
-	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the disenchanting process should not be completed.
+	 * @param inventory             an inventory like the slots of
+	 *                              {@linkplain ContainerDisenchantmentBase}
+	 * @param isAutomatic           true if the disenchanting process is performed
+	 *                              by an automatic disenchantment table, false
+	 *                              otherwise
+	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
+	 *                              false otherwise
+	 * @param world                 the world the disenchanting is performed in
+	 * @param position              the position the disenchanting is performed at
+	 * @param random                a {@linkplain Random}-instance to use for random
+	 *                              decisions
+	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the
+	 *         disenchanting process should not be completed.
 	 */
-	public static ItemStack disenchantInInventory(AbstractDisenchantmentItemStackHandler inventory, boolean isAutomatic, World world, BlockPos position,
-			Random random) {
+	public static ItemStack disenchantInInventory(AbstractDisenchantmentItemStackHandler inventory, boolean isAutomatic,
+			World world, BlockPos position, Random random) {
+		ItemStack result = simulateDisenchantingInInventory(inventory, isAutomatic, false, world, position, random);
+		if (!result.isEmpty()) {
+			if (!world.isRemote)
+				world.playSound(null, position, CommonProxy.disenchantmentTableUse, SoundCategory.BLOCKS,
+						isAutomatic ? 0.5F : 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
+		}
+		return result;
+	}
+
+	/**
+	 * <p>
+	 * Simulates the disenchanting of an itemstack inside an inventory. This will
+	 * transfer enchantments from the input-itemstack to the output-itemstack as
+	 * needed.
+	 * </p>
+	 * <b>Do not call this method to persistently perform a disenchanting process.</b><br>
+	 * Use {@link DisenchantingUtils#disenchantInInventory} for that purpose.
+	 * </p>
+	 * 
+	 * @param inventory             an inventory like the slots of
+	 *                              {@linkplain ContainerDisenchantmentBase}
+	 * @param isAutomatic           true if the disenchanting process is performed
+	 *                              by an automatic disenchantment table, false
+	 *                              otherwise
+	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
+	 *                              false otherwise
+	 * @param world                 the world the disenchanting is performed in
+	 * @param position              the position the disenchanting is performed at
+	 * @param random                a {@linkplain Random}-instance to use for random
+	 *                              decisions
+	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the
+	 *         disenchanting process should not be completed.
+	 */
+	public static ItemStack simulateDisenchantingInInventory(AbstractDisenchantmentItemStackHandler inventory,
+			boolean isAutomatic, boolean ignoreEnchantmentLoss, World world, BlockPos position, Random random) {
 		if (isAutomatic && !inventory.getOutputStack().isEmpty())
 			return ItemStack.EMPTY;
 
@@ -53,7 +94,7 @@ public class DisenchantingUtils {
 		if (target.isEmpty())
 			return ItemStack.EMPTY;
 
-		if (disenchant(source, target, isAutomatic, false, world, position, random)) {
+		if (disenchant(source, target, isAutomatic, ignoreEnchantmentLoss, world, position, random)) {
 			if (receiver.getCount() > 1)
 				receiver.setCount(receiver.getCount() - 1);
 			else
@@ -76,10 +117,6 @@ public class DisenchantingUtils {
 				target = new ItemStack(Items.BOOK);
 			if (isAutomatic)
 				inventory.setOutputStack(target);
-
-			if (!world.isRemote)
-				world.playSound(null, position, CommonProxy.disenchantmentTableUse, SoundCategory.BLOCKS,
-						isAutomatic ? 0.5F : 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
 			return target;
 		}
 		return ItemStack.EMPTY;
@@ -91,15 +128,19 @@ public class DisenchantingUtils {
 	 * from the input-itemstack to the output-itemstack as needed.
 	 * </p>
 	 * 
-	 * @param source      the itemstack to transfer enchantments from
-	 * @param target      the itemstack to transfer enchantments to; needs to be a
-	 *                    stack of {@linkplain ItemEnchantedBook} or
-	 *                    {@linkplain ItemExperienceJar}
-	 * @param isAutomatic true when the disenchanting process is performed by an
-	 *                    automatic disenchantment table, false otherwise
-	 * @param world       the world the disenchanting is performed in
-	 * @param position    the position the disenchanting is performed at
-	 * @param random      a {@linkplain Random}-instance to use for random decisions
+	 * @param source                the itemstack to transfer enchantments from
+	 * @param target                the itemstack to transfer enchantments to; needs
+	 *                              to be a stack of {@linkplain ItemEnchantedBook}
+	 *                              or {@linkplain ItemExperienceJar}
+	 * @param isAutomatic           true if the disenchanting process is performed
+	 *                              by an automatic disenchantment table, false
+	 *                              otherwise
+	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
+	 *                              false otherwise
+	 * @param world                 the world the disenchanting is performed in
+	 * @param position              the position the disenchanting is performed at
+	 * @param random                a {@linkplain Random}-instance to use for random
+	 *                              decisions
 	 * @return true if enchantments were transferred, false otherwise
 	 */
 	public static boolean disenchant(ItemStack source, ItemStack target, boolean isAutomatic,
@@ -137,13 +178,17 @@ public class DisenchantingUtils {
 	 * convert to enchantment to experience points.
 	 * </p>
 	 * 
-	 * @param source the itemstack to transfer the enchantment from
-	 * @param target the itemstack to transfer the enchantment to; needs to be a
-	 *               stack of {@linkplain ItemEnchantedBook} or
-	 *               {@linkplain ItemExperienceJar}
-	 * @param index  the index of the enchantment-nbt-list of the input to transfer
-	 *               the enchantment from
-	 * @param random a {@linkplain Random}-instance to use for random decisions
+	 * @param source                the itemstack to transfer the enchantment from
+	 * @param target                the itemstack to transfer the enchantment to;
+	 *                              needs to be a stack of
+	 *                              {@linkplain ItemEnchantedBook} or
+	 *                              {@linkplain ItemExperienceJar}
+	 * @param index                 the index of the enchantment-nbt-list of the
+	 *                              input to transfer the enchantment from
+	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
+	 *                              false otherwise
+	 * @param random                a {@linkplain Random}-instance to use for random
+	 *                              decisions
 	 * @return true if an enchantment was transferred, false otherwise
 	 */
 	public static boolean transferEnchantment(ItemStack source, ItemStack target, int index,
