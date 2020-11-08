@@ -46,7 +46,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		super(Material.ROCK, MapColor.YELLOW);
 		this.setCreativeTab(CreativeTabs.DECORATIONS);
 		this.setRegistryName(DisenchanterMain.MODID, "disenchantmentTable");
-		this.setUnlocalizedName(this.getRegistryName().toString().toLowerCase());
+		this.setTranslationKey(this.getRegistryName().toString().toLowerCase());
 		this.setLightOpacity(0);
 		this.setHardness(5.0F);
 		this.setResistance(2000.0F);

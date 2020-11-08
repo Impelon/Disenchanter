@@ -35,7 +35,7 @@ public class ItemExperienceJar extends Item {
 		super();
 		this.setCreativeTab(CreativeTabs.MISC);
 		this.setRegistryName(DisenchanterMain.MODID, "experience_jar");
-		this.setUnlocalizedName(this.getRegistryName().toString().toLowerCase());
+		this.setTranslationKey(this.getRegistryName().toString().toLowerCase());
 		this.setMaxStackSize(1);
 		this.addPropertyOverride(new ResourceLocation(DisenchanterMain.MODID, "fill_level"), new IItemPropertyGetter() {
 			@Override
