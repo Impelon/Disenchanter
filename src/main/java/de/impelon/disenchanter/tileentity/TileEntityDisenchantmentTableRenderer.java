@@ -14,12 +14,15 @@ public class TileEntityDisenchantmentTableRenderer extends TileEntityEnchantment
 	@Override
 	public void render(TileEntityEnchantmentTable tileentity, double x, double y, double z, float partialTicks,
 			int destroyStage, float alpha) {
+		if (DisenchanterConfig.visual.bookRendererHidden)
+			return;
+		
 		GlStateManager.pushMatrix();
 		float bookYOffset = (float) DisenchanterConfig.visual.bookRendererYOffset;
 		GlStateManager.translate((float) x, (float) y + bookYOffset, (float) z);
 
 		if (DisenchanterConfig.visual.bookRendererFlipped) {
-			float f = (float) tileentity.tickCount + partialTicks;
+			float f = tileentity.tickCount + partialTicks;
 			float bookFloatOffset = 0.85F + MathHelper.sin(f * 0.1F) * 0.01F;
 			GlStateManager.translate(0.5F, bookFloatOffset, 0.5F);
 			GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);

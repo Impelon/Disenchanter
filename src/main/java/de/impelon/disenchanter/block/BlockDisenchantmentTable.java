@@ -194,7 +194,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		if (state.getBlock().equals(CommonProxy.disenchantmentTable)) {
 			if (state.getValue(BlockDisenchantmentTable.AUTOMATIC))
 				descriptions.add(new TextComponentTranslation("msg.automatic.txt").getUnformattedText());
-			if (state.getValue(BlockDisenchantmentTable.AUTOMATIC))
+			if (state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING))
 				descriptions.add(new TextComponentTranslation("msg.bulkdisenchanting.txt").getUnformattedText());
 			if (state.getValue(BlockDisenchantmentTable.VOIDING))
 				descriptions.add(new TextComponentTranslation("msg.voiding.txt").getUnformattedText());

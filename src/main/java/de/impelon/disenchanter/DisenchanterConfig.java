@@ -135,6 +135,18 @@ public class DisenchanterConfig {
 		@Config.Comment("Should the book above the disenchantment table be flipped upside-down?")
 		public boolean bookRendererFlipped = true;
 		
+		@Config.Name("BookRendererHidden")
+		@Config.Comment("Should the book above the disenchantment table be completely hidden?")
+		public boolean bookRendererHidden = false;
+		
+		@Config.Name("ShowUpgradesInGUI")
+		@Config.Comment("Should the different upgrades of a disenchantment table be listed when viewing the GUI of said table?")
+		public boolean showUpgradesInGUI = true;
+		
+		@Config.Name("DescriptionInGUIColor")
+		@Config.Comment("What color should be used for additional descriptions (f.e. list of table upgrades) shown in the GUI of a disenchantment table?")
+		public int descriptionInGUIColor = 11184810;
+		
 	};
 	
 	@Mod.EventBusSubscriber

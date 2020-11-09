@@ -2,6 +2,7 @@ package de.impelon.disenchanter.gui;
 
 import java.util.List;
 
+import de.impelon.disenchanter.DisenchanterConfig;
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 import de.impelon.disenchanter.inventory.ContainerDisenchantmentBase;
@@ -47,10 +48,12 @@ public class GuiDisenchantment extends GuiContainer {
 	protected void drawGuiContainerForegroundLayer(int x, int y) {
 		if (this.tableName != null)
 			this.fontRenderer.drawString(this.tableName, 8, 5, 4210752);
-		float offset = 0;
-		for (String description : descriptions) {
-			this.drawString(description, this.xSize - 8, 5 + offset, 11184810, false, TextAlignment.RIGHT_ALIGNED);
-			offset += this.fontRenderer.FONT_HEIGHT + 1;
+		if (DisenchanterConfig.visual.showUpgradesInGUI) {
+			float offset = 0;
+			for (String description : descriptions) {
+				this.drawString(description, this.xSize - 8, 5 + offset, DisenchanterConfig.visual.descriptionInGUIColor, false, TextAlignment.RIGHT_ALIGNED);
+				offset += this.fontRenderer.FONT_HEIGHT + 1;
+			}
 		}
 		this.fontRenderer.drawString(this.inventoryName, 8, this.ySize - 94, 4210752);
 	}
