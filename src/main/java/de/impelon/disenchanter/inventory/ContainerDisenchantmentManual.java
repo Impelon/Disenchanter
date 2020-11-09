@@ -22,7 +22,7 @@ public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
 	}
 
 	@Override
-	protected AbstractDisenchantmentItemStackHandler getTableInventory() {
+	protected IDisenchantmentItemHandler getTableInventory() {
 		if (this.tableContent == null) {
 			this.tableContent = new DisenchantmentItemStackHandler() {
 				@Override

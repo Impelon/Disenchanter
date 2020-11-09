@@ -51,7 +51,7 @@ public abstract class ContainerDisenchantmentBase extends Container {
 	 * 
 	 * @return the disenchantment-inventory this container is linked to
 	 */
-	protected abstract AbstractDisenchantmentItemStackHandler getTableInventory();
+	protected abstract IDisenchantmentItemHandler getTableInventory();
 
 	protected void addTableSlots() {
 		this.addSlotToContainer(new SlotItemHandler(this.getTableInventory(), SOURCE_SLOT, 26, 35));

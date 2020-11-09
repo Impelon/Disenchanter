@@ -1,18 +1,9 @@
 package de.impelon.disenchanter.inventory;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.IItemHandler;
 
-public abstract class AbstractDisenchantmentItemStackHandler extends ItemStackHandler {
-	
-	public AbstractDisenchantmentItemStackHandler(int size) {
-		super(size);
-	}
-	
-	public AbstractDisenchantmentItemStackHandler(NonNullList<ItemStack> stacks) {
-		super(stacks);
-	}
+public interface IDisenchantmentItemHandler extends IItemHandler {
 	
 	/**
 	 * Set the itemstack of the source slot.

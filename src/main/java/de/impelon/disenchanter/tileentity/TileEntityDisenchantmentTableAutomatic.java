@@ -19,17 +19,16 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	};
 	
 	@Override
-	public void readFromNBT(NBTTagCompound nbtData) {
-		super.readFromNBT(nbtData);
-		this.tableContent.deserializeNBT(nbtData);
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		this.tableContent.deserializeNBT(nbt);
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtData) {
-		super.writeToNBT(nbtData);
-		nbtData.merge(this.tableContent.serializeNBT());
-
-		return nbtData;
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+		nbt.merge(this.tableContent.serializeNBT());
+		return nbt;
 	}
 
 	@Override
@@ -52,26 +51,21 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(tableContent);
+			if (facing == null)
+	            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(this.tableContent);
+			
+			switch (facing) {
+			case NORTH:
+			case EAST:
+			case SOUTH:
+			case WEST:
+			case UP:
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(this.tableContent.getInputInventory());
+			case DOWN:
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(this.tableContent.getOutputInventory());
+			}
         }
 		return super.getCapability(capability, facing);
 	}
-	
-//	TODO
-//	Like this:
-//	https://github.com/Draco18s/ReasonableRealism/blob/master/src/main/java/com/draco18s/hardlib/api/internal/inventory/OutputItemStackHandler.java
-//	possibly with: CombinedInvWrapper
-//	
-//	@Override
-//	public boolean canInsertItem(int slotID, ItemStack stack, EnumFacing side) {
-//		return slotID == 2 ? false : isItemValidForSlot(slotID, stack);
-//	}
-//
-//	@Override
-//	public boolean canExtractItem(int slotID, ItemStack stack, EnumFacing side) {
-//		if (slotID == 1)
-//			return false;
-//		return true;
-//	}
 
 }

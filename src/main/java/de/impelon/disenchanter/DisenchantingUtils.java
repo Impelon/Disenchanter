@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import de.impelon.disenchanter.block.BlockDisenchantmentTable;
-import de.impelon.disenchanter.inventory.AbstractDisenchantmentItemStackHandler;
 import de.impelon.disenchanter.inventory.ContainerDisenchantmentBase;
+import de.impelon.disenchanter.inventory.IDisenchantmentItemHandler;
 import de.impelon.disenchanter.item.ItemExperienceJar;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.enchantment.Enchantment;
@@ -48,7 +48,7 @@ public class DisenchantingUtils {
 	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the
 	 *         disenchanting process should not be completed.
 	 */
-	public static ItemStack disenchantInInventory(AbstractDisenchantmentItemStackHandler inventory, boolean isAutomatic,
+	public static ItemStack disenchantInInventory(IDisenchantmentItemHandler inventory, boolean isAutomatic,
 			World world, BlockPos position, Random random) {
 		ItemStack result = simulateDisenchantingInInventory(inventory, isAutomatic, false, world, position, random);
 		if (!result.isEmpty()) {
@@ -65,7 +65,8 @@ public class DisenchantingUtils {
 	 * transfer enchantments from the input-itemstack to the output-itemstack as
 	 * needed.
 	 * </p>
-	 * <b>Do not call this method to persistently perform a disenchanting process.</b><br>
+	 * <b>Do not call this method to persistently perform a disenchanting
+	 * process.</b><br>
 	 * Use {@link DisenchantingUtils#disenchantInInventory} for that purpose.
 	 * </p>
 	 * 
@@ -83,8 +84,8 @@ public class DisenchantingUtils {
 	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the
 	 *         disenchanting process should not be completed.
 	 */
-	public static ItemStack simulateDisenchantingInInventory(AbstractDisenchantmentItemStackHandler inventory,
-			boolean isAutomatic, boolean ignoreEnchantmentLoss, World world, BlockPos position, Random random) {
+	public static ItemStack simulateDisenchantingInInventory(IDisenchantmentItemHandler inventory, boolean isAutomatic,
+			boolean ignoreEnchantmentLoss, World world, BlockPos position, Random random) {
 		if (isAutomatic && !inventory.getOutputStack().isEmpty())
 			return ItemStack.EMPTY;
 
@@ -348,7 +349,8 @@ public class DisenchantingUtils {
 		if (!receiver.isEmpty()) {
 			if (receiver.getItem().equals(Items.BOOK))
 				return new ItemStack(Items.ENCHANTED_BOOK);
-			else if (receiver.getItem().equals(CommonProxy.itemExperienceJar))
+			else if (receiver.getItem().equals(CommonProxy.itemExperienceJar)
+					&& ItemExperienceJar.hasAvailableExperienceCapacity(receiver))
 				return receiver.copy();
 		}
 		return ItemStack.EMPTY;
