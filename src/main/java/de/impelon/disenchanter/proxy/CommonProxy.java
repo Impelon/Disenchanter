@@ -1,20 +1,14 @@
 package de.impelon.disenchanter.proxy;
 
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import de.impelon.disenchanter.DisenchanterConfig;
+import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 import de.impelon.disenchanter.crafting.UpgradeTableRecipe;
 import de.impelon.disenchanter.gui.GUIHandler;
 import de.impelon.disenchanter.item.ItemBlockDisenchantment;
 import de.impelon.disenchanter.item.ItemExperienceJar;
 import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTable;
 import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
-import de.impelon.disenchanter.DisenchanterConfig;
-import de.impelon.disenchanter.DisenchanterMain;
-import de.impelon.disenchanter.block.BlockDisenchantmentTable;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -23,6 +17,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
