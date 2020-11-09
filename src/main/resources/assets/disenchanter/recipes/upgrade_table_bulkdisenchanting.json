@@ -1,0 +1,33 @@
+{
+  "type": "disenchanter:upgrade_table",
+  "pattern": [
+    "QGQ",
+    "GDG",
+    "QTQ"
+  ],
+  "key": {
+    "T": {
+      "item": "#TABLE"
+    },
+    "D": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    },
+    "Q": {
+      "type": "forge:ore_dict",
+      "ore": "gemQuartz"
+    },
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "ingotGold"
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:bulkdisenchanting_upgrade_enabled"
+  }],
+  "added_property": "bulkdisenchanting",
+  "result": {
+    "item": "disenchanter:disenchantmenttable",
+    "data": 0
+  }
+}

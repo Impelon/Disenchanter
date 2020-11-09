@@ -1,0 +1,33 @@
+{
+  "parent": "disenchanter:recipes/root",
+  "rewards": {
+    "recipes": [
+      "disenchanter:disenchantment_table"
+    ]
+  },
+  "criteria": {
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "disenchanter:disenchantment_table"
+      }
+    },
+    "has_enchanting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{
+          "item": "minecraft:enchanting_table"
+        }]
+      }
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:disenchantment_table_enabled"
+  }],
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_enchanting_table"
+    ]
+  ]
+}

@@ -1,0 +1,9 @@
+[
+    {
+        "name": "TABLE",
+        "ingredient": {
+            "item": "disenchanter:disenchantmenttable",
+            "data": 32767
+        }
+    }
+]

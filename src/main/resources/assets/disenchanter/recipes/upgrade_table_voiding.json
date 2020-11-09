@@ -1,0 +1,34 @@
+{
+  "type": "disenchanter:upgrade_table",
+  "pattern": [
+    "POP",
+    "EHE",
+    "PTP"
+  ],
+  "key": {
+    "T": {
+      "item": "#TABLE"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "dyePurple"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:voiding_upgrade_enabled"
+  }],
+  "added_property": "voiding",
+  "result": {
+    "item": "disenchanter:disenchantmenttable",
+    "data": 0
+  }
+}

@@ -23,6 +23,10 @@ public class DisenchanterConfig {
 		@Config.Comment("How many experience points should the jar of experience store at most by default?")
 		public int jarDefaultExperienceCapacity = 1024;
 		
+		@Config.Name("EnableDisenchantmentTableRecipe")
+		@Config.Comment("Should the recipe for the normal disenchantment table be available?")
+		public boolean enableDisenchantmentTableRecipe = true;
+		
 		@Config.Name("EnableJarRecipe")
 		@Config.Comment("Should the recipe for the jar of experience be available?")
 		public boolean enableJarRecipe = true;
@@ -40,7 +44,7 @@ public class DisenchanterConfig {
 		public boolean enableBulkDisenchantingRecipe = true;
 		
 		@Config.Name("EnableClearRecipe")
-		@Config.Comment("Should the recipe for clearing all upgrades be available?")
+		@Config.Comment("Should the recipe for clearing all upgrades from a disenchantment table be available?")
 		public boolean enableClearRecipe = true;
 		
 	};

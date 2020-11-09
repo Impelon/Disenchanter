@@ -1,0 +1,33 @@
+{
+  "parent": "disenchanter:recipes/root",
+  "rewards": {
+    "recipes": [
+      "disenchanter:upgrade_table_bulkdisenchanting"
+    ]
+  },
+  "criteria": {
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "disenchanter:upgrade_table_bulkdisenchanting"
+      }
+    },
+    "has_disenchantment_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{
+          "item": "disenchanter:disenchantmenttable"
+        }]
+      }
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:bulkdisenchanting_upgrade_enabled"
+  }],
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_disenchantment_table"
+    ]
+  ]
+}

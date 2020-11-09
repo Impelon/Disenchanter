@@ -13,22 +13,30 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 
 	private final PropertyBool addedProperty;
 
-	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, ItemStack result, Object... recipe) {
-		super(group, result, recipe);
-		this.addedProperty = addedProperty;
+	public static ItemStack getResultingTable(PropertyBool property) {
+		ItemStack result = new ItemStack(CommonProxy.itemDisenchantmentTable, 1);
+		result.setItemDamage(CommonProxy.disenchantmentTable
+				.getMetaFromState(CommonProxy.disenchantmentTable.getDefaultState().withProperty(property, true)));
+		return result;
 	}
-	
-	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, ItemStack result, ShapedPrimer recipe) {
-		super(group, result, recipe);
+
+	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, Object... recipe) {
+		super(group, getResultingTable(addedProperty), recipe);
+		this.addedProperty = addedProperty;
+
+	}
+
+	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, ShapedPrimer recipe) {
+		super(group, getResultingTable(addedProperty), recipe);
 		this.addedProperty = addedProperty;
 	}
 
 	@Override
 	public boolean matches(InventoryCrafting grid, World world) {
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
-			ItemStack st = grid.getStackInSlot(slot);
-			if (st != null && st.getItem().equals(CommonProxy.itemDisenchantmentTable))
-				if (CommonProxy.disenchantmentTable.getStateFromMeta(st.getItemDamage()).getValue(this.addedProperty))
+			ItemStack stack = grid.getStackInSlot(slot);
+			if (stack != null && stack.getItem().equals(CommonProxy.itemDisenchantmentTable))
+				if (CommonProxy.disenchantmentTable.getStateFromMeta(stack.getItemDamage()).getValue(this.addedProperty))
 					return false;
 		}
 		return super.matches(grid, world);
@@ -38,9 +46,9 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 	public ItemStack getCraftingResult(InventoryCrafting grid) {
 		ItemStack table = null;
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
-			ItemStack st = grid.getStackInSlot(slot);
-			if (st != null && st.getItem().equals(CommonProxy.itemDisenchantmentTable))
-				table = st.copy();
+			ItemStack stack = grid.getStackInSlot(slot);
+			if (stack != null && stack.getItem().equals(CommonProxy.itemDisenchantmentTable))
+				table = stack.copy();
 		}
 
 		ItemStack res = super.getCraftingResult(grid);

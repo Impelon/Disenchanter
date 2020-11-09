@@ -1,7 +1,4 @@
 {
-  "recipes": {
-    "upgrade_table": "de.impelon.disenchanter.crafting.UpgradeTableRecipeFactory"
-  },
   "conditions": {
     "disenchantment_table_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
     "experience_jar_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
