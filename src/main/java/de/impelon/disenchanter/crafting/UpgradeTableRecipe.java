@@ -6,12 +6,13 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class UpgradeTableRecipe extends ShapedOreRecipe {
 
-	private final PropertyBool addedProperty;
+	protected final PropertyBool addedProperty;
 
 	public static ItemStack getResultingTable(PropertyBool property) {
 		ItemStack result = new ItemStack(CommonProxy.itemDisenchantmentTable, 1);
@@ -21,9 +22,7 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 	}
 
 	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, Object... recipe) {
-		super(group, getResultingTable(addedProperty), recipe);
-		this.addedProperty = addedProperty;
-
+		this(group, addedProperty, CraftingHelper.parseShaped(recipe));
 	}
 
 	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, ShapedPrimer recipe) {
@@ -47,9 +46,13 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 		ItemStack table = null;
 		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
 			ItemStack stack = grid.getStackInSlot(slot);
-			if (stack != null && stack.getItem().equals(CommonProxy.itemDisenchantmentTable))
+			if (stack != null && stack.getItem().equals(CommonProxy.itemDisenchantmentTable)) {
 				table = stack.copy();
+				break;
+			}
 		}
+		if (table == null)
+			return ItemStack.EMPTY;
 
 		ItemStack res = super.getCraftingResult(grid);
 		res.setItemDamage(CommonProxy.disenchantmentTable.getMetaFromState(CommonProxy.disenchantmentTable

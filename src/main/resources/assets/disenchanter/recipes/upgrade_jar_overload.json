@@ -1,0 +1,25 @@
+{
+  "type": "disenchanter:upgrade_jar",
+  "pattern": [
+    "   ",
+    "OJO",
+    "   "
+  ],
+  "key": {
+    "J": {
+      "item": "#JAR"
+    }
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:overload_upgrade_enabled"
+  }],
+  "upgrade": {
+    "overload": "enable"
+  },
+  "result": {
+    "item": "disenchanter:experience_jar"
+  }
+}

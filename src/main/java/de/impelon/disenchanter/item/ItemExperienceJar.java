@@ -27,9 +27,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemExperienceJar extends Item {
-	
+
 	public static final String STORED_EXPERIENCE_KEY = "StoredExperience";
 	public static final String EXPERIENCE_CAPACITY_KEY = "ExperienceCapacity";
+	public static final String OVERLOAD_MODE_KEY = "Overload";
 
 	public ItemExperienceJar() {
 		super();
@@ -45,16 +46,27 @@ public class ItemExperienceJar extends Item {
 				return getExperienceFillLevel(stack);
 			}
 		});
+		this.addPropertyOverride(new ResourceLocation(DisenchanterMain.MODID, "overloaded"), new IItemPropertyGetter() {
+			@Override
+			@SideOnly(Side.CLIENT)
+			public float apply(ItemStack stack, World world, EntityLivingBase entityIn) {
+				ensureValidTag(stack);
+				return isOverloadActive(stack) ? 1.0f : 0.0f;
+			}
+		});
 	}
-	
+
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) { 
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		super.getSubItems(tab, subItems);
 		if (tab == CreativeTabs.SEARCH) {
 			ItemStack fullJar = new ItemStack(this);
 			ensureValidTag(fullJar);
 			setStoredExperience(fullJar, getExperienceCapacity(fullJar));
 			subItems.add(fullJar);
+			ItemStack fullOverloadedJar = fullJar.copy();
+			setOverload(fullOverloadedJar, true);
+			subItems.add(fullOverloadedJar);
 		}
 	}
 
@@ -87,17 +99,17 @@ public class ItemExperienceJar extends Item {
 		}
 		return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
 	}
-	
+
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack) {
 		return EnumAction.DRINK;
 	}
-	
+
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack) {
 		return 16;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack stack) {
@@ -109,10 +121,14 @@ public class ItemExperienceJar extends Item {
 	public void addInformation(ItemStack stack, World world, List<String> l, ITooltipFlag advanced) {
 		super.addInformation(stack, world, l, advanced);
 
-		l.add(new TextComponentTranslation("msg.stored_xp.txt", getStoredExperience(stack), getExperienceCapacity(stack))
-				.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
+		if (isOverloadActive(stack)) {
+			l.add(new TextComponentTranslation("msg.overload.txt")
+					.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
+		}
+		l.add(new TextComponentTranslation("msg.stored_xp.txt", getStoredExperience(stack),
+				getExperienceCapacity(stack)).setStyle(new Style().setColor(TextFormatting.AQUA)).getFormattedText());
 	}
-	
+
 	/**
 	 * Ensures that the given stack has a valid NBT-tag with all needed components.
 	 * 
@@ -125,8 +141,12 @@ public class ItemExperienceJar extends Item {
 			stack.setTagCompound(new NBTTagCompound());
 			modified = true;
 		}
+		if (!isOverloadActive(stack)) {
+			setOverload(stack, false);
+			modified = true;
+		}
 		if (getExperienceCapacity(stack) <= 0) {
-			setExperienceCapacity(stack, DisenchanterConfig.general.jarDefaultExperienceCapacity);
+			resetExperienceCapacity(stack);
 			modified = true;
 		}
 		if (!hasStoredExperience(stack)) {
@@ -138,19 +158,49 @@ public class ItemExperienceJar extends Item {
 		}
 		return modified;
 	}
-	
+
+	/**
+	 * Returns whether the stack has the overload-mode enabled.
+	 * 
+	 * @param stack the itemstack
+	 * @return true if the overload-mode is enabled, false otherwise
+	 */
+	public static boolean isOverloadActive(ItemStack stack) {
+		if (stack.hasTagCompound())
+			return stack.getTagCompound().getBoolean(OVERLOAD_MODE_KEY);
+		return false;
+	}
+
+	/**
+	 * Sets whether the overload-mode is active. This will fail if the item has no
+	 * NBT-tag.
+	 * 
+	 * @param stack  the itemstack
+	 * @param active true if overload-mode should be enabled, false otherwise
+	 * @return true if this was successful, false otherwise
+	 */
+	public static boolean setOverload(ItemStack stack, boolean active) {
+		if (stack.hasTagCompound()) {
+			stack.getTagCompound().setBoolean(OVERLOAD_MODE_KEY, active);
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Returns whether the stack can store any more experience.
 	 * 
 	 * @param stack the itemstack
-	 * @return true if the stored experience is not at full capacity, false otherwise
+	 * @return true if the stored experience is not at full capacity, false
+	 *         otherwise
 	 */
 	public static boolean hasAvailableExperienceCapacity(ItemStack stack) {
 		return getExperienceFillLevel(stack) < 1;
 	}
-	
+
 	/**
-	 * Returns the ratio of how much of the stack's experience capacity is filled by its stored experience.
+	 * Returns the ratio of how much of the stack's experience capacity is filled by
+	 * its stored experience.
 	 * 
 	 * @param stack the itemstack
 	 * @return the ratio or 0 if the stack has no capacity
@@ -161,7 +211,7 @@ public class ItemExperienceJar extends Item {
 			return 0;
 		return ((float) getStoredExperience(stack)) / capacity;
 	}
-	
+
 	/**
 	 * Returns the capacity for experience points to be stored in the stack.
 	 * 
@@ -173,12 +223,12 @@ public class ItemExperienceJar extends Item {
 			return stack.getTagCompound().getInteger(EXPERIENCE_CAPACITY_KEY);
 		return 0;
 	}
-	
+
 	/**
-	 * Sets the capacity for experience points to be stored in the stack.
-	 * This will fail if the item has no NBT-tag or if the specified capacity is invalid.
+	 * Sets the capacity for experience points to be stored in the stack. This will
+	 * fail if the item has no NBT-tag or if the specified capacity is invalid.
 	 * 
-	 * @param stack the itemstack
+	 * @param stack    the itemstack
 	 * @param capacity a positive capacity to set
 	 * @return true if this was successful, false otherwise
 	 */
@@ -190,6 +240,17 @@ public class ItemExperienceJar extends Item {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Resets the capacity for experience points to be stored in the stack. This will
+	 * fail if the item has no NBT-tag.
+	 * 
+	 * @param stack    the itemstack
+	 * @return true if this was successful, false otherwise
+	 */
+	public static boolean resetExperienceCapacity(ItemStack stack) {
+		return setExperienceCapacity(stack, DisenchanterConfig.general.jarDefaultExperienceCapacity);
 	}
 
 	/**
@@ -213,12 +274,12 @@ public class ItemExperienceJar extends Item {
 			return stack.getTagCompound().getInteger(STORED_EXPERIENCE_KEY);
 		return 0;
 	}
-	
+
 	/**
-	 * Sets the amount of experience points stored in the stack.
-	 * This will fail if the item has no NBT-tag or if the specified amount is invalid.
+	 * Sets the amount of experience points stored in the stack. This will fail if
+	 * the item has no NBT-tag or if the specified amount is invalid.
 	 * 
-	 * @param stack the itemstack
+	 * @param stack  the itemstack
 	 * @param amount a positive amount of xp to set
 	 * @return true if this was successful, false otherwise
 	 */
@@ -231,12 +292,12 @@ public class ItemExperienceJar extends Item {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Sets the amount of experience points stored in the stack; the amount will be clamped to a valid range.
-	 * This will fail if the item has no NBT-tag.
+	 * Sets the amount of experience points stored in the stack; the amount will be
+	 * clamped to a valid range. This will fail if the item has no NBT-tag.
 	 * 
-	 * @param stack the itemstack
+	 * @param stack  the itemstack
 	 * @param amount a positive amount of xp to set
 	 * @return true if this was successful, false otherwise
 	 */

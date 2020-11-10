@@ -350,7 +350,8 @@ public class DisenchantingUtils {
 			if (receiver.getItem().equals(Items.BOOK))
 				return new ItemStack(Items.ENCHANTED_BOOK);
 			else if (receiver.getItem().equals(CommonProxy.itemExperienceJar)
-					&& ItemExperienceJar.hasAvailableExperienceCapacity(receiver))
+					&& (ItemExperienceJar.hasAvailableExperienceCapacity(receiver)
+							|| ItemExperienceJar.isOverloadActive(receiver)))
 				return receiver.copy();
 		}
 		return ItemStack.EMPTY;

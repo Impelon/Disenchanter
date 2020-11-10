@@ -57,6 +57,13 @@
         "disenchanter:fill_level": 1
       },
       "model": "disenchanter:item/experience_jar_full"
+    },
+    {
+      "predicate": {
+        "disenchanter:fill_level": 1,
+        "disenchanter:overloaded": 1
+      },
+      "model": "disenchanter:item/experience_jar_full_overloaded"
     }
   ]
 }

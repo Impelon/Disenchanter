@@ -20,17 +20,21 @@ public class ConfigConditionFactory implements IConditionFactory {
 			public boolean getAsBoolean() {
 				switch (type) {
 				case "disenchantment_table_enabled":
-					return DisenchanterConfig.general.enableDisenchantmentTableRecipe;
-				case "experience_jar_enabled":
-					return DisenchanterConfig.general.enableJarRecipe;
+					return DisenchanterConfig.crafting.enableDisenchantmentTableRecipe;
 				case "automatic_upgrade_enabled":
-					return DisenchanterConfig.general.enableAutomaticRecipe;
+					return DisenchanterConfig.crafting.enableAutomaticTableUpgradeRecipe;
 				case "bulkdisenchanting_upgrade_enabled":
-					return DisenchanterConfig.general.enableBulkDisenchantingRecipe;
+					return DisenchanterConfig.crafting.enableBulkDisenchantingTableUpgradeRecipe;
 				case "voiding_upgrade_enabled":
-					return DisenchanterConfig.general.enableVoidingRecipe;
+					return DisenchanterConfig.crafting.enableVoidingTableUpgradeRecipe;
 				case "clear_table_upgrades_enabled":
-					return DisenchanterConfig.general.enableClearRecipe;
+					return DisenchanterConfig.crafting.enableClearTableRecipe;
+				case "experience_jar_enabled":
+					return DisenchanterConfig.crafting.enableJarRecipe;
+				case "overload_upgrade_enabled":
+					return DisenchanterConfig.crafting.enableOverloadJarUpgradeRecipe;
+				case "clear_jar_upgrades_enabled":
+					return DisenchanterConfig.crafting.enableClearJarRecipe;
 				}
 				return false;
 			};

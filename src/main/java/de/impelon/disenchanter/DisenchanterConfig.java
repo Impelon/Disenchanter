@@ -9,12 +9,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Config(modid = DisenchanterMain.MODID, category = "")
 public class DisenchanterConfig {
 
-	@Config.RequiresMcRestart
 	@Config.Name("general")
 	public static final GeneralSection general = new GeneralSection();
 	
 	public static class GeneralSection {
 		
+		@Config.RequiresMcRestart
 		@Config.Name("CheckVersion")
 		@Config.Comment("Should Disenchanter check for new versions on startup?")
 		public boolean shouldCheckVersion = true;
@@ -23,31 +23,47 @@ public class DisenchanterConfig {
 		@Config.Comment("How many experience points should the jar of experience store at most by default?")
 		public int jarDefaultExperienceCapacity = 1024;
 		
+	};
+	
+	@Config.RequiresMcRestart
+	@Config.Name("crafting")
+	public static final CraftingSection crafting = new CraftingSection();
+	
+	public static class CraftingSection {
+		
 		@Config.Name("EnableDisenchantmentTableRecipe")
 		@Config.Comment("Should the recipe for the normal disenchantment table be available?")
 		public boolean enableDisenchantmentTableRecipe = true;
+
+		@Config.Name("EnableAutomaticTableUpgradeRecipe")
+		@Config.Comment("Should the recipe for the automatic-upgrade (disenchantment table) be available?")
+		public boolean enableAutomaticTableUpgradeRecipe = true;
+		
+		@Config.Name("EnableVoidingTableUpgradeRecipe")
+		@Config.Comment("Should the recipe for the voiding-upgrade (disenchantment table) be available?")
+		public boolean enableVoidingTableUpgradeRecipe = true;
+		
+		@Config.Name("EnableBulkDisenchantingTableUpgradeRecipe")
+		@Config.Comment("Should the recipe for the bulk-disenchanting-upgrade (disenchantment table) be available?")
+		public boolean enableBulkDisenchantingTableUpgradeRecipe = true;
+		
+		@Config.Name("EnableClearTableRecipe")
+		@Config.Comment("Should the recipe for clearing all upgrades from a disenchantment table be available?")
+		public boolean enableClearTableRecipe = true;
 		
 		@Config.Name("EnableJarRecipe")
 		@Config.Comment("Should the recipe for the jar of experience be available?")
 		public boolean enableJarRecipe = true;
 		
-		@Config.Name("EnableAutomaticRecipe")
-		@Config.Comment("Should the recipe for the automatic-upgrade be available?")
-		public boolean enableAutomaticRecipe = true;
+		@Config.Name("EnableOverloadJarUpgradeRecipe")
+		@Config.Comment("Should the recipe for the overload-upgrade (jar of experience) be available?")
+		public boolean enableOverloadJarUpgradeRecipe = true;
 		
-		@Config.Name("EnableVoidingRecipe")
-		@Config.Comment("Should the recipe for the voiding-upgrade be available?")
-		public boolean enableVoidingRecipe = true;
+		@Config.Name("EnableClearJarRecipe")
+		@Config.Comment("Should the recipe for clearing all upgrades from a jar of experience be available?")
+		public boolean enableClearJarRecipe = true;
 		
-		@Config.Name("EnableBulkDisenchantingRecipe")
-		@Config.Comment("Should the recipe for the bulk-disenchanting-upgrade be available?")
-		public boolean enableBulkDisenchantingRecipe = true;
-		
-		@Config.Name("EnableClearRecipe")
-		@Config.Comment("Should the recipe for clearing all upgrades from a disenchantment table be available?")
-		public boolean enableClearRecipe = true;
-		
-	};
+	}
 	
 	@Config.Name("disenchanting")
 	public static final DisenchantingSection disenchanting = new DisenchantingSection();

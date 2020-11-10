@@ -2,6 +2,7 @@ tile.disenchanter:disenchantmenttable.name=Tingy t dismagignify
 item.disenchanter:experience_jar.name=Jaz wit ur levlz
 container.disenchant=Dismagignify
 msg.stored_xp.txt=tis big XP %d/%d
+msg.overload.txt=ITS OVER 9000!! Do wat u want!
 msg.automatic.txt=who dis wrok?!
 msg.bulkdisenchanting.txt=dismagnifnify EWEYTING!1
 msg.voiding.txt=were s mi item?!
