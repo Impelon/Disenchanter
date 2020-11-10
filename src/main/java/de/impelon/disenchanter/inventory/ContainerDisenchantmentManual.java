@@ -65,16 +65,19 @@ public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
 
 	@Override
 	public ItemStack slotClick(int slot, int dragType, ClickType clickType, EntityPlayer player) {
-		if (slot == OUTPUT_SLOT && clickType != ClickType.CLONE && !this.world.isRemote) {
-			this.updateOutput(false);
-			boolean wasEmpty = this.getTableInventory().getOutputStack().isEmpty();
-			ItemStack result = super.slotClick(slot, dragType, clickType, player);
-			if (this.getTableInventory().getOutputStack().isEmpty() && !wasEmpty)
-				DisenchantingUtils.disenchantInInventory(this.getTableInventory(), false, this.world, this.position, this.random);
-			this.updateOutput(true);
-			if (player instanceof EntityPlayerMP)
-				((EntityPlayerMP) player).sendContainerToPlayer(this);
-			return result;
+		if (slot == OUTPUT_SLOT && clickType != ClickType.CLONE) {
+			if (!this.world.isRemote) {
+				this.updateOutput(false);
+				boolean wasEmpty = this.getTableInventory().getOutputStack().isEmpty();
+				ItemStack result = super.slotClick(slot, dragType, clickType, player);
+				if (this.getTableInventory().getOutputStack().isEmpty() && !wasEmpty)
+					DisenchantingUtils.disenchantInInventory(this.getTableInventory(), false, this.world, this.position, this.random);
+				this.updateOutput(true);
+				if (player instanceof EntityPlayerMP)
+					((EntityPlayerMP) player).sendContainerToPlayer(this);
+				return result;
+			} else if (clickType == ClickType.QUICK_MOVE)
+				return ItemStack.EMPTY;
 		}
 		return super.slotClick(slot, dragType, clickType, player);
 	}
