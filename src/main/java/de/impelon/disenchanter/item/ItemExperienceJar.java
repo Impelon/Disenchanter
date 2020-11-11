@@ -250,7 +250,7 @@ public class ItemExperienceJar extends Item {
 	 * @return true if this was successful, false otherwise
 	 */
 	public static boolean resetExperienceCapacity(ItemStack stack) {
-		return setExperienceCapacity(stack, DisenchanterConfig.general.jarDefaultExperienceCapacity);
+		return setExperienceCapacity(stack, DisenchanterConfig.experienceJar.jarDefaultExperienceCapacity);
 	}
 
 	/**

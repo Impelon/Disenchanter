@@ -19,9 +19,25 @@ public class DisenchanterConfig {
 		@Config.Comment("Should Disenchanter check for new versions on startup?")
 		public boolean shouldCheckVersion = true;
 		
+	};
+	
+	@Config.Name("experience_jar")
+	public static final ExperienceJarSection experienceJar = new ExperienceJarSection();
+	
+	public static class ExperienceJarSection {
+		
 		@Config.Name("JarDefaultExperienceCapacity")
 		@Config.Comment("How many experience points should the jar of experience store at most by default?")
+		@Config.RangeInt(min = 0)
 		public int jarDefaultExperienceCapacity = 1024;
+		
+		@Config.Name("JarUpgradeCapacityChange")
+		@Config.Comment("By how many experience points should the capacity be changed when upgrading a jar of experience?")
+		public int jarUpgradeCapacityChange = 512;
+		
+		@Config.Name("JarUpgradeMaxCapacity")
+		@Config.Comment("What should be the maximal capacity of experience points optainable via upgrades be for the jar of experience?")
+		public int jarUpgradeMaxCapacity = 2048;
 		
 	};
 	
@@ -58,6 +74,10 @@ public class DisenchanterConfig {
 		@Config.Name("EnableOverloadJarUpgradeRecipe")
 		@Config.Comment("Should the recipe for the overload-upgrade (jar of experience) be available?")
 		public boolean enableOverloadJarUpgradeRecipe = true;
+		
+		@Config.Name("EnableCapacityJarUpgradeRecipe")
+		@Config.Comment("Should the recipe for upgrading the capacity (jar of experience) be available?")
+		public boolean enableCapacityJarUpgradeRecipe = true;
 		
 		@Config.Name("EnableClearJarRecipe")
 		@Config.Comment("Should the recipe for clearing all upgrades from a jar of experience be available?")

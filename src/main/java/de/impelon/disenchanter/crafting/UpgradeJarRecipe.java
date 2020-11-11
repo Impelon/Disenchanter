@@ -1,9 +1,11 @@
 package de.impelon.disenchanter.crafting;
 
+import de.impelon.disenchanter.inventory.InventoryUtils;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -19,27 +21,30 @@ public class UpgradeJarRecipe extends ShapedOreRecipe {
 
 	public UpgradeJarRecipe(ResourceLocation group, ExperienceJarUpgrade upgrade, Object... recipe) {
 		this(group, upgrade, CraftingHelper.parseShaped(recipe));
-
 	}
 
 	public UpgradeJarRecipe(ResourceLocation group, ExperienceJarUpgrade upgrade, ShapedPrimer recipe) {
 		super(group, getResultingJar(upgrade), recipe);
 		this.upgrade = upgrade;
 	}
+	
+	@Override
+	public boolean matches(InventoryCrafting grid, World world) {
+		ItemStack jar = InventoryUtils.findFirstItemStackInInventory(grid, CommonProxy.itemExperienceJar);
+		if (!jar.isEmpty()) {
+			ItemStack upgradedJar = this.upgrade.apply(jar.copy());
+			if (ItemStack.areItemStacksEqual(jar, upgradedJar))
+				return false;
+		}
+		return super.matches(grid, world);
+	}
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting grid) {
-		ItemStack jar = null;
-		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
-			ItemStack stack = grid.getStackInSlot(slot);
-			if (stack != null && stack.getItem().equals(CommonProxy.itemExperienceJar)) {
-				jar = stack.copy();
-				break;
-			}
-		}
-		if (jar == null)
-			return ItemStack.EMPTY;
-		return this.upgrade.apply(jar);
+		ItemStack jar = InventoryUtils.findFirstItemStackInInventory(grid, CommonProxy.itemExperienceJar);
+		if (jar.isEmpty())
+			return jar;
+		return this.upgrade.apply(jar.copy());
 	}
 
 }

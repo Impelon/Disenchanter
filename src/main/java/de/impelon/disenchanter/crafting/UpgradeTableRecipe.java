@@ -1,5 +1,6 @@
 package de.impelon.disenchanter.crafting;
 
+import de.impelon.disenchanter.inventory.InventoryUtils;
 import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.inventory.InventoryCrafting;
@@ -32,27 +33,17 @@ public class UpgradeTableRecipe extends ShapedOreRecipe {
 
 	@Override
 	public boolean matches(InventoryCrafting grid, World world) {
-		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
-			ItemStack stack = grid.getStackInSlot(slot);
-			if (stack != null && stack.getItem().equals(CommonProxy.itemDisenchantmentTable))
-				if (CommonProxy.disenchantmentTable.getStateFromMeta(stack.getItemDamage()).getValue(this.addedProperty))
-					return false;
-		}
+		ItemStack table = InventoryUtils.findFirstItemStackInInventory(grid, CommonProxy.itemDisenchantmentTable);
+		if (!table.isEmpty() && CommonProxy.disenchantmentTable.getStateFromMeta(table.getItemDamage()).getValue(this.addedProperty))
+			return false;
 		return super.matches(grid, world);
 	}
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting grid) {
-		ItemStack table = null;
-		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
-			ItemStack stack = grid.getStackInSlot(slot);
-			if (stack != null && stack.getItem().equals(CommonProxy.itemDisenchantmentTable)) {
-				table = stack.copy();
-				break;
-			}
-		}
-		if (table == null)
-			return ItemStack.EMPTY;
+		ItemStack table = InventoryUtils.findFirstItemStackInInventory(grid, CommonProxy.itemDisenchantmentTable);
+		if (table.isEmpty())
+			return table;
 
 		ItemStack res = super.getCraftingResult(grid);
 		res.setItemDamage(CommonProxy.disenchantmentTable.getMetaFromState(CommonProxy.disenchantmentTable

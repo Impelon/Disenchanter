@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
@@ -109,6 +110,22 @@ public class InventoryUtils {
 					player.inventory.placeItemBackInInventory(world, itemstack);
 			}
 		}
+	}
+	
+	public static ItemStack findFirstItemStackInInventory(IItemHandler inventory, Item itemToFind) {
+		return findFirstItemStack(extractItemsFromInventory(inventory, true), itemToFind);
+	}
+	
+	public static ItemStack findFirstItemStackInInventory(IInventory inventory, Item itemToFind) {
+		return findFirstItemStack(extractItemsFromInventory(inventory, true), itemToFind);
+	}
+	
+	public static ItemStack findFirstItemStack(List<ItemStack> items, Item itemToFind) {
+		for (ItemStack itemstack : items) {
+			if (itemstack.getItem().equals(itemToFind))
+				return itemstack;
+		}
+		return ItemStack.EMPTY;
 	}
 
 }

@@ -33,6 +33,8 @@ public class ConfigConditionFactory implements IConditionFactory {
 					return DisenchanterConfig.crafting.enableJarRecipe;
 				case "overload_upgrade_enabled":
 					return DisenchanterConfig.crafting.enableOverloadJarUpgradeRecipe;
+				case "capacity_upgrade_enabled":
+					return DisenchanterConfig.crafting.enableCapacityJarUpgradeRecipe;
 				case "clear_jar_upgrades_enabled":
 					return DisenchanterConfig.crafting.enableClearJarRecipe;
 				}
