@@ -42,6 +42,8 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	public static final PropertyBool AUTOMATIC = PropertyBool.create("automatic");
 	public static final PropertyBool BULKDISENCHANTING = PropertyBool.create("bulkdisenchanting");
 	public static final PropertyBool VOIDING = PropertyBool.create("voiding");
+	
+	protected static final String CREATIVE_HARVEST_KEY = "HarvestedByCreativePlayer";
 
 	public BlockDisenchantmentTable() {
 		super(Material.ROCK, MapColor.YELLOW);
@@ -170,6 +172,14 @@ public class BlockDisenchantmentTable extends BlockContainer {
 				((TileEntityDisenchantmentTable) te).setCustomName(stack.getDisplayName());
 		}
 	}
+	
+	@Override
+	public void onBlockHarvested(World w, BlockPos pos, IBlockState state, EntityPlayer player) {
+		TileEntity te = w.getTileEntity(pos);
+		if (te instanceof TileEntityDisenchantmentTable)
+			te.getTileData().setBoolean(CREATIVE_HARVEST_KEY, player.isCreative());
+		super.onBlockHarvested(w, pos, state, player);
+	}
 
 	@Override
 	public void breakBlock(World w, BlockPos pos, IBlockState state) {
@@ -178,12 +188,14 @@ public class BlockDisenchantmentTable extends BlockContainer {
 			InventoryUtils.dropInventory(w, pos, te);
 		if (te instanceof TileEntityDisenchantmentTable) {
 			TileEntityDisenchantmentTable table = (TileEntityDisenchantmentTable) te;
-			ItemStack stack = new ItemStack(Item.getItemFromBlock(this), 1, this.damageDropped(state));
-			if (table.hasCustomName()) {
-				stack.setStackDisplayName(table.getName());
-				table.setCustomName(""); // so BlockContainer legacy code for breaking named tiles will not trigger
+			if (!table.getTileData().hasKey(CREATIVE_HARVEST_KEY) || !table.getTileData().getBoolean(CREATIVE_HARVEST_KEY)) {
+				ItemStack stack = new ItemStack(Item.getItemFromBlock(this), 1, this.damageDropped(state));
+				if (table.hasCustomName()) {
+					stack.setStackDisplayName(table.getName());
+					table.setCustomName(""); // so BlockContainer legacy code for breaking named tiles will not trigger
+				}
+				spawnAsEntity(w, pos, stack);
 			}
-			spawnAsEntity(w, pos, stack);
 			w.updateComparatorOutputLevel(pos, state.getBlock());
 		}
 		super.breakBlock(w, pos, state);
