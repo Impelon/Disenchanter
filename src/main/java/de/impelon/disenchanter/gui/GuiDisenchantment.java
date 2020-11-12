@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.impelon.disenchanter.DisenchanterConfig;
 import de.impelon.disenchanter.DisenchanterMain;
-import de.impelon.disenchanter.block.BlockDisenchantmentTable;
+import de.impelon.disenchanter.DisenchantingProperties;
 import de.impelon.disenchanter.inventory.ContainerDisenchantmentBase;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,7 +34,7 @@ public class GuiDisenchantment extends GuiContainer {
 		super(ContainerDisenchantmentBase.create(playerInventory, world, position));
 		this.tableName = tableName;
 		this.inventoryName = playerInventory.getDisplayName().getUnformattedText();
-		this.descriptions = BlockDisenchantmentTable.getTableVariantDescriptions(world, position);
+		this.descriptions = DisenchantingProperties.getPropertiesFromStateAt(world, position).getTableVariantDescriptions();
 	}
 
 	@Override

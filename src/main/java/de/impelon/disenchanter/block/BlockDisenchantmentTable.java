@@ -1,12 +1,9 @@
 package de.impelon.disenchanter.block;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.inventory.InventoryUtils;
-import de.impelon.disenchanter.proxy.CommonProxy;
 import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTable;
 import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.block.BlockContainer;
@@ -29,7 +26,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -216,23 +212,6 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		if (this.getStateFromMeta(metadata).getValue(AUTOMATIC))
 			return new TileEntityDisenchantmentTableAutomatic();
 		return new TileEntityDisenchantmentTable();
-	}
-	
-	public static List<String> getTableVariantDescriptions(World w, BlockPos pos) {
-		return getTableVariantDescriptions(w.getBlockState(pos));
-	}
-	
-	public static List<String> getTableVariantDescriptions(IBlockState state) {
-		List<String> descriptions = new ArrayList<String>();
-		if (state.getBlock().equals(CommonProxy.disenchantmentTable)) {
-			if (state.getValue(BlockDisenchantmentTable.AUTOMATIC))
-				descriptions.add(new TextComponentTranslation("msg.automatic.txt").getUnformattedText());
-			if (state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING))
-				descriptions.add(new TextComponentTranslation("msg.bulkdisenchanting.txt").getUnformattedText());
-			if (state.getValue(BlockDisenchantmentTable.VOIDING))
-				descriptions.add(new TextComponentTranslation("msg.voiding.txt").getUnformattedText());
-		}
-		return descriptions;
 	}
 
 }

@@ -1,5 +1,11 @@
 package de.impelon.disenchanter.proxy;
 
+import de.impelon.disenchanter.DisenchanterConfig;
+import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.DisenchantingProperties;
+import de.impelon.disenchanter.DisenchantingProperties.TableVariant;
+import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTable;
+import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -12,17 +18,24 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import de.impelon.disenchanter.DisenchanterConfig;
-import de.impelon.disenchanter.DisenchanterMain;
-import de.impelon.disenchanter.block.BlockDisenchantmentTable;
-import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTable;
-import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableRenderer;
 
 public class CombinedClientProxy extends CommonProxy {
 
 	@Override
 	public void preInit(FMLPreInitializationEvent ev) {
 		super.preInit(ev);
+	}
+
+	public String buildVariantString(IBlockState state) {
+		StringBuilder variantBuilder = new StringBuilder();
+		DisenchantingProperties properties = DisenchantingProperties.getPropertiesFromState(state);
+		for (TableVariant variant : TableVariant.values()) {
+			variantBuilder.append(variant);
+			variantBuilder.append("=");
+			variantBuilder.append(properties.is(variant));
+			variantBuilder.append(',');
+		}
+		return variantBuilder.substring(0, variantBuilder.length() - 1);
 	}
 
 	@Override
@@ -32,19 +45,7 @@ public class CombinedClientProxy extends CommonProxy {
 		ModelLoader.setCustomStateMapper(disenchantmentTable, new DefaultStateMapper() {
 			@Override
 			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-				StringBuilder variant = new StringBuilder();
-				variant.append(BlockDisenchantmentTable.AUTOMATIC.getName());
-				variant.append("=");
-				variant.append(state.getValue(BlockDisenchantmentTable.AUTOMATIC));
-				variant.append(',');
-				variant.append(BlockDisenchantmentTable.BULKDISENCHANTING.getName());
-				variant.append("=");
-				variant.append(state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING));
-				variant.append(',');
-				variant.append(BlockDisenchantmentTable.VOIDING.getName());
-				variant.append("=");
-				variant.append(state.getValue(BlockDisenchantmentTable.VOIDING));
-				return new ModelResourceLocation(disenchantmentTable.getRegistryName(), variant.toString());
+				return new ModelResourceLocation(disenchantmentTable.getRegistryName(), buildVariantString(state));
 			}
 		});
 	}
@@ -58,20 +59,8 @@ public class CombinedClientProxy extends CommonProxy {
 
 		for (byte meta = 0; meta < 8; meta++) {
 			IBlockState state = disenchantmentTable.getStateFromMeta(meta);
-			StringBuilder variant = new StringBuilder();
-			variant.append(BlockDisenchantmentTable.AUTOMATIC.getName());
-			variant.append("=");
-			variant.append(state.getValue(BlockDisenchantmentTable.AUTOMATIC));
-			variant.append(',');
-			variant.append(BlockDisenchantmentTable.BULKDISENCHANTING.getName());
-			variant.append("=");
-			variant.append(state.getValue(BlockDisenchantmentTable.BULKDISENCHANTING));
-			variant.append(',');
-			variant.append(BlockDisenchantmentTable.VOIDING.getName());
-			variant.append("=");
-			variant.append(state.getValue(BlockDisenchantmentTable.VOIDING));
 			ModelLoader.setCustomModelResourceLocation(itemDisenchantmentTable, meta,
-					new ModelResourceLocation(disenchantmentTable.getRegistryName(), variant.toString()));
+					new ModelResourceLocation(disenchantmentTable.getRegistryName(), buildVariantString(state)));
 		}
 
 	}

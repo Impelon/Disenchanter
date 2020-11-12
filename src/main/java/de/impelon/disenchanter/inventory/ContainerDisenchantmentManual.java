@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
-	
+
 	/**
 	 * Must <b>NOT</b> be initialized here, as that would override whatever was
 	 * initialized during the calling of the super-constructor.
@@ -54,7 +54,8 @@ public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
 			DisenchantmentItemStackHandler virtualContent = new DisenchantmentItemStackHandler();
 			virtualContent.setSourceStack(this.getTableInventory().getSourceStack().copy());
 			virtualContent.setReceiverStack(this.getTableInventory().getReceiverStack().copy());
-			ItemStack output = DisenchantingUtils.simulateDisenchantingInInventory(virtualContent, false, ignoreEnchantmentLoss, this.world, this.position, this.random);
+			ItemStack output = DisenchantingUtils.simulateDisenchantingInInventory(virtualContent,
+					ignoreEnchantmentLoss, this.world, this.position, this.world.rand);
 			if (!output.isEmpty()) {
 				if (!(ItemStack.areItemStacksEqual(this.getTableInventory().getOutputStack(), output)))
 					this.getTableInventory().setOutputStack(output);
@@ -71,7 +72,8 @@ public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
 				boolean wasEmpty = this.getTableInventory().getOutputStack().isEmpty();
 				ItemStack result = super.slotClick(slot, dragType, clickType, player);
 				if (this.getTableInventory().getOutputStack().isEmpty() && !wasEmpty)
-					DisenchantingUtils.disenchantInInventory(this.getTableInventory(), false, this.world, this.position, this.random);
+					DisenchantingUtils.disenchantInInventory(this.getTableInventory(), this.world, this.position,
+							this.world.rand);
 				this.updateOutput(true);
 				if (player instanceof EntityPlayerMP)
 					((EntityPlayerMP) player).sendContainerToPlayer(this);

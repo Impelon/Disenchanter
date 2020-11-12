@@ -1,7 +1,5 @@
 package de.impelon.disenchanter.inventory;
 
-import java.util.Random;
-
 import de.impelon.disenchanter.proxy.CommonProxy;
 import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableAutomatic;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +21,6 @@ public abstract class ContainerDisenchantmentBase extends Container {
 
 	protected World world;
 	protected BlockPos position;
-	protected Random random;
 
 	public static ContainerDisenchantmentBase create(InventoryPlayer playerInventory, World world, BlockPos position) {
 		TileEntity te = world.getTileEntity(position);
@@ -35,7 +32,6 @@ public abstract class ContainerDisenchantmentBase extends Container {
 	public ContainerDisenchantmentBase(InventoryPlayer playerInventory, World world, BlockPos position) {
 		this.world = world;
 		this.position = position;
-		this.random = new Random();
 
 		this.addTableSlots();
 		this.addPlayerSlots(playerInventory);

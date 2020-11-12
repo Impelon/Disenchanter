@@ -9,7 +9,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchantmentTable {
-	
+
 	protected DisenchantmentItemStackHandler tableContent = new DisenchantmentItemStackHandler() {
 		@Override
 		protected void onContentsChanged(int slot) {
@@ -17,7 +17,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 			TileEntityDisenchantmentTableAutomatic.this.markDirty();
 		};
 	};
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
@@ -36,10 +36,10 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 		super.update();
 		if (!this.world.isRemote
 				&& this.tickCount % DisenchanterConfig.disenchanting.ticksAutomaticDisenchantmentProcess == 0) {
-			DisenchantingUtils.disenchantInInventory(this.tableContent, true, this.world, this.pos, this.world.rand);
+			DisenchantingUtils.disenchantInInventory(this.tableContent, this.world, this.pos, this.world.rand);
 		}
 	}
-	
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -47,13 +47,13 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 		}
 		return super.hasCapability(capability, facing);
 	}
-	
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			if (facing == null)
-	            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(this.tableContent);
-			
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(this.tableContent);
+
 			switch (facing) {
 			case NORTH:
 			case EAST:
@@ -64,7 +64,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 			case DOWN:
 				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(this.tableContent.getOutputInventory());
 			}
-        }
+		}
 		return super.getCapability(capability, facing);
 	}
 
