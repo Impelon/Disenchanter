@@ -28,7 +28,7 @@ public class ContainerDisenchantmentManual extends ContainerDisenchantmentBase {
 				@Override
 				protected void onContentsChanged(int slot) {
 					super.onContentsChanged(slot);
-					ContainerDisenchantmentManual.this.onTableContentChanged(slot);
+					onTableContentChanged(slot);
 				};
 			};
 		}

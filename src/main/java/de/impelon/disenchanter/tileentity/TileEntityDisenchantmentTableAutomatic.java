@@ -14,7 +14,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 		@Override
 		protected void onContentsChanged(int slot) {
 			super.onContentsChanged(slot);
-			TileEntityDisenchantmentTableAutomatic.this.markDirty();
+			markDirty();
 		};
 	};
 
@@ -35,7 +35,7 @@ public class TileEntityDisenchantmentTableAutomatic extends TileEntityDisenchant
 	public void update() {
 		super.update();
 		if (!this.world.isRemote
-				&& this.tickCount % DisenchanterConfig.disenchanting.ticksAutomaticDisenchantmentProcess == 0) {
+				&& this.tickCount % DisenchanterConfig.disenchanting.ticksAutomaticDisenchantingProcess == 0) {
 			DisenchantingUtils.disenchantInInventory(this.tableContent, this.world, this.pos, this.world.rand);
 		}
 	}

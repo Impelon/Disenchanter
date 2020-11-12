@@ -61,7 +61,7 @@ public class DisenchantingProperties {
 		return this.is(TableVariant.AUTOMATIC);
 	}
 
-	public int getDisenchantmentIndex() {
+	public int getDisenchantmentIndex(World world, BlockPos position) {
 		return 0;
 	}
 

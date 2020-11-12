@@ -247,7 +247,8 @@ public class DisenchantingUtils {
 		List<Integer> indices;
 		boolean hasTransferredEnchantments = false;
 		while (!(indices = getAvailableEnchantmentIndices(source)).isEmpty()) {
-			if (!transferEnchantment(source, target, indices.get(0), ignoreEnchantmentLoss, random))
+			int index = Math.abs(indices.get(properties.getDisenchantmentIndex(world, position) % indices.size()));
+			if (!transferEnchantment(source, target, index, ignoreEnchantmentLoss, random))
 				break;
 			hasTransferredEnchantments = true;
 

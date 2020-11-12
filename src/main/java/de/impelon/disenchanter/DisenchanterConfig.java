@@ -133,10 +133,10 @@ public class DisenchanterConfig {
 						 "What percentage of the enchantability should be used?"})
 		public double maxEnchantabilityExperience = 0.15;
 		
-		@Config.Name("AutomaticDisenchantmentProcessTicks")
+		@Config.Name("AutomaticDisenchantingProcessTicks")
 		@Config.Comment("How many ticks should the disenchanting process last when using an automatic disenchantment table?")
 		@Config.RangeInt(min = 0)
-		public int ticksAutomaticDisenchantmentProcess = 100;
+		public int ticksAutomaticDisenchantingProcess = 100;
 		
 		@Config.Name("DisabledItems")
 		@Config.Comment({"Which items should not be disenchantable?",

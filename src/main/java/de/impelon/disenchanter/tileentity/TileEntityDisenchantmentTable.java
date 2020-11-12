@@ -1,6 +1,5 @@
 package de.impelon.disenchanter.tileentity;
 
-import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.inventory.ContainerDisenchantmentBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -22,13 +21,13 @@ public class TileEntityDisenchantmentTable extends TileEntityEnchantmentTable {
 
 	@Override
 	public String getGuiID() {
-		return DisenchanterMain.MODID + ":disenchanting_table";
+		return null;
 	}
 
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		NBTTagCompound updateTag = super.getUpdateTag();
-		return super.writeToNBT(updateTag);
+		return this.writeToNBT(updateTag);
 	}
 
 	@Override
