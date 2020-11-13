@@ -7,6 +7,3 @@ msg.automatic.txt=automatisch
 msg.bulkdisenchanting.txt=Massenentzauberung
 msg.cycling.txt=durchlaufend
 msg.voiding.txt=löschend
-msg.outdated.txt=Deine Version von Disenchanter ist veraltet. Klicke hier, um die Website zu besuchen!
-msg.currentversion.txt=Jetzige Version: %s
-msg.latestversion.txt=Neuste Version: %s

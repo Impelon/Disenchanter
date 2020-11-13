@@ -1,12 +1,10 @@
 package de.impelon.disenchanter;
 
 import de.impelon.disenchanter.proxy.CommonProxy;
-import de.impelon.disenchanter.update.VersionChecker;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -23,9 +21,6 @@ public class DisenchanterMain {
 	public static final String NAME = "Disenchanter";
 	public static final String MODID = "disenchanter";
 	public static final String VERSION = "1.7";
-	public static final String PREFIX = TextFormatting.GRAY + "[" + TextFormatting.GOLD + TextFormatting.BOLD + NAME
-			+ TextFormatting.GRAY + "] " + TextFormatting.RESET;
-	public static final VersionChecker versionChecker = new VersionChecker();
 
 	@Mod.Instance(value = MODID)
 	public static DisenchanterMain instance;

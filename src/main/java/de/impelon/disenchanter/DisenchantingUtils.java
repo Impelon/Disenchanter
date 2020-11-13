@@ -326,7 +326,7 @@ public class DisenchantingUtils {
 		float power = getEnchantingPower(world, position);
 		int flatDmg = DisenchanterConfig.disenchanting.flatDamage;
 		double durabilityDmg = DisenchanterConfig.disenchanting.maxDurabilityDamage;
-		double reduceableDmg = DisenchanterConfig.disenchanting.maxDurabilityDamageReduceable;
+		double reducibleDmg = DisenchanterConfig.disenchanting.maxDurabilityDamageReducible;
 		double dmgMultiplier = properties.is(TableVariant.AUTOMATIC) ? DisenchanterConfig.disenchanting.machineDamageMultiplier : 1.0;
 
 		List<Integer> indices;
@@ -338,7 +338,7 @@ public class DisenchantingUtils {
 			hasTransferredEnchantments = true;
 
 			source.attemptDamageItem((int) (dmgMultiplier * (flatDmg + source.getMaxDamage() * durabilityDmg
-					+ source.getMaxDamage() * (reduceableDmg / power))), random, null);
+					+ source.getMaxDamage() * (reducibleDmg / power))), random, null);
 
 			if (isItemStackBroken(source) || !properties.is(TableVariant.BULKDISENCHANTING))
 				break;

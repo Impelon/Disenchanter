@@ -8,18 +8,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Config(modid = DisenchanterMain.MODID, category = "")
 public class DisenchanterConfig {
-
-	@Config.Name("general")
-	public static final GeneralSection general = new GeneralSection();
-	
-	public static class GeneralSection {
-		
-		@Config.RequiresMcRestart
-		@Config.Name("CheckVersion")
-		@Config.Comment("Should Disenchanter check for new versions on startup?")
-		public boolean shouldCheckVersion = true;
-		
-	};
 	
 	@Config.Name("experience_jar")
 	public static final ExperienceJarSection experienceJar = new ExperienceJarSection();
@@ -36,7 +24,7 @@ public class DisenchanterConfig {
 		public int jarUpgradeCapacityChange = 512;
 		
 		@Config.Name("JarUpgradeMaxCapacity")
-		@Config.Comment("What should be the maximal capacity of experience points optainable via upgrades be for the jar of experience?")
+		@Config.Comment("What should be the maximal capacity of experience points obtainable via upgrades be for the jar of experience?")
 		public int jarUpgradeMaxCapacity = 2048;
 		
 	};
@@ -102,10 +90,10 @@ public class DisenchanterConfig {
 		@Config.Comment("How much of the item's maximum durability should be dealt as damage to items when disenchanting?")
 		public double maxDurabilityDamage = 0.025;
 		
-		@Config.Name("MaxDurabilityDamageReduceable")
-		@Config.Comment({"How much of the item's maximum durability should be dealt as reduceable damage to items when disenchanting?",
+		@Config.Name("MaxDurabilityDamageReducible")
+		@Config.Comment({"How much of the item's maximum durability should be dealt as reducible damage to items when disenchanting?",
 						 "This can be reduced by surrounding the disenchantment table with blocks that increase the enchanting level for the enchanting table (e.g. bookshelves)."})
-		public double maxDurabilityDamageReduceable = 0.2;
+		public double maxDurabilityDamageReducible = 0.2;
 		
 		@Config.Name("MachineDamageMultiplier")
 		@Config.Comment("By how much should the damage be multiplied when using an automatic disenchantment table?")
@@ -164,7 +152,7 @@ public class DisenchanterConfig {
 		public boolean disableCurses = false;
 
 		@Config.Name("EnableTCBehaviour")
-		@Config.Comment({"Should items from Tinkers Construct be handeled differently?",
+		@Config.Comment({"Should items from Tinkers Construct be handled differently?",
 						 "Enchantments will not be able to be removed from these items."})
 		public boolean enableTCBehaviour = true;
 		
