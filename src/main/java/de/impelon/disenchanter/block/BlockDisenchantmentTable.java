@@ -40,12 +40,12 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	public static final PropertyBool CYCLING = PropertyBool.create("cycling");
 	public static final PropertyBool VOIDING = PropertyBool.create("voiding");
 	
-	protected static final String CREATIVE_HARVEST_KEY = "HarvestedByCreativePlayer";
+	protected static final String SHOULD_DROP_KEY = "ShouldDropOnHarvest";
 
 	public BlockDisenchantmentTable() {
 		super(Material.ROCK, MapColor.YELLOW);
 		this.setCreativeTab(CreativeTabs.DECORATIONS);
-		this.setRegistryName(DisenchanterMain.MODID, "disenchantmenttable");
+		this.setRegistryName(DisenchanterMain.MODID, "disenchantmentTable");
 		this.setTranslationKey(this.getRegistryName().toString().toLowerCase());
 		this.setLightOpacity(0);
 		this.setHardness(5.0F);
@@ -185,7 +185,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	public void onBlockHarvested(World w, BlockPos pos, IBlockState state, EntityPlayer player) {
 		TileEntity te = w.getTileEntity(pos);
 		if (te instanceof TileEntityDisenchantmentTable)
-			te.getTileData().setBoolean(CREATIVE_HARVEST_KEY, player.isCreative());
+			te.getTileData().setBoolean(SHOULD_DROP_KEY, !player.isCreative() && this.canHarvestBlock(w, pos, player));
 		super.onBlockHarvested(w, pos, state, player);
 	}
 
@@ -196,7 +196,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 			InventoryUtils.dropInventory(w, pos, te);
 		if (te instanceof TileEntityDisenchantmentTable) {
 			TileEntityDisenchantmentTable table = (TileEntityDisenchantmentTable) te;
-			if (!table.getTileData().hasKey(CREATIVE_HARVEST_KEY) || !table.getTileData().getBoolean(CREATIVE_HARVEST_KEY)) {
+			if (!table.getTileData().hasKey(SHOULD_DROP_KEY) || table.getTileData().getBoolean(SHOULD_DROP_KEY)) {
 				ItemStack stack = new ItemStack(Item.getItemFromBlock(this), 1, this.damageDropped(state));
 				if (table.hasCustomName()) {
 					stack.setStackDisplayName(table.getName());
