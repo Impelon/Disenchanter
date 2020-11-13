@@ -15,12 +15,13 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber
-@Mod(modid = DisenchanterMain.MODID, name = DisenchanterMain.NAME, version = DisenchanterMain.VERSION)
+@Mod(modid = DisenchanterMain.MODID, name = DisenchanterMain.NAME, version = DisenchanterMain.VERSION, updateJSON = DisenchanterMain.UPDATE_JSON)
 public class DisenchanterMain {
 
 	public static final String NAME = "Disenchanter";
 	public static final String MODID = "disenchanter";
 	public static final String VERSION = "1.7";
+	public static final String UPDATE_JSON = "https://raw.githubusercontent.com/Impelon/Disenchanter/meta/versions.json";
 
 	@Mod.Instance(value = MODID)
 	public static DisenchanterMain instance;
