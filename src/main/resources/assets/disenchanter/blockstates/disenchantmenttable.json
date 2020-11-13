@@ -5,43 +5,91 @@
     "transform": "forge:default-block"
   },
   "variants": {
-    "automatic=false,bulkdisenchanting=false,voiding=false": [{
+    "automatic=false,bulkdisenchanting=false,cycling=false,voiding=false": [{
       "textures": {}
     }],
-    "automatic=true,bulkdisenchanting=false,voiding=false": [{
+    "automatic=true,bulkdisenchanting=false,cycling=false,voiding=false": [{
       "textures": {
         "side": "disenchanter:blocks/disenchantmenttable_side_automatic"
       }
     }],
-    "automatic=false,bulkdisenchanting=true,voiding=false": [{
+    "automatic=false,bulkdisenchanting=true,cycling=false,voiding=false": [{
       "textures": {
         "top": "disenchanter:blocks/disenchantmenttable_top_bulk"
       }
     }],
-    "automatic=true,bulkdisenchanting=true,voiding=false": [{
+    "automatic=true,bulkdisenchanting=true,cycling=false,voiding=false": [{
       "textures": {
         "side": "disenchanter:blocks/disenchantmenttable_side_automatic",
         "top": "disenchanter:blocks/disenchantmenttable_top_bulk"
       }
     }],
-    "automatic=false,bulkdisenchanting=false,voiding=true": [{
+    "automatic=false,bulkdisenchanting=false,cycling=false,voiding=true": [{
       "textures": {
         "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding"
       }
     }],
-    "automatic=true,bulkdisenchanting=false,voiding=true": [{
+    "automatic=true,bulkdisenchanting=false,cycling=false,voiding=true": [{
       "textures": {
         "side": "disenchanter:blocks/disenchantmenttable_side_automatic",
         "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding"
       }
     }],
-    "automatic=false,bulkdisenchanting=true,voiding=true": [{
+    "automatic=false,bulkdisenchanting=true,cycling=false,voiding=true": [{
       "textures": {
         "top": "disenchanter:blocks/disenchantmenttable_top_bulk",
         "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding"
       }
     }],
-    "automatic=true,bulkdisenchanting=true,voiding=true": [{
+    "automatic=true,bulkdisenchanting=true,cycling=false,voiding=true": [{
+      "textures": {
+        "side": "disenchanter:blocks/disenchantmenttable_side_automatic",
+        "top": "disenchanter:blocks/disenchantmenttable_top_bulk",
+        "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding"
+      }
+    }],
+    "automatic=false,bulkdisenchanting=false,cycling=true,voiding=false": [{
+      "textures": {
+        "side": "disenchanter:blocks/disenchantmenttable_side_cyclic"
+      }
+    }],
+    "automatic=true,bulkdisenchanting=false,cycling=true,voiding=false": [{
+      "textures": {
+        "side": "disenchanter:blocks/disenchantmenttable_side_automatic"
+      }
+    }],
+    "automatic=false,bulkdisenchanting=true,cycling=true,voiding=false": [{
+      "textures": {
+        "side": "disenchanter:blocks/disenchantmenttable_side_cyclic",
+        "top": "disenchanter:blocks/disenchantmenttable_top_bulk"
+      }
+    }],
+    "automatic=true,bulkdisenchanting=true,cycling=true,voiding=false": [{
+      "textures": {
+        "side": "disenchanter:blocks/disenchantmenttable_side_automatic",
+        "top": "disenchanter:blocks/disenchantmenttable_top_bulk"
+      }
+    }],
+    "automatic=false,bulkdisenchanting=false,cycling=true,voiding=true": [{
+      "textures": {
+        "side": "disenchanter:blocks/disenchantmenttable_side_cyclic",
+        "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding"
+      }
+    }],
+    "automatic=true,bulkdisenchanting=false,cycling=true,voiding=true": [{
+      "textures": {
+        "side": "disenchanter:blocks/disenchantmenttable_side_automatic",
+        "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding"
+      }
+    }],
+    "automatic=false,bulkdisenchanting=true,cycling=true,voiding=true": [{
+      "textures": {
+        "side": "disenchanter:blocks/disenchantmenttable_side_cyclic",
+        "top": "disenchanter:blocks/disenchantmenttable_top_bulk",
+        "bottom": "disenchanter:blocks/disenchantmenttable_bottom_voiding"
+      }
+    }],
+    "automatic=true,bulkdisenchanting=true,cycling=true,voiding=true": [{
       "textures": {
         "side": "disenchanter:blocks/disenchantmenttable_side_automatic",
         "top": "disenchanter:blocks/disenchantmenttable_top_bulk",

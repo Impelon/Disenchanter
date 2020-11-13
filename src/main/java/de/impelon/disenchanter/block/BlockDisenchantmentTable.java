@@ -37,6 +37,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 	protected static final AxisAlignedBB AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.75D, 1.0D);
 	public static final PropertyBool AUTOMATIC = PropertyBool.create("automatic");
 	public static final PropertyBool BULKDISENCHANTING = PropertyBool.create("bulkdisenchanting");
+	public static final PropertyBool CYCLING = PropertyBool.create("cycling");
 	public static final PropertyBool VOIDING = PropertyBool.create("voiding");
 	
 	protected static final String CREATIVE_HARVEST_KEY = "HarvestedByCreativePlayer";
@@ -50,7 +51,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 		this.setHardness(5.0F);
 		this.setResistance(2000.0F);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(AUTOMATIC, false)
-				.withProperty(BULKDISENCHANTING, false).withProperty(VOIDING, false));
+				.withProperty(BULKDISENCHANTING, false).withProperty(VOIDING, false).withProperty(CYCLING, false));
 	}
 
 	@Override
@@ -105,24 +106,35 @@ public class BlockDisenchantmentTable extends BlockContainer {
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] { AUTOMATIC, BULKDISENCHANTING, VOIDING });
+		return new BlockStateContainer(this, new IProperty[] { AUTOMATIC, BULKDISENCHANTING, VOIDING, CYCLING });
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int metadata) {
 		IBlockState state = getDefaultState();
-		state = state.withProperty(AUTOMATIC, metadata % 2 == 1 ? true : false);
-		state = state.withProperty(BULKDISENCHANTING, (metadata / 2) % 2 == 1 ? true : false);
-		state = state.withProperty(VOIDING, (metadata / 4) % 2 == 1 ? true : false);
+		if (metadata < 8) {
+			state = state.withProperty(AUTOMATIC, metadata % 2 == 1 ? true : false);
+			state = state.withProperty(BULKDISENCHANTING, (metadata / 2) % 2 == 1 ? true : false);
+			state = state.withProperty(VOIDING, (metadata / 4) % 2 == 1 ? true : false);
+		} else {
+			state = state.withProperty(CYCLING, true);
+			state = state.withProperty(VOIDING, metadata % 2 == 1 ? true : false);
+		}
+		
 		return state;
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		int metadata = 0;
-		metadata += state.getValue(AUTOMATIC) ? 1 : 0;
-		metadata += state.getValue(BULKDISENCHANTING) ? 2 : 0;
-		metadata += state.getValue(VOIDING) ? 4 : 0;
+		if (!state.getValue(CYCLING)) {
+			metadata += state.getValue(AUTOMATIC) ? 1 : 0;
+			metadata += state.getValue(BULKDISENCHANTING) ? 2 : 0;
+			metadata += state.getValue(VOIDING) ? 4 : 0;
+		} else {
+			metadata += 8;
+			metadata += state.getValue(VOIDING) ? 1 : 0;
+		}
 		return metadata;
 	}
 
@@ -133,7 +145,7 @@ public class BlockDisenchantmentTable extends BlockContainer {
 
 	@Override
 	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-		for (byte meta = 0; meta < 8; meta++)
+		for (byte meta = 0; meta < 10; meta++)
 			subItems.add(new ItemStack(this, 1, meta));
 	}
 

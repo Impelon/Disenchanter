@@ -55,13 +55,17 @@ public class DisenchanterConfig {
 		@Config.Comment("Should the recipe for the automatic-upgrade (disenchantment table) be available?")
 		public boolean enableAutomaticTableUpgradeRecipe = true;
 		
-		@Config.Name("EnableVoidingTableUpgradeRecipe")
-		@Config.Comment("Should the recipe for the voiding-upgrade (disenchantment table) be available?")
-		public boolean enableVoidingTableUpgradeRecipe = true;
-		
 		@Config.Name("EnableBulkDisenchantingTableUpgradeRecipe")
 		@Config.Comment("Should the recipe for the bulk-disenchanting-upgrade (disenchantment table) be available?")
 		public boolean enableBulkDisenchantingTableUpgradeRecipe = true;
+		
+		@Config.Name("EnableCyclingTableUpgradeRecipe")
+		@Config.Comment("Should the recipe for the cycling-upgrade (disenchantment table) be available?")
+		public boolean enableCyclingTableUpgradeRecipe = true;
+		
+		@Config.Name("EnableVoidingTableUpgradeRecipe")
+		@Config.Comment("Should the recipe for the voiding-upgrade (disenchantment table) be available?")
+		public boolean enableVoidingTableUpgradeRecipe = true;
 		
 		@Config.Name("EnableClearTableRecipe")
 		@Config.Comment("Should the recipe for clearing all upgrades from a disenchantment table be available?")
@@ -135,19 +139,24 @@ public class DisenchanterConfig {
 		
 		@Config.Name("AutomaticDisenchantingProcessTicks")
 		@Config.Comment("How many ticks should the disenchanting process last when using an automatic disenchantment table?")
-		@Config.RangeInt(min = 0)
+		@Config.RangeInt(min = 1)
 		public int ticksAutomaticDisenchantingProcess = 100;
+		
+		@Config.Name("CyclingDisenchantingTicks")
+		@Config.Comment("How many ticks should the cycling disenchantment table wait before switching to a new enchantment?")
+		@Config.RangeInt(min = 1)
+		public int ticksCyclingDisenchanting = 60;
 		
 		@Config.Name("DisabledItems")
 		@Config.Comment({"Which items should not be disenchantable?",
 						 "Entries are of the format `modid:itemid`; for example minecraft:dirt",
-						 "Java Regex can be used with a [r]-prefix; for example [r]minecraft:.* to ban all vanilla items."})
+						 "Java Regex can be used with a `[r]`-prefix; for example [r]minecraft:.* to ban all vanilla items."})
 		public String[] disabledItems = {};
 		
 		@Config.Name("DisabledEnchantments")
 		@Config.Comment({"Which enchantments should be ignored when disenchanting?",
 						 "Entries are of the format `modid:enchantid`; for example minecraft:bane_of_arthropods",
-						 "Java Regex can be used with a [r]-prefix; for example [r]minecraft:.* to ban all vanilla enchantments."})
+						 "Java Regex can be used with a `[r]`-prefix; for example [r]minecraft:.* to ban all vanilla enchantments."})
 		public String[] disabledEnchantments = {};
 		
 		@Config.Name("DisableCurses")

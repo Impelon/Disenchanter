@@ -1,0 +1,28 @@
+{
+  "type": "disenchanter:upgrade_table",
+  "pattern": [
+    "LLL",
+    "RTR",
+    "LLL"
+  ],
+  "key": {
+    "T": {
+      "item": "#TABLE"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "L": {
+      "type": "forge:ore_dict",
+      "ore": "gemLapis"
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:cycling_upgrade_enabled"
+  }],
+  "added_property": "cycling",
+  "result": {
+    "item": "disenchanter:disenchantmenttable",
+    "data": 0
+  }
+}

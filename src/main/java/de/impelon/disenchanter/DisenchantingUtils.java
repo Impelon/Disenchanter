@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import de.impelon.disenchanter.DisenchantingProperties.TableVariant;
+import de.impelon.disenchanter.block.TableVariant;
 import de.impelon.disenchanter.inventory.ContainerDisenchantmentBase;
 import de.impelon.disenchanter.inventory.IDisenchantmentItemHandler;
 import de.impelon.disenchanter.item.ItemExperienceJar;
@@ -27,6 +27,41 @@ public class DisenchantingUtils {
 	 * <p>
 	 * Performs the disenchanting of an itemstack inside an inventory. This will
 	 * transfer enchantments from the input-itemstack to the output-itemstack as
+	 * needed. The enchantment loss mechanic will be considered. This will
+	 * disenchant starting from the first enchantment.
+	 * </p>
+	 * <p>
+	 * <b>This method should be called when a disenchanting process is
+	 * <i>persistently</i> performed.</b>
+	 * </p>
+	 * <p>
+	 * The properties of the disenchantment table performing the
+	 * disenchanting-process will be derived from its given position.
+	 * </p>
+	 * 
+	 * @param inventory             an inventory like the slots of
+	 *                              {@linkplain ContainerDisenchantmentBase}
+	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
+	 *                              false otherwise
+	 * @param startIndex            index of the enchantment to start the
+	 *                              disenchanting-process from
+	 * @param world                 the world the disenchanting is performed in
+	 * @param position              the position the disenchanting is performed at
+	 * @param random                a {@linkplain Random}-instance to use for random
+	 *                              decisions
+	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the
+	 *         disenchanting process should not be completed.
+	 */
+	public static ItemStack disenchantInInventory(IDisenchantmentItemHandler inventory, World world, BlockPos position,
+			Random random) {
+		return disenchantInInventory(inventory, DisenchantingProperties.getPropertiesFromStateAt(world, position), 0,
+				world, position, random);
+	}
+	
+	/**
+	 * <p>
+	 * Performs the disenchanting of an itemstack inside an inventory. This will
+	 * transfer enchantments from the input-itemstack to the output-itemstack as
 	 * needed. The enchantment loss mechanic will be considered.
 	 * </p>
 	 * <p>
@@ -42,6 +77,8 @@ public class DisenchantingUtils {
 	 *                              {@linkplain ContainerDisenchantmentBase}
 	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
 	 *                              false otherwise
+	 * @param startIndex            index of the enchantment to start the
+	 *                              disenchanting-process from
 	 * @param world                 the world the disenchanting is performed in
 	 * @param position              the position the disenchanting is performed at
 	 * @param random                a {@linkplain Random}-instance to use for random
@@ -49,10 +86,10 @@ public class DisenchantingUtils {
 	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the
 	 *         disenchanting process should not be completed.
 	 */
-	public static ItemStack disenchantInInventory(IDisenchantmentItemHandler inventory, World world, BlockPos position,
-			Random random) {
+	public static ItemStack disenchantInInventory(IDisenchantmentItemHandler inventory, int startIndex, World world,
+			BlockPos position, Random random) {
 		return disenchantInInventory(inventory, DisenchantingProperties.getPropertiesFromStateAt(world, position),
-				world, position, random);
+				startIndex, world, position, random);
 	}
 
 	/**
@@ -72,6 +109,8 @@ public class DisenchantingUtils {
 	 *                              disenchanting-process
 	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
 	 *                              false otherwise
+	 * @param startIndex            index of the enchantment to start the
+	 *                              disenchanting-process from
 	 * @param world                 the world the disenchanting is performed in
 	 * @param position              the position the disenchanting is performed at
 	 * @param random                a {@linkplain Random}-instance to use for random
@@ -80,8 +119,9 @@ public class DisenchantingUtils {
 	 *         disenchanting process should not be completed.
 	 */
 	public static ItemStack disenchantInInventory(IDisenchantmentItemHandler inventory,
-			DisenchantingProperties properties, World world, BlockPos position, Random random) {
-		ItemStack result = simulateDisenchantingInInventory(inventory, properties, false, world, position, random);
+			DisenchantingProperties properties, int startIndex, World world, BlockPos position, Random random) {
+		ItemStack result = simulateDisenchantingInInventory(inventory, properties, false, startIndex, world, position,
+				random);
 		if (!result.isEmpty()) {
 			if (!world.isRemote)
 				world.playSound(null, position, CommonProxy.disenchantmentTableUse, SoundCategory.BLOCKS,
@@ -89,12 +129,12 @@ public class DisenchantingUtils {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * <p>
 	 * Simulates the disenchanting of an itemstack inside an inventory. This will
 	 * transfer enchantments from the input-itemstack to the output-itemstack as
-	 * needed.
+	 * needed. This will disenchant starting from the first enchantment.
 	 * </p>
 	 * <b>Do not call this method to persistently perform a disenchanting
 	 * process.</b><br>
@@ -120,8 +160,46 @@ public class DisenchantingUtils {
 	 */
 	public static ItemStack simulateDisenchantingInInventory(IDisenchantmentItemHandler inventory,
 			boolean ignoreEnchantmentLoss, World world, BlockPos position, Random random) {
-		return simulateDisenchantingInInventory(inventory, DisenchantingProperties.getPropertiesFromStateAt(world, position), 
-				ignoreEnchantmentLoss, world, position, random);
+		return simulateDisenchantingInInventory(inventory,
+				DisenchantingProperties.getPropertiesFromStateAt(world, position), ignoreEnchantmentLoss, 0, world,
+				position, random);
+	}
+	
+	/**
+	 * <p>
+	 * Simulates the disenchanting of an itemstack inside an inventory. This will
+	 * transfer enchantments from the input-itemstack to the output-itemstack as
+	 * needed.
+	 * </p>
+	 * <b>Do not call this method to persistently perform a disenchanting
+	 * process.</b><br>
+	 * Use {@link DisenchantingUtils#disenchantInInventory} for that purpose.
+	 * </p>
+	 * <p>
+	 * The properties of the disenchantment table performing the
+	 * disenchanting-process will be derived from its given position.
+	 * </p>
+	 * 
+	 * @param inventory             an inventory like the slots of
+	 *                              {@linkplain ContainerDisenchantmentBase}
+	 * @param properties            the properties of the object performing the
+	 *                              disenchanting-process
+	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
+	 *                              false otherwise
+	 * @param startIndex            index of the enchantment to start the
+	 *                              disenchanting-process from
+	 * @param world                 the world the disenchanting is performed in
+	 * @param position              the position the disenchanting is performed at
+	 * @param random                a {@linkplain Random}-instance to use for random
+	 *                              decisions
+	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the
+	 *         disenchanting process should not be completed.
+	 */
+	public static ItemStack simulateDisenchantingInInventory(IDisenchantmentItemHandler inventory,
+			boolean ignoreEnchantmentLoss, int startIndex, World world, BlockPos position, Random random) {
+		return simulateDisenchantingInInventory(inventory,
+				DisenchantingProperties.getPropertiesFromStateAt(world, position), ignoreEnchantmentLoss, startIndex,
+				world, position, random);
 	}
 
 	/**
@@ -141,6 +219,8 @@ public class DisenchantingUtils {
 	 *                              disenchanting-process
 	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
 	 *                              false otherwise
+	 * @param startIndex            index of the enchantment to start the
+	 *                              disenchanting-process from
 	 * @param world                 the world the disenchanting is performed in
 	 * @param position              the position the disenchanting is performed at
 	 * @param random                a {@linkplain Random}-instance to use for random
@@ -148,8 +228,9 @@ public class DisenchantingUtils {
 	 * @return the resulting output-itemstack, {@linkplain ItemStack#EMPTY} if the
 	 *         disenchanting process should not be completed.
 	 */
-	public static ItemStack simulateDisenchantingInInventory(IDisenchantmentItemHandler inventory, DisenchantingProperties properties,
-			boolean ignoreEnchantmentLoss, World world, BlockPos position, Random random) {
+	public static ItemStack simulateDisenchantingInInventory(IDisenchantmentItemHandler inventory,
+			DisenchantingProperties properties, boolean ignoreEnchantmentLoss, int startIndex, World world,
+			BlockPos position, Random random) {
 		if (properties.hasPersistantInventory() && !inventory.getOutputStack().isEmpty())
 			return ItemStack.EMPTY;
 
@@ -159,7 +240,7 @@ public class DisenchantingUtils {
 		if (target.isEmpty())
 			return ItemStack.EMPTY;
 
-		if (disenchant(source, target, properties, ignoreEnchantmentLoss, world, position, random)) {
+		if (disenchant(source, target, properties, ignoreEnchantmentLoss, startIndex, world, position, random)) {
 			if (receiver.getCount() > 1)
 				receiver.setCount(receiver.getCount() - 1);
 			else
@@ -204,16 +285,18 @@ public class DisenchantingUtils {
 	 *                              disenchanting-process
 	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
 	 *                              false otherwise
+	 * @param startIndex            index of the enchantment to start the
+	 *                              disenchanting-process from
 	 * @param world                 the world the disenchanting is performed in
 	 * @param position              the position the disenchanting is performed at
 	 * @param random                a {@linkplain Random}-instance to use for random
 	 *                              decisions
 	 * @return true if enchantments were transferred, false otherwise
 	 */
-	public static boolean disenchant(ItemStack source, ItemStack target, boolean ignoreEnchantmentLoss, World world,
-			BlockPos position, Random random) {
+	public static boolean disenchant(ItemStack source, ItemStack target, boolean ignoreEnchantmentLoss, int startIndex,
+			World world, BlockPos position, Random random) {
 		return disenchant(source, target, DisenchantingProperties.getPropertiesFromStateAt(world, position),
-				ignoreEnchantmentLoss, world, position, random);
+				ignoreEnchantmentLoss, startIndex, world, position, random);
 	}
 
 	/**
@@ -230,6 +313,8 @@ public class DisenchantingUtils {
 	 *                              disenchanting-process
 	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
 	 *                              false otherwise
+	 * @param startIndex            index of the enchantment to start the
+	 *                              disenchanting-process from
 	 * @param world                 the world the disenchanting is performed in
 	 * @param position              the position the disenchanting is performed at
 	 * @param random                a {@linkplain Random}-instance to use for random
@@ -237,7 +322,7 @@ public class DisenchantingUtils {
 	 * @return true if enchantments were transferred, false otherwise
 	 */
 	public static boolean disenchant(ItemStack source, ItemStack target, DisenchantingProperties properties,
-			boolean ignoreEnchantmentLoss, World world, BlockPos position, Random random) {
+			boolean ignoreEnchantmentLoss, int startIndex, World world, BlockPos position, Random random) {
 		float power = getEnchantingPower(world, position);
 		int flatDmg = DisenchanterConfig.disenchanting.flatDamage;
 		double durabilityDmg = DisenchanterConfig.disenchanting.maxDurabilityDamage;
@@ -247,7 +332,7 @@ public class DisenchantingUtils {
 		List<Integer> indices;
 		boolean hasTransferredEnchantments = false;
 		while (!(indices = getAvailableEnchantmentIndices(source)).isEmpty()) {
-			int index = Math.abs(indices.get(properties.getDisenchantmentIndex(world, position) % indices.size()));
+			int index = Math.abs(indices.get(startIndex % indices.size()));
 			if (!transferEnchantment(source, target, index, ignoreEnchantmentLoss, random))
 				break;
 			hasTransferredEnchantments = true;

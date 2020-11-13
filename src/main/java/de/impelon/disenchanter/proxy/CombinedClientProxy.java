@@ -3,7 +3,7 @@ package de.impelon.disenchanter.proxy;
 import de.impelon.disenchanter.DisenchanterConfig;
 import de.impelon.disenchanter.DisenchanterMain;
 import de.impelon.disenchanter.DisenchantingProperties;
-import de.impelon.disenchanter.DisenchantingProperties.TableVariant;
+import de.impelon.disenchanter.block.TableVariant;
 import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTable;
 import de.impelon.disenchanter.tileentity.TileEntityDisenchantmentTableRenderer;
 import net.minecraft.block.Block;
@@ -57,7 +57,7 @@ public class CombinedClientProxy extends CommonProxy {
 		ModelLoader.setCustomModelResourceLocation(itemExperienceJar, 0,
 				new ModelResourceLocation(itemExperienceJar.getRegistryName().toString()));
 
-		for (byte meta = 0; meta < 8; meta++) {
+		for (byte meta = 0; meta < 10; meta++) {
 			IBlockState state = disenchantmentTable.getStateFromMeta(meta);
 			ModelLoader.setCustomModelResourceLocation(itemDisenchantmentTable, meta,
 					new ModelResourceLocation(disenchantmentTable.getRegistryName(), buildVariantString(state)));

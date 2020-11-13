@@ -5,6 +5,7 @@ msg.stored_xp.txt=bottled experience: %d/%d
 msg.overload.txt=overload: disenchanting at full capacity is possible
 msg.automatic.txt=automatic
 msg.bulkdisenchanting.txt=bulk-disenchanting
+msg.cycling.txt=cycling
 msg.voiding.txt=voiding
 msg.outdated.txt=Your version of Disenchanter is outdated. Click here to visit the website!
 msg.currentversion.txt=current version: %s

@@ -25,6 +25,8 @@ public class ConfigConditionFactory implements IConditionFactory {
 					return DisenchanterConfig.crafting.enableAutomaticTableUpgradeRecipe;
 				case "bulkdisenchanting_upgrade_enabled":
 					return DisenchanterConfig.crafting.enableBulkDisenchantingTableUpgradeRecipe;
+				case "cycling_upgrade_enabled":
+					return DisenchanterConfig.crafting.enableCyclingTableUpgradeRecipe;
 				case "voiding_upgrade_enabled":
 					return DisenchanterConfig.crafting.enableVoidingTableUpgradeRecipe;
 				case "clear_table_upgrades_enabled":
