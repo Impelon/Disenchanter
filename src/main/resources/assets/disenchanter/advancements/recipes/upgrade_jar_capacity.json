@@ -1,0 +1,33 @@
+{
+  "parent": "disenchanter:recipes/root",
+  "rewards": {
+    "recipes": [
+      "disenchanter:upgrade_jar_capacity"
+    ]
+  },
+  "criteria": {
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "disenchanter:upgrade_jar_capacity"
+      }
+    },
+    "has_experience_jar": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{
+          "item": "disenchanter:experience_jar"
+        }]
+      }
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:capacity_upgrade_enabled"
+  }],
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_experience_jar"
+    ]
+  ]
+}

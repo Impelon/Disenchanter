@@ -1,0 +1,14 @@
+{
+  "conditions": {
+    "disenchantment_table_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
+    "automatic_upgrade_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
+    "bulkdisenchanting_upgrade_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
+    "cycling_upgrade_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
+    "voiding_upgrade_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
+    "clear_table_upgrades_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
+    "experience_jar_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
+    "overload_upgrade_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
+    "capacity_upgrade_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory",
+    "clear_jar_upgrades_enabled": "de.impelon.disenchanter.crafting.ConfigConditionFactory"
+  }
+}

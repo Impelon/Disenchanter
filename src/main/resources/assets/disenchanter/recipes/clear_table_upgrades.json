@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "PPP",
+    "PTP",
+    "PPP"
+  ],
+  "key": {
+    "T": {
+      "item": "#TABLE"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:clear_table_upgrades_enabled"
+  }],
+  "result": {
+    "item": "disenchanter:disenchantmenttable",
+    "data": 0
+  }
+}

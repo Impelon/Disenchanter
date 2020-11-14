@@ -1,8 +1,9 @@
 tile.disenchanter:disenchantmenttable.name=Warlock's Carrel
+item.disenchanter:experience_jar.name=Mug o' Wisdom
 container.disenchant=Spell Lootin'
+msg.stored_xp.txt=bottled wisdom: %d o' %d
+msg.overload.txt=overboard: do yer spell lootin' with all yer mighty wisdom
 msg.automatic.txt=jinxed
-msg.bulk.txt=booty'n
+msg.bulkdisenchanting.txt=booty'n
+msg.cycling.txt=swirlin'
 msg.voiding.txt=maelstrom
-msg.outdated.txt=Yaaarr, yer' model o' Spell Looter is gone overboard. Crack yis drift bottle to plunder ye web-ship!
-msg.currentversion.txt=Yer' model: 
-msg.latestversion.txt=shiny, golden, new model: 

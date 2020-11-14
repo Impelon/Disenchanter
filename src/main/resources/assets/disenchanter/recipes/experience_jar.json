@@ -1,0 +1,27 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "GPG",
+    "GEG",
+    "GGG"
+  ],
+  "key": {
+    "E": {
+      "type": "forge:ore_dict",
+      "ore": "gemEmerald"
+    },
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "blockGlass"
+    },
+    "P": {
+      "item": "minecraft:light_weighted_pressure_plate"
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:experience_jar_enabled"
+  }],
+  "result": {
+    "item": "disenchanter:experience_jar"
+  }
+}

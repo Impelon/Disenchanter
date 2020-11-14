@@ -1,0 +1,5 @@
+tile.disenchanter:disenchantmenttable.name=Mesa de Desencantamiento
+container.disenchant=Desencantar
+msg.automatic.txt=automatico
+msg.bulkdisenchanting.txt=desencantado completo
+msg.voiding.txt=desecantado total

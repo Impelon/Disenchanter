@@ -1,6 +1,3 @@
 ﻿tile.disenchanter:disenchantmenttable.name=Стол разчарования
 container.disenchant=Разчарование
 msg.automatic.txt=Автоматический
-msg.outdated.txt=Ваша версия мода Disenchanter устарела. Нажмите здесь, чтобы посетить веб-сайт!
-msg.currentversion.txt=текущая версия: 
-msg.latestversion.txt=последняя версия: 

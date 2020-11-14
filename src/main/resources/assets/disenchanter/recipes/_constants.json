@@ -1,0 +1,16 @@
+[
+    {
+        "name": "TABLE",
+        "ingredient": {
+            "item": "disenchanter:disenchantmenttable",
+            "data": 32767
+        }
+    },
+    {
+        "name": "JAR",
+        "ingredient": {
+            "item": "disenchanter:experience_jar",
+            "data": 32767
+        }
+    }
+]

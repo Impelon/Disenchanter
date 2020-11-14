@@ -1,0 +1,33 @@
+{
+  "type": "disenchanter:upgrade_jar",
+  "pattern": [
+    "GPG",
+    "GJG",
+    "GDG"
+  ],
+  "key": {
+    "J": {
+      "item": "#JAR"
+    },
+    "D": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    },
+    "G": {
+      "type": "forge:ore_dict",
+      "ore": "blockGlass"
+    },
+    "P": {
+      "item": "minecraft:light_weighted_pressure_plate"
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:capacity_upgrade_enabled"
+  }],
+  "upgrade": {
+    "capacity": "increase"
+  },
+  "result": {
+    "item": "disenchanter:experience_jar"
+  }
+}

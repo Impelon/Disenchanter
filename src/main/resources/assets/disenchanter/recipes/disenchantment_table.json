@@ -1,0 +1,28 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "   ",
+    "YEY",
+    "ETE"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:enchanting_table"
+    },
+    "E": {
+      "type": "forge:ore_dict",
+      "ore": "gemEmerald"
+    },
+    "Y": {
+      "type": "forge:ore_dict",
+      "ore": "dyeYellow"
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:disenchantment_table_enabled"
+  }],
+  "result": {
+    "item": "disenchanter:disenchantmenttable",
+    "data": 0
+  }
+}

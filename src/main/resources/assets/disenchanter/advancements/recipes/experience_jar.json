@@ -1,0 +1,42 @@
+{
+  "parent": "disenchanter:recipes/root",
+  "rewards": {
+    "recipes": [
+      "disenchanter:experience_jar"
+    ]
+  },
+  "criteria": {
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "disenchanter:experience_jar"
+      }
+    },
+    "has_emerald": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{
+          "item": "minecraft:emerald"
+        }]
+      }
+    },
+    "has_disenchantment_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{
+          "item": "disenchanter:disenchantmenttable"
+        }]
+      }
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:experience_jar_enabled"
+  }],
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_emerald",
+      "has_disenchantment_table"
+    ]
+  ]
+}

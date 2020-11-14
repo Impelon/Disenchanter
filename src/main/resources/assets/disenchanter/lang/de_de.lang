@@ -1,8 +1,9 @@
 tile.disenchanter:disenchantmenttable.name=Entzauberungstisch
+item.disenchanter:experience_jar.name=Erfahrungsflasche
 container.disenchant=Entzaubern
+msg.stored_xp.txt=gesammelte Erfahrungspunkte: %d/%d
+msg.overload.txt=überladen: auch bei erreichter Kapazität kann entzaubert werden
 msg.automatic.txt=automatisch
-msg.bulk.txt=Massenentzauberung
+msg.bulkdisenchanting.txt=Massenentzauberung
+msg.cycling.txt=durchlaufend
 msg.voiding.txt=löschend
-msg.outdated.txt=Deine Version von Disenchanter ist veraltet. Klicke hier, um die Website zu besuchen!
-msg.currentversion.txt=Jetzige Version: 
-msg.latestversion.txt=Neuste Version: 

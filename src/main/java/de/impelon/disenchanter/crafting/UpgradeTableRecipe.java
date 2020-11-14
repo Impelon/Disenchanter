@@ -1,60 +1,53 @@
 package de.impelon.disenchanter.crafting;
 
-import de.impelon.disenchanter.DisenchanterMain;
+import de.impelon.disenchanter.inventory.InventoryUtils;
+import de.impelon.disenchanter.proxy.CommonProxy;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class UpgradeTableRecipe extends ShapedOreRecipe {
-	
-	private final PropertyBool addedProperty;
-	
-//	static {
-//	    RecipeSorter.register(DisenchanterMain.MODID + ":upgradeTable", UpgradeTableRecipe.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
-//	}
-	
-	/* 
-	 * TODO: remove constructor if converted to JSON recipe
-	 * see: 
-	 * https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/crafting/recipe/ArmorUpgradeRecipe.java
-	 * https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/crafting/recipe/AncientWillRecipe.java
-	 * https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/crafting/ModCraftingRecipes.java
-	 * https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/crafting/FluxfieldConditionFactory.java
-	 */
-	
-	public UpgradeTableRecipe(PropertyBool addedProperty, ItemStack result, Object... recipe) {
-		super(null, result, recipe);
+
+	protected final PropertyBool addedProperty;
+
+	public static ItemStack getResultingTable(PropertyBool property) {
+		ItemStack result = new ItemStack(CommonProxy.itemDisenchantmentTable, 1);
+		result.setItemDamage(CommonProxy.disenchantmentTable
+				.getMetaFromState(CommonProxy.disenchantmentTable.getDefaultState().withProperty(property, true)));
+		return result;
+	}
+
+	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, Object... recipe) {
+		this(group, addedProperty, CraftingHelper.parseShaped(recipe));
+	}
+
+	public UpgradeTableRecipe(ResourceLocation group, PropertyBool addedProperty, ShapedPrimer recipe) {
+		super(group, getResultingTable(addedProperty), recipe);
 		this.addedProperty = addedProperty;
 	}
-	
+
 	@Override
 	public boolean matches(InventoryCrafting grid, World world) {
-		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
-			ItemStack st = grid.getStackInSlot(slot);
-			if (st != null && st.getItem() == Item.getItemFromBlock(DisenchanterMain.proxy.disenchantmentTable))
-				if (DisenchanterMain.proxy.disenchantmentTable.getStateFromMeta(st.getItemDamage()).getValue(this.addedProperty))
-					return false;
-		}
+		ItemStack table = InventoryUtils.findFirstItemStackInInventory(grid, CommonProxy.itemDisenchantmentTable);
+		if (!table.isEmpty() && CommonProxy.disenchantmentTable.getStateFromMeta(table.getItemDamage()).getValue(this.addedProperty))
+			return false;
 		return super.matches(grid, world);
 	}
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting grid) {
-		ItemStack table = null;
-		for (int slot = 0; slot < grid.getSizeInventory(); slot++) {
-				ItemStack st = grid.getStackInSlot(slot);
-				if (st != null && st.getItem() == Item.getItemFromBlock(DisenchanterMain.proxy.disenchantmentTable))
-					table = st.copy();
-		}
+		ItemStack table = InventoryUtils.findFirstItemStackInInventory(grid, CommonProxy.itemDisenchantmentTable);
+		if (table.isEmpty())
+			return table;
 
 		ItemStack res = super.getCraftingResult(grid);
-		res.setItemDamage(table.getItemDamage() + DisenchanterMain.proxy.disenchantmentTable.
-				getMetaFromState(DisenchanterMain.proxy.disenchantmentTable.getDefaultState().withProperty(this.addedProperty, true)));
+		res.setItemDamage(CommonProxy.disenchantmentTable.getMetaFromState(CommonProxy.disenchantmentTable
+				.getStateFromMeta(table.getItemDamage()).withProperty(this.addedProperty, true)));
 		return res;
 	}
 

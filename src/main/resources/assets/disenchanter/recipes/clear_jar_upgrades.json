@@ -1,0 +1,23 @@
+{
+  "type": "disenchanter:upgrade_jar",
+  "pattern": [
+    "PPP",
+    "PJP",
+    "PPP"
+  ],
+  "key": {
+    "J": {
+      "item": "#JAR"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  },
+  "conditions": [{
+    "type": "disenchanter:clear_jar_upgrades_enabled"
+  }],
+  "upgrade": "reset_all",
+  "result": {
+    "item": "disenchanter:experience_jar"
+  }
+}
