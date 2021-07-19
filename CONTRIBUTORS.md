@@ -8,6 +8,8 @@ in the context of the project without additional limitations
 not covered by the license.
 You retain the copyrights to your individual contribution.
 
+_(As you can see in GitHub's Terms of Service [here](https://docs.github.com/en/github/site-policy/github-terms-of-service#3-ownership-of-content-right-to-post-and-license-grants) and [here](https://docs.github.com/en/github/site-policy/github-terms-of-service#6-contributions-under-repository-license) you have already agreed to such conditions, but we will make it even more explicit here.)_
+
 Please also add a link to your pull-request (if applicable),
 so contributions can be easily linked to their owners.
 Entries in the following list should be of the following format:
