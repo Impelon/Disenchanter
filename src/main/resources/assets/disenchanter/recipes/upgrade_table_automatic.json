@@ -14,7 +14,8 @@
       "ore": "ingotIron"
     },
     "C": {
-      "item": "minecraft:chest"
+      "type": "forge:ore_dict",
+      "ore": "chestWood"
     },
     "B": {
       "type": "forge:ore_dict",
