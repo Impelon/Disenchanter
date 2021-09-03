@@ -20,7 +20,7 @@ public class DisenchanterMain {
 
 	public static final String NAME = "Disenchanter";
 	public static final String MODID = "disenchanter";
-	public static final String VERSION = "1.7";
+	public static final String VERSION = "1.8";
 	public static final String UPDATE_JSON = "https://raw.githubusercontent.com/Impelon/Disenchanter/meta/versions.json";
 
 	@Mod.Instance(value = MODID)
