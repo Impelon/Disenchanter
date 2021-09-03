@@ -156,6 +156,10 @@ public class DisenchanterConfig {
 						 "Enchantments will not be able to be removed from these items."})
 		public boolean enableTCBehaviour = true;
 		
+		@Config.Name("DestroyNonDamageableItems")
+		@Config.Comment("Should non-damageable items like books be destroyed when disenchanted?")
+		public boolean destroyNonDamageableItems = false;
+		
 	};
 	
 	@Config.Name("visual")
