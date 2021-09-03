@@ -247,7 +247,7 @@ public class DisenchantingUtils {
 				receiver = ItemStack.EMPTY;
 			inventory.setReceiverStack(receiver);
 
-			if (isItemStackBroken(source))
+			if (isItemStackBroken(source) || shouldNonDamageableBreak(source))
 				source = ItemStack.EMPTY;
 
 			if (!source.isEmpty()) {
@@ -340,7 +340,7 @@ public class DisenchantingUtils {
 			source.attemptDamageItem((int) (dmgMultiplier * (flatDmg + source.getMaxDamage() * durabilityDmg
 					+ source.getMaxDamage() * (reducibleDmg / power))), random, null);
 
-			if (isItemStackBroken(source) || !properties.is(TableVariant.BULKDISENCHANTING))
+			if (isItemStackBroken(source) || shouldNonDamageableBreak(source) || !properties.is(TableVariant.BULKDISENCHANTING))
 				break;
 		}
 		return hasTransferredEnchantments;
@@ -556,6 +556,18 @@ public class DisenchantingUtils {
 	 */
 	public static boolean isItemStackBroken(ItemStack itemstack) {
 		return itemstack.isItemStackDamageable() && itemstack.getItemDamage() > itemstack.getMaxDamage();
+	}
+
+	/**
+	 * <p>
+	 * Returns whether the given itemstack should break (for non-damageable items).
+	 * </p>
+	 * 
+	 * @param itemstack the itemstack to check
+	 * @return true if the itemstack is non-damageable and should be broken, false otherwise
+	 */
+	public static boolean shouldNonDamageableBreak(ItemStack itemstack) {
+		return DisenchanterConfig.disenchanting.destroyNonDamageableItems && !itemstack.isItemStackDamageable();
 	}
 
 	/**
