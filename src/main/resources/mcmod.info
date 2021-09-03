@@ -3,7 +3,7 @@
   "modid": "disenchanter",
   "name": "Disenchanter",
   "description": "A small mod for MinecraftForge essentially adding a block to disenchant items.",
-  "version": "1.7",
+  "version": "1.8",
   "mcversion": "1.12",
   "url": "http://minecraft.curseforge.com/projects/the-disenchanter-mod",
   "authorList": ["Impelon", "Disenchanter contributors"],
