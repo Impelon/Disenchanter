@@ -560,7 +560,7 @@ public class DisenchantingUtils {
 
 	/**
 	 * <p>
-	 * Returns whether the given itemstack should break after one use (for non-damageable items)
+	 * Returns whether the given itemstack should break (for non-damageable items).
 	 * </p>
 	 * 
 	 * @param itemstack the itemstack to check
