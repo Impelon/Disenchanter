@@ -99,6 +99,10 @@ public class DisenchanterConfig {
 		@Config.Comment("By how much should the damage be multiplied when using an automatic disenchantment table?")
 		public double machineDamageMultiplier = 2.5;
 		
+		@Config.Name("DestroyNonDamageableItems")
+		@Config.Comment("Should non-damageable items like books be destroyed when disenchanted?")
+		public boolean destroyNonDamageableItems = false;
+		
 		@Config.Name("EnchantmentLossChance")
 		@Config.Comment("What should the probability be that an enchantment is lost when disenchanting?")
 		@Config.RangeDouble(min = 0.0, max = 1.0)
@@ -156,10 +160,6 @@ public class DisenchanterConfig {
 						 "Enchantments will not be able to be removed from these items."})
 		public boolean enableTCBehaviour = true;
 		
-		@Config.Name("DestroyNonDamageableItems")
-		@Config.Comment("Should non-damageable items like books be destroyed when disenchanted?")
-		public boolean destroyNonDamageableItems = false;
-		
 	};
 	
 	@Config.Name("visual")
@@ -169,7 +169,8 @@ public class DisenchanterConfig {
 		
 		@Config.Name("BookRendererYOffset")
 		@Config.Comment({"How should the book be positioned above the disenchantment table compared to the regular enchanting table?",
-						 "0.0 is the same as the enchanting table."})
+						 "0.0 is the same as the enchanting table.",
+						 "You will probably want to set this to about 0.1, if you want to disable BookRendererFlipped."})
 		public double bookRendererYOffset = 0.4;
 		
 		@Config.Name("BookRendererFlipped")
