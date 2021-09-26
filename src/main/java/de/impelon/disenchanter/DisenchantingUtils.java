@@ -247,15 +247,15 @@ public class DisenchantingUtils {
 				receiver = ItemStack.EMPTY;
 			inventory.setReceiverStack(receiver);
 
-			if (isItemStackBroken(source) || shouldNonDamageableBreak(source))
-				source = ItemStack.EMPTY;
-
-			if (!source.isEmpty()) {
-				if (source.getItem().equals(Items.ENCHANTED_BOOK) && getEnchantmentList(source) == null)
+			if (shouldBreakSource(source)) {
+				if (source.getItem().equals(Items.ENCHANTED_BOOK))
 					source = new ItemStack(Items.BOOK);
-				if (properties.is(TableVariant.VOIDING) && getAvailableEnchantmentIndices(source).isEmpty())
+				else
 					source = ItemStack.EMPTY;
 			}
+			if (!source.isEmpty() && properties.is(TableVariant.VOIDING)
+					&& getAvailableEnchantmentIndices(source).isEmpty())
+				source = ItemStack.EMPTY;
 			inventory.setSourceStack(source);
 
 			if (target.getItem().equals(Items.ENCHANTED_BOOK) && getEnchantmentList(target) == null)
@@ -340,7 +340,7 @@ public class DisenchantingUtils {
 			source.attemptDamageItem((int) (dmgMultiplier * (flatDmg + source.getMaxDamage() * durabilityDmg
 					+ source.getMaxDamage() * (reducibleDmg / power))), random, null);
 
-			if (isItemStackBroken(source) || shouldNonDamageableBreak(source) || !properties.is(TableVariant.BULKDISENCHANTING))
+			if (shouldBreakSource(source) || !properties.is(TableVariant.BULKDISENCHANTING))
 				break;
 		}
 		return hasTransferredEnchantments;
@@ -560,14 +560,20 @@ public class DisenchantingUtils {
 
 	/**
 	 * <p>
-	 * Returns whether the given itemstack should break (for non-damageable items).
+	 * Returns whether the given itemstack should be broken after being used as the
+	 * source during disenchantment. This only considers properties of the source
+	 * (like durability).
 	 * </p>
 	 * 
-	 * @param itemstack the itemstack to check
-	 * @return true if the itemstack is non-damageable and should be broken, false otherwise
+	 * @param source the itemstack to check
+	 * @return true if the itemstack should be broken, false otherwise
 	 */
-	public static boolean shouldNonDamageableBreak(ItemStack itemstack) {
-		return DisenchanterConfig.disenchanting.destroyNonDamageableItems && !itemstack.isItemStackDamageable();
+	public static boolean shouldBreakSource(ItemStack source) {
+		if (source.getItem().equals(Items.ENCHANTED_BOOK) && getEnchantmentList(source) == null)
+			return true;
+		if (isItemStackBroken(source))
+			return true;
+		return DisenchanterConfig.disenchanting.destroyNonDamageableItems && !source.isItemStackDamageable();
 	}
 
 	/**
