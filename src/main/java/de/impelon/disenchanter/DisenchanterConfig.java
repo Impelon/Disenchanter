@@ -129,8 +129,14 @@ public class DisenchanterConfig {
 		
 		@Config.Name("FlatExperience")
 		@Config.Comment({"When converting an enchantment to XP, a flat amount of experience points will be added.",
-						"What should that amount be?"})
+						 "What should that amount be?"})
 		public int flatExperience = 0;
+		
+		@Config.Name("PowerExperience")
+		@Config.Comment({"When converting an enchantment to XP, an amount of experience points multiplied by the power will be added.",
+						 "The power can be raised up to 15 by surrounding the disenchantment table with blocks that increase the enchanting level for the enchanting table (e.g. bookshelves).",
+						 "What should that amount be?"})
+		public double powerExperience = 0;
 
 		@Config.Name("MinEnchantabilityExperience")
 		@Config.Comment({"When converting an enchantment to XP, experience points relative to the enchantment's minimum enchantability will be added.",
@@ -141,6 +147,13 @@ public class DisenchanterConfig {
 		@Config.Comment({"When converting an enchantment to XP, experience points relative to the enchantment's maximum enchantability will be added.",
 						 "What percentage of the enchantability should be used?"})
 		public double maxEnchantabilityExperience = 0.15;
+
+		@Config.Name("PowerEnchantabilityExperienceMultiplier")
+		@Config.Comment({"When converting an enchantment to XP, experience points relative to the enchantment's enchantability will be added.",
+						 "Additionally a percentage of these experience points will be multiplied by the power and added to the total.",
+						 "The power can be raised up to 15 by surrounding the disenchantment table with blocks that increase the enchanting level for the enchanting table (e.g. bookshelves).",
+						 "What percentage of the enchantability should be used?"})
+		public double powerEnchantabilityExperienceMultiplier = 0.008;
 		
 		@Config.Name("AutomaticDisenchantingProcessTicks")
 		@Config.Comment("How many ticks should the disenchanting process last when using an automatic disenchantment table?")

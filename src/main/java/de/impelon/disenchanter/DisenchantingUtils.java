@@ -312,13 +312,15 @@ public class DisenchantingUtils {
 		int flatDmg = DisenchanterConfig.disenchanting.flatDamage;
 		double durabilityDmg = DisenchanterConfig.disenchanting.maxDurabilityDamage;
 		double reducibleDmg = DisenchanterConfig.disenchanting.maxDurabilityDamageReducible;
-		double dmgMultiplier = properties.is(TableVariant.AUTOMATIC) ? DisenchanterConfig.disenchanting.machineDamageMultiplier : 1.0;
+		double dmgMultiplier = properties.is(TableVariant.AUTOMATIC)
+				? DisenchanterConfig.disenchanting.machineDamageMultiplier
+				: 1.0;
 
 		List<Integer> indices;
 		boolean hasTransferredEnchantments = false;
 		while (!(indices = getAvailableEnchantmentIndices(source)).isEmpty()) {
 			int index = Math.abs(indices.get(startIndex % indices.size()));
-			if (!transferEnchantment(source, target, index, ignoreEnchantmentLoss, random))
+			if (!transferEnchantment(source, target, index, ignoreEnchantmentLoss, power, random))
 				break;
 			hasTransferredEnchantments = true;
 
@@ -350,12 +352,14 @@ public class DisenchantingUtils {
 	 *                              input to transfer the enchantment from
 	 * @param ignoreEnchantmentLoss true if enchantment loss should be considered,
 	 *                              false otherwise
+	 * @param power                 the enchanting power where the disenchanting is
+	 *                              performed at
 	 * @param random                a {@linkplain Random}-instance to use for random
 	 *                              decisions
 	 * @return true if an enchantment was transferred, false otherwise
 	 */
 	public static boolean transferEnchantment(ItemStack source, ItemStack target, int index,
-			boolean ignoreEnchantmentLoss, Random random) {
+			boolean ignoreEnchantmentLoss, float power, Random random) {
 		if (!source.isEmpty() && !target.isEmpty() && source.getTagCompound() != null) {
 			NBTTagList enchants = getEnchantmentList(source);
 			if (enchants == null)
@@ -491,15 +495,20 @@ public class DisenchantingUtils {
 	 * 
 	 * @param enchantment the enchantment to get the experience from
 	 * @param level       the level of the enchantment
+	 * @param power       the enchanting power where the disenchanting is performed
+	 *                    at
 	 * @return the experience points to be gained
 	 */
-	public static int getExperienceForEnchantment(Enchantment enchantment, int level) {
+	public static int getExperienceForEnchantment(Enchantment enchantment, int level, float power) {
 		int min = enchantment.getMinEnchantability(level);
 		int max = enchantment.getMaxEnchantability(level);
-		int flatXp = DisenchanterConfig.disenchanting.flatExperience;
-		double minEnchantabilityXp = DisenchanterConfig.disenchanting.minEnchantabilityExperience;
-		double maxEnchantabilityXp = DisenchanterConfig.disenchanting.maxEnchantabilityExperience;
-		return flatXp + (int) (min * minEnchantabilityXp + max * maxEnchantabilityXp);
+		int flatXP = DisenchanterConfig.disenchanting.flatExperience;
+		double powerXP = DisenchanterConfig.disenchanting.powerExperience;
+		double enchantabilityMultiplier = DisenchanterConfig.disenchanting.powerEnchantabilityExperienceMultiplier;
+		double minEnchantabilityXP = DisenchanterConfig.disenchanting.minEnchantabilityExperience;
+		double maxEnchantabilityXP = DisenchanterConfig.disenchanting.maxEnchantabilityExperience;
+		double enchantabilityXP = min * minEnchantabilityXP + max * maxEnchantabilityXP;
+		return flatXP + (int) (enchantabilityXP + enchantabilityXP * enchantabilityMultiplier * power + powerXP * power);
 	}
 
 	/**
