@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.impelon.disenchanter.DisenchanterConfig;
 import de.impelon.disenchanter.DisenchanterMain;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -74,26 +75,26 @@ public class ItemExperienceJar extends Item {
 	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase entityLiving) {
 		if (entityLiving instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) entityLiving;
-			int amountToAdd = 0;
-			ensureValidTag(stack);
-			int xpStored = getStoredExperience(stack);
-			if (!player.isSneaking()) {
-				int xpToLevelup = MathHelper.ceil(player.xpBarCap() * (1.0F - player.experience));
-				amountToAdd = xpToLevelup;
-			} else {
-				amountToAdd = xpStored;
-			}
-			amountToAdd = Math.min(amountToAdd, xpStored);
-			player.addExperience(amountToAdd);
-			setStoredExperience(stack, xpStored - amountToAdd);
+			giveExperienceTo(player, stack, player.isSneaking());
 		}
 		return stack;
 	}
 
 	@Override
+	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
+		if (DisenchanterConfig.experienceJar.playerCanInsertXPInJar && entityLiving instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) entityLiving;
+			if (player.isSneaking()) {
+				takeExperienceFrom(player, stack);
+			}
+		}
+		return super.onEntitySwing(entityLiving, stack);
+	}
+
+	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (hasStoredExperience(stack)) {
+		if (DisenchanterConfig.experienceJar.playerCanExtractXPFromJar && hasStoredExperience(stack)) {
 			player.setActiveHand(hand);
 			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 		}
@@ -122,11 +123,81 @@ public class ItemExperienceJar extends Item {
 		super.addInformation(stack, world, l, advanced);
 
 		if (isOverloadActive(stack)) {
-			l.add(new TextComponentTranslation("msg.overload.txt")
-					.setStyle(new Style().setColor(TextFormatting.GREEN)).getFormattedText());
+			String overload = "msg.overload.txt";
+			if (GuiScreen.isShiftKeyDown())
+				overload = "msg.overload_detailed.txt";
+			l.add(new TextComponentTranslation(overload).setStyle(new Style().setColor(TextFormatting.GREEN))
+					.getFormattedText());
 		}
+
 		l.add(new TextComponentTranslation("msg.stored_xp.txt", getStoredExperience(stack),
 				getExperienceCapacity(stack)).setStyle(new Style().setColor(TextFormatting.AQUA)).getFormattedText());
+
+		if (DisenchanterConfig.experienceJar.playerCanExtractXPFromJar
+				|| DisenchanterConfig.experienceJar.playerCanInsertXPInJar) {
+			if (GuiScreen.isShiftKeyDown()) {
+				if (DisenchanterConfig.experienceJar.playerCanExtractXPFromJar) {
+					l.add(new TextComponentTranslation("msg.extract_from_jar.txt")
+							.setStyle(new Style().setColor(TextFormatting.DARK_GRAY)).getFormattedText());
+					l.add(new TextComponentTranslation("msg.extract_all_from_jar.txt")
+							.setStyle(new Style().setColor(TextFormatting.DARK_GRAY)).getFormattedText());
+				}
+				if (DisenchanterConfig.experienceJar.playerCanInsertXPInJar) {
+					l.add(new TextComponentTranslation("msg.insert_into_jar.txt")
+							.setStyle(new Style().setColor(TextFormatting.DARK_GRAY)).getFormattedText());
+				}
+			} else {
+				l.add(new TextComponentTranslation("msg.shift_for_tooltip.txt")
+						.setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true)).getFormattedText());
+			}
+		}
+	}
+
+	/**
+	 * Transfers the experience from the given stack to the player.
+	 * 
+	 * @param player      the player to transfer experience to
+	 * @param stack       the itemstack
+	 * @param transferAll whether to transfer all the experience available in the
+	 *                    given stack
+	 */
+	public static void giveExperienceTo(EntityPlayer player, ItemStack stack, boolean transferAll) {
+		int amountToAdd = 0;
+		ensureValidTag(stack);
+		int xpStored = getStoredExperience(stack);
+		if (transferAll) {
+			amountToAdd = xpStored;
+		} else {
+			int xpToLevelup = MathHelper.ceil(player.xpBarCap() * (1.0F - player.experience));
+			amountToAdd = Math.min(xpToLevelup, xpStored);
+		}
+		player.addExperience(amountToAdd);
+		setStoredExperience(stack, xpStored - amountToAdd);
+	}
+
+	/**
+	 * Transfers the experience from the player to the given stack.
+	 * 
+	 * @param player the player to transfer experience from
+	 * @param stack  the itemstack
+	 */
+	public static void takeExperienceFrom(EntityPlayer player, ItemStack stack) {
+		ensureValidTag(stack);
+		int xpStored = getStoredExperience(stack);
+		int capacity = getExperienceCapacity(stack);
+		int xpToLeveldown = Math.round(player.xpBarCap() * player.experience);
+		int amountToRemove = 0;
+		if (xpToLeveldown > 0) {
+			amountToRemove = xpToLeveldown;
+		} else if (player.experienceLevel > 0) {
+			player.experienceLevel--;
+			amountToRemove = player.xpBarCap();
+		}
+		if (amountToRemove > 0) {
+			int amountRemoved = Math.min(amountToRemove, capacity - xpStored);
+			setStoredExperience(stack, xpStored + amountRemoved);
+			player.experience = (amountToRemove - amountRemoved) / ((float) player.xpBarCap());
+		}
 	}
 
 	/**
@@ -241,12 +312,12 @@ public class ItemExperienceJar extends Item {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Resets the capacity for experience points to be stored in the stack. This will
-	 * fail if the item has no NBT-tag.
+	 * Resets the capacity for experience points to be stored in the stack. This
+	 * will fail if the item has no NBT-tag.
 	 * 
-	 * @param stack    the itemstack
+	 * @param stack the itemstack
 	 * @return true if this was successful, false otherwise
 	 */
 	public static boolean resetExperienceCapacity(ItemStack stack) {

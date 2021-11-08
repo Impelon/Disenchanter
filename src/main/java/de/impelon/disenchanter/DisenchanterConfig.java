@@ -14,6 +14,10 @@ public class DisenchanterConfig {
 	
 	public static class ExperienceJarSection {
 		
+		@Config.Name("JarDisenchantingOnly")
+		@Config.Comment("Should disenchanting be only possible with the jar of experience (as opposed to books)?")
+		public boolean jarDisenchantingOnly = false;
+		
 		@Config.Name("JarDefaultExperienceCapacity")
 		@Config.Comment("How many experience points should the jar of experience store at most by default?")
 		@Config.RangeInt(min = 0)
@@ -25,7 +29,16 @@ public class DisenchanterConfig {
 		
 		@Config.Name("JarUpgradeMaxCapacity")
 		@Config.Comment("What should be the maximal capacity of experience points obtainable via upgrades be for the jar of experience?")
+		@Config.RangeInt(min = 0)
 		public int jarUpgradeMaxCapacity = 2048;
+		
+		@Config.Name("PlayerCanInsertXPIntoJar")
+		@Config.Comment("Should players be able to manually insert experience points into the jar of experience by punching while sneaking?")
+		public boolean playerCanInsertXPInJar = true;
+		
+		@Config.Name("PlayerCanExtractXPFromJar")
+		@Config.Comment("Should players be able to manually extract experience points from the jar of experience by drinking from it?")
+		public boolean playerCanExtractXPFromJar = true;
 		
 	};
 	
@@ -99,6 +112,10 @@ public class DisenchanterConfig {
 		@Config.Comment("By how much should the damage be multiplied when using an automatic disenchantment table?")
 		public double machineDamageMultiplier = 2.5;
 		
+		@Config.Name("DestroyNonDamageableItems")
+		@Config.Comment("Should non-damageable items like books be destroyed when disenchanted?")
+		public boolean destroyNonDamageableItems = false;
+		
 		@Config.Name("EnchantmentLossChance")
 		@Config.Comment("What should the probability be that an enchantment is lost when disenchanting?")
 		@Config.RangeDouble(min = 0.0, max = 1.0)
@@ -112,8 +129,14 @@ public class DisenchanterConfig {
 		
 		@Config.Name("FlatExperience")
 		@Config.Comment({"When converting an enchantment to XP, a flat amount of experience points will be added.",
-						"What should that amount be?"})
+						 "What should that amount be?"})
 		public int flatExperience = 0;
+		
+		@Config.Name("PowerExperience")
+		@Config.Comment({"When converting an enchantment to XP, an amount of experience points multiplied by the power will be added.",
+						 "The power can be raised up to 15 by surrounding the disenchantment table with blocks that increase the enchanting level for the enchanting table (e.g. bookshelves).",
+						 "What should that amount be?"})
+		public double powerExperience = 0;
 
 		@Config.Name("MinEnchantabilityExperience")
 		@Config.Comment({"When converting an enchantment to XP, experience points relative to the enchantment's minimum enchantability will be added.",
@@ -124,6 +147,13 @@ public class DisenchanterConfig {
 		@Config.Comment({"When converting an enchantment to XP, experience points relative to the enchantment's maximum enchantability will be added.",
 						 "What percentage of the enchantability should be used?"})
 		public double maxEnchantabilityExperience = 0.15;
+
+		@Config.Name("PowerEnchantabilityExperienceMultiplier")
+		@Config.Comment({"When converting an enchantment to XP, experience points relative to the enchantment's enchantability will be added.",
+						 "Additionally a percentage of these experience points will be multiplied by the power and added to the total.",
+						 "The power can be raised up to 15 by surrounding the disenchantment table with blocks that increase the enchanting level for the enchanting table (e.g. bookshelves).",
+						 "What percentage of the enchantability should be used?"})
+		public double powerEnchantabilityExperienceMultiplier = 0.008;
 		
 		@Config.Name("AutomaticDisenchantingProcessTicks")
 		@Config.Comment("How many ticks should the disenchanting process last when using an automatic disenchantment table?")
@@ -165,7 +195,8 @@ public class DisenchanterConfig {
 		
 		@Config.Name("BookRendererYOffset")
 		@Config.Comment({"How should the book be positioned above the disenchantment table compared to the regular enchanting table?",
-						 "0.0 is the same as the enchanting table."})
+						 "0.0 is the same as the enchanting table.",
+						 "You will probably want to set this to about 0.1, if you want to disable BookRendererFlipped."})
 		public double bookRendererYOffset = 0.4;
 		
 		@Config.Name("BookRendererFlipped")

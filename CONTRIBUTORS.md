@@ -24,5 +24,4 @@ For example:
 List of contributors
 ====================
 * [democat3457 (Colin W.)](https://github.com/democat3457), [#52](https://github.com/Impelon/Disenchanter/pull/52)
-
-
+* [Charles445](https://github.com/Charles445), [#60](https://github.com/Impelon/Disenchanter/pull/60)
