@@ -1,8 +1,13 @@
 tile.disenchanter:disenchantmenttable.name=Entzauberungstisch
 item.disenchanter:experience_jar.name=Erfahrungsflasche
 container.disenchant=Entzaubern
+msg.shift_for_tooltip.txt=Halte die Umschalttaste für weitere Informationen
+msg.extract_from_jar.txt=- trinke von der Flasche um Erfahrungspunkte zu entziehen
+msg.extract_all_from_jar.txt=- schleiche während des Trinkens um der Flasche alle Erfahrungspunkte zu entziehen
+msg.insert_into_jar.txt=- schleiche während du mit der Flasche klopfst um Erfahrungspunkte einzuspeichern
 msg.stored_xp.txt=gesammelte Erfahrungspunkte: %d/%d
-msg.overload.txt=überladen: auch bei erreichter Kapazität kann entzaubert werden
+msg.overload.txt=überladen
+msg.overload_detailed.txt=überladen: bei erreichter Kapazität kann weiter entzaubert werden
 msg.automatic.txt=automatisch
 msg.bulkdisenchanting.txt=Massenentzauberung
 msg.cycling.txt=durchlaufend

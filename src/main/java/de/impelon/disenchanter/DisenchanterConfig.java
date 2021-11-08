@@ -25,7 +25,16 @@ public class DisenchanterConfig {
 		
 		@Config.Name("JarUpgradeMaxCapacity")
 		@Config.Comment("What should be the maximal capacity of experience points obtainable via upgrades be for the jar of experience?")
+		@Config.RangeInt(min = 0)
 		public int jarUpgradeMaxCapacity = 2048;
+		
+		@Config.Name("PlayerCanInsertXPIntoJar")
+		@Config.Comment("Should players be able to manually insert experience points into the jar of experience by punching while sneaking?")
+		public boolean playerCanInsertXPInJar = true;
+		
+		@Config.Name("PlayerCanExtractXPFromJar")
+		@Config.Comment("Should players be able to manually extract experience points from the jar of experience by drinking from it?")
+		public boolean playerCanExtractXPFromJar = true;
 		
 	};
 	

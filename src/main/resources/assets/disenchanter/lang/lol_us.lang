@@ -1,8 +1,13 @@
 tile.disenchanter:disenchantmenttable.name=Tingy t dismagignify
 item.disenchanter:experience_jar.name=Jaz wit ur levlz
 container.disenchant=Dismagignify
+msg.shift_for_tooltip.txt=U sneak 4 info
+msg.extract_from_jar.txt=- chug for XP
+msg.extract_all_from_jar.txt=- sneaky chug for !ALL! XP!
+msg.insert_into_jar.txt=- sneaky punch to giv xp...
 msg.stored_xp.txt=tis big XP %d/%d
 msg.overload.txt=ITS OVER 9000!! Do wat u want!
+msg.overload_detailed.txt=ITS OVER 9000!! Wat els?
 msg.automatic.txt=who dis wrok?!
 msg.bulkdisenchanting.txt=dismagnifnify EWEYTING!1
 msg.cycling.txt=U spin mi round

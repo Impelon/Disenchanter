@@ -375,9 +375,12 @@ public class DisenchantingUtils {
 						ItemEnchantedBook.addEnchantment(target, enchantment);
 					else if (target.getItem().equals(CommonProxy.itemExperienceJar)) {
 						ItemExperienceJar.ensureValidTag(target);
-						ItemExperienceJar.setStoredExperienceClamped(target,
-								ItemExperienceJar.getStoredExperience(target) + getExperienceForEnchantment(
-										enchantment.enchantment, enchantment.enchantmentLevel));
+						int storedXP = ItemExperienceJar.getStoredExperience(target);
+						int gainedXP = getExperienceForEnchantment(enchantment.enchantment, enchantment.enchantmentLevel, power);
+						if (storedXP + gainedXP >= 0)
+							ItemExperienceJar.setStoredExperienceClamped(target, storedXP + gainedXP);
+						else
+							return false;
 					}
 				}
 
@@ -481,6 +484,9 @@ public class DisenchantingUtils {
 	 * <p>
 	 * Returns the experience points to be gained when disenchanting this
 	 * enchantment.
+	 * </p>
+	 * <p>
+	 * This can be a negative amount.
 	 * </p>
 	 * 
 	 * @param enchantment the enchantment to get the experience from
