@@ -38,8 +38,8 @@ public abstract class ContainerDisenchantmentBase extends Container {
 	}
 
 	/**
-	 * Access to this should be fast, as it is needed often. It <b>MUST</b> be available at
-	 * the time the constructor of <b>THIS</b>
+	 * Access to this should be fast, as it is needed often. It <b>MUST</b> be
+	 * available at the time the constructor of <b>THIS</b>
 	 * ({@link ContainerDisenchantmentBase}) base class is called.
 	 * 
 	 * Allows implementations to act on different inventory-systems (for example
@@ -75,8 +75,8 @@ public abstract class ContainerDisenchantmentBase extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer p) {
-		return !this.world.getBlockState(this.position).getBlock().equals(CommonProxy.disenchantmentTable) ? false
-				: p.getDistanceSq(this.position.add(0.5, 0.5, 0.5)) <= 64.0D;
+		return this.world.getBlockState(this.position).getBlock().equals(CommonProxy.disenchantmentTable)
+				&& p.getDistanceSq(this.position.add(0.5, 0.5, 0.5)) <= 64.0D;
 	}
 
 	@Override
