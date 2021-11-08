@@ -14,6 +14,10 @@ public class DisenchanterConfig {
 	
 	public static class ExperienceJarSection {
 		
+		@Config.Name("JarDisenchantingOnly")
+		@Config.Comment("Should disenchanting be only possible with the jar of experience (as opposed to books)?")
+		public boolean jarDisenchantingOnly = false;
+		
 		@Config.Name("JarDefaultExperienceCapacity")
 		@Config.Comment("How many experience points should the jar of experience store at most by default?")
 		@Config.RangeInt(min = 0)

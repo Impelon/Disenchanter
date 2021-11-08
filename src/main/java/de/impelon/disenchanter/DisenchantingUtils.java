@@ -515,7 +515,7 @@ public class DisenchantingUtils {
 	 */
 	public static ItemStack getAppropriateResultTarget(ItemStack receiver) {
 		if (!receiver.isEmpty()) {
-			if (receiver.getItem().equals(Items.BOOK))
+			if (!DisenchanterConfig.experienceJar.jarDisenchantingOnly && receiver.getItem().equals(Items.BOOK))
 				return new ItemStack(Items.ENCHANTED_BOOK);
 			else if (receiver.getItem().equals(CommonProxy.itemExperienceJar)
 					&& (ItemExperienceJar.hasAvailableExperienceCapacity(receiver)
