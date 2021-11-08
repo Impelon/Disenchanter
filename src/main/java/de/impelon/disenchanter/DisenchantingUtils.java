@@ -575,10 +575,13 @@ public class DisenchantingUtils {
 	 * @see ContainerEnchantment#onCraftMatrixChanged(net.minecraft.inventory.IInventory)
 	 * @return the power level
 	 */
-	public static float getEnchantingPower(World w, BlockPos pos) {
-		int power = 1;
+	public static int getEnchantingPower(World w, BlockPos pos) {
+		float power = 1;
 		for (int blockZ = -1; blockZ <= 1; blockZ++) {
 			for (int blockX = -1; blockX <= 1; blockX++) {
+				if (power >= 15)
+					break;
+
 				if ((blockZ != 0 || blockX != 0) && w.isAirBlock(pos.add(blockX, 0, blockZ))
 						&& w.isAirBlock(pos.add(blockX, 1, blockZ))) {
 					power += ForgeHooks.getEnchantPower(w, pos.add(blockX * 2, 0, blockZ * 2));
@@ -598,7 +601,7 @@ public class DisenchantingUtils {
 			}
 		}
 
-		return power;
+		return (int) power;
 	}
 
 }
